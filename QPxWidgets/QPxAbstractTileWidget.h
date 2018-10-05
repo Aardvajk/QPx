@@ -14,18 +14,23 @@ class AbstractTileWidget : public QAbstractScrollArea
 
 public:
     AbstractTileWidget(QWidget *parent = nullptr);
-    AbstractTileWidget(const QSize &dimensions, int count, QWidget *parent = nullptr);
 
     QSize dimensions() const;
     int count() const;
+    int selectedIndex() const;
+
+signals:
+    void selectedIndexChanged(int value);
 
 public slots:
     void setDimensions(const QSize &dimensions);
     void setCount(int count);
+    void setSelectedIndex(int index);
     
 protected:
     virtual void paintTile(QPainter &painter, int index, const QRect &rect) = 0;
 
+    virtual bool event(QEvent *event) override;
     virtual void resizeEvent(QResizeEvent*) override;
     virtual void paintEvent(QPaintEvent*) override;
 
@@ -33,7 +38,7 @@ private slots:
     void scrollChanged(int value);
 
 private:
-    pcx::aligned_store<32> cache;
+    pcx::aligned_store<40> cache;
 };
 
 }
