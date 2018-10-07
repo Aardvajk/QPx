@@ -29,7 +29,13 @@ LIBS += "C:/Projects/pcx/build-pcx/release/libpcx.a" \
 PRE_TARGETDEPS += "C:/Projects/pcx/build-pcx/release/libpcx.a"
 
 SOURCES += \
-    QPxWidgets/QPxAbstractTileWidget.cpp
+    QPxWidgets/QPxAbstractTileWidget.cpp \
+    QPxEditor/QPxAbstractEditorCommand.cpp \
+    QPxEditor/QPxAbstractEditorModel.cpp \
+    internal/qpx_undolist.cpp
 
 HEADERS += \
-    QPxWidgets/QPxAbstractTileWidget.h
+    QPxWidgets/QPxAbstractTileWidget.h \
+    QPxEditor/QPxAbstractEditorCommand.h \
+    QPxEditor/QPxAbstractEditorModel.h \
+    internal/qpx_undolist.h
