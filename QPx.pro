@@ -32,10 +32,12 @@ SOURCES += \
     QPxWidgets/QPxAbstractTileWidget.cpp \
     QPxEditor/QPxAbstractEditorCommand.cpp \
     QPxEditor/QPxAbstractEditorModel.cpp \
-    internal/qpx_undolist.cpp
+    internal/qpx_undolist.cpp \
+    QPxWidgets/QPxKeySequenceEdit.cpp
 
 HEADERS += \
     QPxWidgets/QPxAbstractTileWidget.h \
     QPxEditor/QPxAbstractEditorCommand.h \
     QPxEditor/QPxAbstractEditorModel.h \
-    internal/qpx_undolist.h
+    internal/qpx_undolist.h \
+    QPxWidgets/QPxKeySequenceEdit.h
