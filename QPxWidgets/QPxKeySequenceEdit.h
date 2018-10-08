@@ -27,7 +27,7 @@ protected:
     virtual void keyPressEvent(QKeyEvent *event) override;
 
 private slots:
-    void internalTextChanged(const QString &text);
+    void textModified(const QString &text);
 
 private:
     pcx::aligned_store<16> cache;

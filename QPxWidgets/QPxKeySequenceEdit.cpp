@@ -51,7 +51,7 @@ QPx::KeySequenceEdit::KeySequenceEdit(QWidget *parent) : QLineEdit(parent)
     cache.alloc<Cache>();
     setClearButtonEnabled(true);
 
-    connect(this, SIGNAL(textChanged(QString)), SLOT(internalTextChanged(QString)));
+    connect(this, SIGNAL(textChanged(QString)), SLOT(textModified(QString)));
 }
 
 QKeySequence QPx::KeySequenceEdit::KeySequence() const
@@ -102,7 +102,7 @@ void QPx::KeySequenceEdit::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void QPx::KeySequenceEdit::internalTextChanged(const QString &text)
+void QPx::KeySequenceEdit::textModified(const QString &text)
 {
     auto &c = cache.get<Cache>();
 
