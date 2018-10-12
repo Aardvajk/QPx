@@ -33,11 +33,17 @@ SOURCES += \
     QPxEditor/QPxAbstractEditorCommand.cpp \
     QPxEditor/QPxAbstractEditorModel.cpp \
     internal/qpx_undolist.cpp \
-    QPxWidgets/QPxKeySequenceEdit.cpp
+    QPxWidgets/QPxKeySequenceEdit.cpp \
+    QPxActions/QPxAction.cpp \
+    QPxActions/QPxActionList.cpp \
+    QPxEditor/QPxEditorFileActions.cpp
 
 HEADERS += \
     QPxWidgets/QPxAbstractTileWidget.h \
     QPxEditor/QPxAbstractEditorCommand.h \
     QPxEditor/QPxAbstractEditorModel.h \
     internal/qpx_undolist.h \
-    QPxWidgets/QPxKeySequenceEdit.h
+    QPxWidgets/QPxKeySequenceEdit.h \
+    QPxActions/QPxAction.h \
+    QPxActions/QPxActionList.h \
+    QPxEditor/QPxEditorFileActions.h

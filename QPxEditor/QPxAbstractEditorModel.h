@@ -27,12 +27,20 @@ public:
 
     QString lastCommandName() const;
     QString nextCommandName() const;
+
+    QString path() const;
+    
+    virtual bool clear() = 0;
+    virtual bool open(const QString &path) = 0;
+    virtual bool save(const QString &path) const = 0;
     
 signals:    
     void undoStateChanged();
     void modifiedStateChanged(bool state);
+    void pathChanged(const QString &path);
 
 public slots:
+    void setPath(const QString &path);
     void setSavePoint();
 
     void undo();
@@ -42,7 +50,7 @@ protected:
     void clearUndoList();
     
 private:
-    pcx::aligned_store<48> cache;
+    pcx::aligned_store<64> cache;
 };
 
 }

@@ -13,18 +13,15 @@ public:
     Cache(){ }
     
     qpx_undolist undo;
+    QString path;
 };
 
 }
-
-#include <QtCore/QDebug>
 
 QPx::AbstractEditorModel::AbstractEditorModel(QObject *parent) : QObject(parent)
 {
     cache.alloc<Cache>();
 
-qDebug() << sizeof(Cache);
-    
     auto &u = cache.get<Cache>().undo;
     connect(&u, SIGNAL(modifiedStateChanged(bool)), SIGNAL(modifiedStateChanged(bool)));
     connect(&u, SIGNAL(undoStateChanged()), SIGNAL(undoStateChanged()));
@@ -70,6 +67,21 @@ QString QPx::AbstractEditorModel::lastCommandName() const
 QString QPx::AbstractEditorModel::nextCommandName() const
 {
     return cache.get<Cache>().undo.nextCommandName();
+}
+
+QString QPx::AbstractEditorModel::path() const
+{
+    return cache.get<Cache>().path;
+}
+
+void QPx::AbstractEditorModel::setPath(const QString &path)
+{
+    auto &c = cache.get<Cache>();
+    if(c.path != path)
+    {
+        c.path = path;
+        emit pathChanged(path);
+    }
 }
 
 void QPx::AbstractEditorModel::undo()
