@@ -1,5 +1,5 @@
-#ifndef QPX_KEYBOARDOPTIONS_H
-#define QPX_KEYBOARDOPTIONS_H
+#ifndef QPX_ACTIONOPTIONSWIDGET_H
+#define QPX_ACTIONOPTIONSWIDGET_H
 
 #include <QtWidgets/QWidget>
 
@@ -12,12 +12,12 @@ namespace QPx
 
 class ActionList;
 
-class KeyboardOptions : public QWidget
+class ActionOptionsWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    KeyboardOptions(ActionList *actions, QWidget *parent = nullptr);
+    ActionOptionsWidget(ActionList *actions, QWidget *parent = nullptr);
 
 public slots:
     void commit();
@@ -25,6 +25,7 @@ public slots:
 private slots:
     void filterChanged(const QString &text);
     void currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem*);
+    void descriptionEditChanged(const QString &value);
     void keySequenceChanged(const QKeySequence &value);
     void warningLinkClicked(const QString &value);
 
@@ -33,9 +34,9 @@ private:
     void checkConflicts();
     void updateKeyEditColor();
 
-    pcx::aligned_store<48> cache;
+    pcx::aligned_store<56> cache;
 };
 
 }
 
-#endif // QPX_KEYBOARDOPTIONS_H
+#endif // QPX_ACTIONOPTIONSWIDGET_H

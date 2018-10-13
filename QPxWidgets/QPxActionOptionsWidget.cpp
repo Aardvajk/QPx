@@ -1,4 +1,4 @@
-#include "QPxWidgets/QPxKeyboardOptions.h"
+#include "QPxWidgets/QPxActionOptionsWidget.h"
 
 #include <QPxActions/QPxAction.h>
 #include <QPxActions/QPxActionList.h>
@@ -20,9 +20,10 @@ namespace
 class TreeWidgetItem : public QTreeWidgetItem
 {
 public:
-    TreeWidgetItem(QTreeWidgetItem *parent, const QStringList &strings, QPx::Action *action) : QTreeWidgetItem(parent, strings), action(action), conflict(false) { }
+    TreeWidgetItem(QTreeWidgetItem *parent, const QStringList &strings, QPx::Action *action) : QTreeWidgetItem(parent, strings), action(action), desc(action->statusTip()), conflict(false) { }
 
     QPx::Action *action;
+    QString desc;
     bool conflict;
 };
 
@@ -33,6 +34,7 @@ public:
 
     QTreeWidget *tree;
     QLineEdit *filterEdit;
+    QLineEdit *descEdit;
     QPx::KeySequenceEdit *keyEdit;
     QPx::IconLabel *warning;
 
@@ -42,7 +44,7 @@ public:
 
 }
 
-QPx::KeyboardOptions::KeyboardOptions(ActionList *actions, QWidget *parent) : QWidget(parent)
+QPx::ActionOptionsWidget::ActionOptionsWidget(ActionList *actions, QWidget *parent) : QWidget(parent)
 {
     cache.alloc<Cache>(actions);
 
@@ -72,12 +74,17 @@ QPx::KeyboardOptions::KeyboardOptions(ActionList *actions, QWidget *parent) : QW
     QFormLayout *form = new QFormLayout();
     form->setMargin(0);
 
-    c.keyEdit = new KeySequenceEdit(this);
+    c.descEdit = new QLineEdit();
+    c.descEdit->setClearButtonEnabled(true);
+    c.descEdit->setEnabled(false);
+
+    form->addRow("Description:", c.descEdit);
+
+    c.keyEdit = new KeySequenceEdit();
     c.keyEdit->setPlaceholderText("Click to modify");
-
-    form->addRow(tr("Shortcut:"), c.keyEdit);
-
     c.keyEdit->setEnabled(false);
+
+    form->addRow("Shortcut:", c.keyEdit);
 
     c.warning = new IconLabel();
     c.warning->setTextFormat(Qt::RichText);
@@ -92,11 +99,12 @@ QPx::KeyboardOptions::KeyboardOptions(ActionList *actions, QWidget *parent) : QW
 
     connect(c.filterEdit, SIGNAL(textChanged(QString)), SLOT(filterChanged(QString)));
     connect(c.tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), SLOT(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    connect(c.descEdit, SIGNAL(textChanged(QString)), SLOT(descriptionEditChanged(QString)));
     connect(c.keyEdit, SIGNAL(keySequenceChanged(QKeySequence)), SLOT(keySequenceChanged(QKeySequence)));
     connect(c.warning, SIGNAL(linkActivated(QString)), SLOT(warningLinkClicked(QString)));
 }
 
-void QPx::KeyboardOptions::commit()
+void QPx::ActionOptionsWidget::commit()
 {
     auto &c = cache.get<Cache>();
 
@@ -107,12 +115,14 @@ void QPx::KeyboardOptions::commit()
         for(int j = 0; j < group->childCount(); ++j)
         {
             auto item = static_cast<TreeWidgetItem*>(group->child(j));
+
             item->action->setShortcut(QKeySequence(item->data(2, Qt::DisplayRole).toString()));
+            item->action->setStatusTip(item->desc);
         }
     }
 }
 
-void QPx::KeyboardOptions::filterChanged(const QString &text)
+void QPx::ActionOptionsWidget::filterChanged(const QString &text)
 {
     auto &c = cache.get<Cache>();
 
@@ -173,7 +183,7 @@ void QPx::KeyboardOptions::filterChanged(const QString &text)
     }
 }
 
-void QPx::KeyboardOptions::currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *)
+void QPx::ActionOptionsWidget::currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *)
 {
     auto &c = cache.get<Cache>();
 
@@ -183,11 +193,17 @@ void QPx::KeyboardOptions::currentItemChanged(QTreeWidgetItem *current, QTreeWid
     {
         c.keyEdit->setEnabled(false);
         c.keyEdit->setKeySequence(QKeySequence());
+
+        c.descEdit->setEnabled(false);
+        c.descEdit->setText({ });
     }
     else
     {
         c.keyEdit->setEnabled(true);
         c.keyEdit->setKeySequence(QKeySequence(current->data(2, Qt::DisplayRole).toString()));
+
+        c.descEdit->setEnabled(true);
+        c.descEdit->setText(static_cast<TreeWidgetItem*>(current)->desc);
     }
 
     c.lock = false;
@@ -209,7 +225,22 @@ void QPx::KeyboardOptions::currentItemChanged(QTreeWidgetItem *current, QTreeWid
     updateKeyEditColor();
 }
 
-void QPx::KeyboardOptions::keySequenceChanged(const QKeySequence &value)
+void QPx::ActionOptionsWidget::descriptionEditChanged(const QString &value)
+{
+    auto &c = cache.get<Cache>();
+
+    if(!c.lock)
+    {
+        QTreeWidgetItem *current = c.tree->currentItem();
+
+        if(current && current->parent())
+        {
+            static_cast<TreeWidgetItem*>(current)->desc = value;
+        }
+    }
+}
+
+void QPx::ActionOptionsWidget::keySequenceChanged(const QKeySequence &value)
 {
     auto &c = cache.get<Cache>();
 
@@ -225,12 +256,12 @@ void QPx::KeyboardOptions::keySequenceChanged(const QKeySequence &value)
     }
 }
 
-void QPx::KeyboardOptions::warningLinkClicked(const QString &value)
+void QPx::ActionOptionsWidget::warningLinkClicked(const QString &value)
 {
     cache.get<Cache>().filterEdit->setText(value);
 }
 
-void QPx::KeyboardOptions::populateTree()
+void QPx::ActionOptionsWidget::populateTree()
 {
     auto &c = cache.get<Cache>();
 
@@ -276,7 +307,7 @@ void QPx::KeyboardOptions::populateTree()
     c.tree->expandAll();
 }
 
-void QPx::KeyboardOptions::checkConflicts()
+void QPx::ActionOptionsWidget::checkConflicts()
 {
     auto &c = cache.get<Cache>();
 
@@ -314,7 +345,7 @@ void QPx::KeyboardOptions::checkConflicts()
     currentItemChanged(c.tree->currentItem(), 0);
 }
 
-void QPx::KeyboardOptions::updateKeyEditColor()
+void QPx::ActionOptionsWidget::updateKeyEditColor()
 {
     auto &c = cache.get<Cache>();
     auto pal = c.keyEdit->palette();

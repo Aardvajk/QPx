@@ -21,7 +21,7 @@ QPx::ActionList::ActionList(QWidget *parent) : QObject(parent)
     cache.alloc<Cache>();
 }
 
-QPx::Action *QPx::ActionList::add(const QString &id, const QString &text, const QKeySequence &shortcut, Enable enable)
+QPx::Action *QPx::ActionList::add(const QString &id, const QString &text, const QString &tip, const QKeySequence &shortcut, Enable enable)
 {
     auto &c = cache.get<Cache>();
     
@@ -31,6 +31,7 @@ QPx::Action *QPx::ActionList::add(const QString &id, const QString &text, const 
     c.actions.append(a);
 
     a->setText(text);
+    a->setStatusTip(tip);
     a->setShortcut(shortcut);
     a->setEnabled(enable == Enable::On);
 
@@ -41,7 +42,7 @@ QPx::Action *QPx::ActionList::add(const QString &id, const QString &text, const 
 
 QPx::Action *QPx::ActionList::add(const QString &id, const QString &text, Enable enable)
 {
-    return add(id, text, { }, enable);
+    return add(id, text, { }, { }, enable);
 }
 
 QPx::Action *QPx::ActionList::find(const QString &id)
