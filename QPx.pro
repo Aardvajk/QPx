@@ -36,7 +36,9 @@ SOURCES += \
     QPxWidgets/QPxKeySequenceEdit.cpp \
     QPxActions/QPxAction.cpp \
     QPxActions/QPxActionList.cpp \
-    QPxEditor/QPxEditorFileActions.cpp
+    QPxEditor/QPxEditorFileActions.cpp \
+    QPxWidgets/QPxKeyboardOptions.cpp \
+    QPxWidgets/QPxIconLabel.cpp
 
 HEADERS += \
     QPxWidgets/QPxAbstractTileWidget.h \
@@ -46,4 +48,6 @@ HEADERS += \
     QPxWidgets/QPxKeySequenceEdit.h \
     QPxActions/QPxAction.h \
     QPxActions/QPxActionList.h \
-    QPxEditor/QPxEditorFileActions.h
+    QPxEditor/QPxEditorFileActions.h \
+    QPxWidgets/QPxKeyboardOptions.h \
+    QPxWidgets/QPxIconLabel.h
