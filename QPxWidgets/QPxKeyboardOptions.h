@@ -31,6 +31,7 @@ private slots:
 private:
     void populateTree();
     void checkConflicts();
+    void updateKeyEditColor();
 
     pcx::aligned_store<128> cache;
 };

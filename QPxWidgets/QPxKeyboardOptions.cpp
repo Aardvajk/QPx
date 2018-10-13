@@ -194,25 +194,19 @@ void QPx::KeyboardOptions::currentItemChanged(QTreeWidgetItem *current, QTreeWid
 
     if(current && current->parent())
     {
-        auto pal = c.keyEdit->palette();
-
         if(static_cast<TreeWidgetItem*>(current)->conflict)
         {
             c.warning->setText(QString("Key sequence has conflicts. <a href=\"%1\">View</a>.").arg(current->data(2, Qt::DisplayRole).toString()));
             c.warning->setIcon(style()->standardIcon(QStyle::SP_MessageBoxWarning));
-
-            pal.setColor(QPalette::Text, Qt::red);
         }
         else
         {
             c.warning->setText({ });
             c.warning->setIcon({ });
-
-            pal.setColor(QPalette::Text, style()->standardPalette().color(QPalette::Text));
         }
-
-        c.keyEdit->setPalette(pal);
     }
+
+    updateKeyEditColor();
 }
 
 void QPx::KeyboardOptions::keySequenceChanged(const QKeySequence &value)
@@ -294,13 +288,15 @@ void QPx::KeyboardOptions::checkConflicts()
 
         for(int j = 0; j < group->childCount(); ++j)
         {
-            auto item = group->child(j);
+            auto item = static_cast<TreeWidgetItem*>(group->child(j));
             auto seq = QKeySequence(item->data(2, Qt::DisplayRole).toString());
 
             if(!seq.isEmpty())
             {
                 map[seq].append(item);
             }
+
+            item->conflict = false;
         }
     }
 
@@ -318,4 +314,20 @@ void QPx::KeyboardOptions::checkConflicts()
     currentItemChanged(c.tree->currentItem(), 0);
 }
 
+void QPx::KeyboardOptions::updateKeyEditColor()
+{
+    auto &c = cache.get<Cache>();
+    auto pal = c.keyEdit->palette();
 
+    auto current = c.tree->currentItem();
+    if(current && current->parent() && static_cast<TreeWidgetItem*>(current)->conflict)
+    {
+        pal.setColor(QPalette::Text, Qt::red);
+    }
+    else
+    {
+        pal.setColor(QPalette::Text, style()->standardPalette().color(QPalette::Text));
+    }
+
+    c.keyEdit->setPalette(pal);
+}
