@@ -23,6 +23,7 @@ public:
     bool canClose();
     
     QMenu *recentFilesMenu();
+    QStringList recentFiles() const;
 
 public slots:
     void setRecentFiles(const QStringList &files);

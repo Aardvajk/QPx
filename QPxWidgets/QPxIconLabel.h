@@ -25,7 +25,7 @@ protected:
     virtual void paintEvent(QPaintEvent *event) override;
 
 private:
-    pcx::aligned_store<64> cache;
+    pcx::aligned_store<24> cache;
 };
 
 }

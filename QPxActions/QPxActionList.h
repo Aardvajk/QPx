@@ -13,7 +13,7 @@ namespace QPx
 
 class Action;
 
-class ActionList : QObject
+class ActionList : public QObject
 {
     Q_OBJECT
 

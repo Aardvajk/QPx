@@ -33,7 +33,7 @@ private:
     void checkConflicts();
     void updateKeyEditColor();
 
-    pcx::aligned_store<128> cache;
+    pcx::aligned_store<48> cache;
 };
 
 }

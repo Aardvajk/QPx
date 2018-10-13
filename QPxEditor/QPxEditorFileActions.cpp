@@ -93,6 +93,11 @@ QMenu *QPx::EditorFileActions::recentFilesMenu()
     return cache.get<Cache>().recentMenu;
 }
 
+QStringList QPx::EditorFileActions::recentFiles() const
+{
+    return cache.get<Cache>().recents;
+}
+
 void QPx::EditorFileActions::setRecentFiles(const QStringList &files)
 {
     cache.get<Cache>().recents = files;
