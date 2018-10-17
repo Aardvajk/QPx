@@ -7,6 +7,7 @@
 
 class QWidget;
 class QKeySequence;
+class QIcon;
 
 namespace QPx
 {
@@ -26,7 +27,7 @@ public:
         Off
     };
 
-    Action *add(const QString &id, const QString &text, const QString &tip, const QKeySequence &shortcut, Enable enable = Enable::On);
+    Action *add(const QString &id, const QString &text, const QString &tip, const QKeySequence &shortcut, const QIcon &icon, Enable enable = Enable::On);
     Action *add(const QString &id, const QString &text, Enable enable = Enable::On);
 
     Action *find(const QString &id);

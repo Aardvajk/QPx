@@ -297,6 +297,7 @@ void QPx::ActionOptionsWidget::populateTree()
             }
 
             auto item = new TreeWidgetItem(parent, QStringList() << value.first << label << value.second->shortcut().toString(QKeySequence::NativeText), value.second);
+
             parent->addChild(item);
         }
 

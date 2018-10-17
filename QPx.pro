@@ -41,7 +41,8 @@ SOURCES += \
     QPxWidgets/QPxIconLabel.cpp \
     QPxWidgets/QPxActionOptionsWidget.cpp \
     internal/qpx_settings_parser.cpp \
-    QPxCore/QPxSettings.cpp
+    QPxCore/QPxSettings.cpp \
+    QPxCore/QPxStandardIcons.cpp
 
 HEADERS += \
     QPxWidgets/QPxAbstractTileWidget.h \
@@ -55,4 +56,5 @@ HEADERS += \
     QPxWidgets/QPxIconLabel.h \
     QPxWidgets/QPxActionOptionsWidget.h \
     internal/qpx_settings_parser.h \
-    QPxCore/QPxSettings.h
+    QPxCore/QPxSettings.h \
+    QPxCore/QPxStandardIcons.h
