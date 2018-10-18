@@ -34,12 +34,13 @@ public:
 
     QTreeWidget *tree;
     QLineEdit *filterEdit;
-    QLineEdit *descEdit;
     QPx::KeySequenceEdit *keyEdit;
     QPx::IconLabel *warning;
 
     QPx::ActionList *actions;
     bool lock;
+
+    QIcon blankIcon;
 };
 
 }
@@ -47,6 +48,11 @@ public:
 QPx::ActionOptionsWidget::ActionOptionsWidget(ActionList *actions, QWidget *parent) : QWidget(parent)
 {
     cache.alloc<Cache>(actions);
+
+    QImage image(16, 16, QImage::Format_ARGB32);
+    image.fill(Qt::transparent);
+
+    cache.get<Cache>().blankIcon = QIcon(QPixmap::fromImage(image));
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
@@ -61,7 +67,7 @@ QPx::ActionOptionsWidget::ActionOptionsWidget(ActionList *actions, QWidget *pare
     c.tree = new QTreeWidget(this);
 
     c.tree->setColumnCount(3);
-    c.tree->setHeaderLabels(QStringList() << tr("Name") << tr("Label") << tr("Shortcut"));
+    c.tree->setHeaderLabels(QStringList() << tr("Name") << tr("Appearance") << tr("Shortcut"));
 
     c.tree->setColumnWidth(0, 170);
     c.tree->setColumnWidth(1, 250);
@@ -73,12 +79,6 @@ QPx::ActionOptionsWidget::ActionOptionsWidget(ActionList *actions, QWidget *pare
 
     QFormLayout *form = new QFormLayout();
     form->setMargin(0);
-
-    c.descEdit = new QLineEdit();
-    c.descEdit->setClearButtonEnabled(true);
-    c.descEdit->setEnabled(false);
-
-    form->addRow("Description:", c.descEdit);
 
     c.keyEdit = new KeySequenceEdit();
     c.keyEdit->setPlaceholderText("Click to modify");
@@ -99,7 +99,6 @@ QPx::ActionOptionsWidget::ActionOptionsWidget(ActionList *actions, QWidget *pare
 
     connect(c.filterEdit, SIGNAL(textChanged(QString)), SLOT(filterChanged(QString)));
     connect(c.tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), SLOT(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
-    connect(c.descEdit, SIGNAL(textChanged(QString)), SLOT(descriptionEditChanged(QString)));
     connect(c.keyEdit, SIGNAL(keySequenceChanged(QKeySequence)), SLOT(keySequenceChanged(QKeySequence)));
     connect(c.warning, SIGNAL(linkActivated(QString)), SLOT(warningLinkClicked(QString)));
 }
@@ -114,10 +113,7 @@ void QPx::ActionOptionsWidget::commit()
 
         for(int j = 0; j < group->childCount(); ++j)
         {
-            auto item = static_cast<TreeWidgetItem*>(group->child(j));
-
-            item->action->setShortcut(QKeySequence(item->data(2, Qt::DisplayRole).toString()));
-            item->action->setStatusTip(item->desc);
+            static_cast<TreeWidgetItem*>(group->child(j))->action->setShortcut(QKeySequence(group->child(j)->data(2, Qt::DisplayRole).toString()));
         }
     }
 }
@@ -193,17 +189,11 @@ void QPx::ActionOptionsWidget::currentItemChanged(QTreeWidgetItem *current, QTre
     {
         c.keyEdit->setEnabled(false);
         c.keyEdit->setKeySequence(QKeySequence());
-
-        c.descEdit->setEnabled(false);
-        c.descEdit->setText({ });
     }
     else
     {
         c.keyEdit->setEnabled(true);
         c.keyEdit->setKeySequence(QKeySequence(current->data(2, Qt::DisplayRole).toString()));
-
-        c.descEdit->setEnabled(true);
-        c.descEdit->setText(static_cast<TreeWidgetItem*>(current)->desc);
     }
 
     c.lock = false;
@@ -223,21 +213,6 @@ void QPx::ActionOptionsWidget::currentItemChanged(QTreeWidgetItem *current, QTre
     }
 
     updateKeyEditColor();
-}
-
-void QPx::ActionOptionsWidget::descriptionEditChanged(const QString &value)
-{
-    auto &c = cache.get<Cache>();
-
-    if(!c.lock)
-    {
-        QTreeWidgetItem *current = c.tree->currentItem();
-
-        if(current && current->parent())
-        {
-            static_cast<TreeWidgetItem*>(current)->desc = value;
-        }
-    }
 }
 
 void QPx::ActionOptionsWidget::keySequenceChanged(const QKeySequence &value)
@@ -297,6 +272,7 @@ void QPx::ActionOptionsWidget::populateTree()
             }
 
             auto item = new TreeWidgetItem(parent, QStringList() << value.first << label << value.second->shortcut().toString(QKeySequence::NativeText), value.second);
+            item->setData(1, Qt::DecorationRole, value.second->icon().isNull() ? c.blankIcon : value.second->icon());
 
             parent->addChild(item);
         }

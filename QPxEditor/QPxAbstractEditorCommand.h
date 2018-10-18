@@ -3,6 +3,8 @@
 
 #include <QtCore/QObject>
 
+#include <pcx/aligned_store.h>
+
 namespace QPx
 {
 
@@ -28,7 +30,7 @@ public slots:
     void setName(const QString &name);
 
 private:
-    QString n;
+    pcx::aligned_store<8> cache;
 };
 
 }

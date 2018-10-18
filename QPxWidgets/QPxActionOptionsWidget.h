@@ -25,7 +25,6 @@ public slots:
 private slots:
     void filterChanged(const QString &text);
     void currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem*);
-    void descriptionEditChanged(const QString &value);
     void keySequenceChanged(const QKeySequence &value);
     void warningLinkClicked(const QString &value);
 
