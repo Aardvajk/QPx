@@ -4,14 +4,21 @@
 
 #include <QtWidgets/QWidget>
 
+#include <unordered_map>
+
 namespace
 {
+
+struct QStringHash
+{
+    std::size_t operator()(const QString &value) const { return static_cast<std::size_t>(qHash(value)); }
+};
 
 class Cache
 {
 public:
     QList<QPx::Action*> actions;
-    QMap<QString, int> indices;
+    std::unordered_map<QString, int, QStringHash> indices;
 };
 
 }
@@ -50,7 +57,7 @@ QPx::Action *QPx::ActionList::find(const QString &id)
     auto &c = cache.get<Cache>();
 
     auto i = c.indices.find(id);
-    return i == c.indices.end() ? nullptr : c.actions[i.value()];
+    return i == c.indices.end() ? nullptr : c.actions[i->second];
 }
 
 QList<QPx::Action*> QPx::ActionList::toList() const

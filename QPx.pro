@@ -39,9 +39,9 @@ SOURCES += \
     QPxActions/QPxActionList.cpp \
     QPxEditor/QPxEditorFileActions.cpp \
     QPxWidgets/QPxIconLabel.cpp \
-    QPxWidgets/QPxActionOptionsWidget.cpp \
     internal/qpx_settings_parser.cpp \
-    QPxCore/QPxSettings.cpp
+    QPxCore/QPxSettings.cpp \
+    QPxWidgets/QPxKeyboardOptionsWidget.cpp
 
 HEADERS += \
     QPxWidgets/QPxAbstractTileWidget.h \
@@ -53,6 +53,6 @@ HEADERS += \
     QPxActions/QPxActionList.h \
     QPxEditor/QPxEditorFileActions.h \
     QPxWidgets/QPxIconLabel.h \
-    QPxWidgets/QPxActionOptionsWidget.h \
     internal/qpx_settings_parser.h \
-    QPxCore/QPxSettings.h
+    QPxCore/QPxSettings.h \
+    QPxWidgets/QPxKeyboardOptionsWidget.h

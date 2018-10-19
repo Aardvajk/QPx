@@ -35,7 +35,7 @@ public:
     QList<Action*> toList() const;
 
 private:
-    pcx::aligned_store<16> cache;    
+    pcx::aligned_store<64> cache;
 };
 
 }

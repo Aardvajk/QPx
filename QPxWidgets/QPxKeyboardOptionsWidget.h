@@ -1,5 +1,5 @@
-#ifndef QPX_ACTIONOPTIONSWIDGET_H
-#define QPX_ACTIONOPTIONSWIDGET_H
+#ifndef QPX_KEYBOARDOPTIONSWIDGET_H
+#define QPX_KEYBOARDOPTIONSWIDGET_H
 
 #include <QtWidgets/QWidget>
 
@@ -12,12 +12,12 @@ namespace QPx
 
 class ActionList;
 
-class ActionOptionsWidget : public QWidget
+class KeyboardOptionsWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    ActionOptionsWidget(ActionList *actions, QWidget *parent = nullptr);
+    KeyboardOptionsWidget(ActionList *actions, QWidget *parent = nullptr);
 
 public slots:
     void commit();
@@ -38,4 +38,4 @@ private:
 
 }
 
-#endif // QPX_ACTIONOPTIONSWIDGET_H
+#endif // QPX_KEYBOARDOPTIONSWIDGET_H

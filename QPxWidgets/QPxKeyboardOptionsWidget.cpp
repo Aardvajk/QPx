@@ -1,4 +1,4 @@
-#include "QPxWidgets/QPxActionOptionsWidget.h"
+#include "QPxWidgets/QPxKeyboardOptionsWidget.h"
 
 #include <QPxActions/QPxAction.h>
 #include <QPxActions/QPxActionList.h>
@@ -45,7 +45,7 @@ public:
 
 }
 
-QPx::ActionOptionsWidget::ActionOptionsWidget(ActionList *actions, QWidget *parent) : QWidget(parent)
+QPx::KeyboardOptionsWidget::KeyboardOptionsWidget(ActionList *actions, QWidget *parent) : QWidget(parent)
 {
     cache.alloc<Cache>(actions);
 
@@ -103,7 +103,7 @@ QPx::ActionOptionsWidget::ActionOptionsWidget(ActionList *actions, QWidget *pare
     connect(c.warning, SIGNAL(linkActivated(QString)), SLOT(warningLinkClicked(QString)));
 }
 
-void QPx::ActionOptionsWidget::commit()
+void QPx::KeyboardOptionsWidget::commit()
 {
     auto &c = cache.get<Cache>();
 
@@ -118,7 +118,7 @@ void QPx::ActionOptionsWidget::commit()
     }
 }
 
-void QPx::ActionOptionsWidget::filterChanged(const QString &text)
+void QPx::KeyboardOptionsWidget::filterChanged(const QString &text)
 {
     auto &c = cache.get<Cache>();
 
@@ -179,7 +179,7 @@ void QPx::ActionOptionsWidget::filterChanged(const QString &text)
     }
 }
 
-void QPx::ActionOptionsWidget::currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *)
+void QPx::KeyboardOptionsWidget::currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *)
 {
     auto &c = cache.get<Cache>();
 
@@ -215,7 +215,7 @@ void QPx::ActionOptionsWidget::currentItemChanged(QTreeWidgetItem *current, QTre
     updateKeyEditColor();
 }
 
-void QPx::ActionOptionsWidget::keySequenceChanged(const QKeySequence &value)
+void QPx::KeyboardOptionsWidget::keySequenceChanged(const QKeySequence &value)
 {
     auto &c = cache.get<Cache>();
 
@@ -231,12 +231,12 @@ void QPx::ActionOptionsWidget::keySequenceChanged(const QKeySequence &value)
     }
 }
 
-void QPx::ActionOptionsWidget::warningLinkClicked(const QString &value)
+void QPx::KeyboardOptionsWidget::warningLinkClicked(const QString &value)
 {
     cache.get<Cache>().filterEdit->setText(value);
 }
 
-void QPx::ActionOptionsWidget::populateTree()
+void QPx::KeyboardOptionsWidget::populateTree()
 {
     auto &c = cache.get<Cache>();
 
@@ -284,7 +284,7 @@ void QPx::ActionOptionsWidget::populateTree()
     c.tree->expandAll();
 }
 
-void QPx::ActionOptionsWidget::checkConflicts()
+void QPx::KeyboardOptionsWidget::checkConflicts()
 {
     auto &c = cache.get<Cache>();
 
@@ -322,7 +322,7 @@ void QPx::ActionOptionsWidget::checkConflicts()
     currentItemChanged(c.tree->currentItem(), 0);
 }
 
-void QPx::ActionOptionsWidget::updateKeyEditColor()
+void QPx::KeyboardOptionsWidget::updateKeyEditColor()
 {
     auto &c = cache.get<Cache>();
     auto pal = c.keyEdit->palette();
