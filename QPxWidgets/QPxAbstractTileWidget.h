@@ -13,7 +13,7 @@ class AbstractTileWidget : public QAbstractScrollArea
     Q_OBJECT
 
 public:
-    AbstractTileWidget(QWidget *parent = nullptr);
+    explicit AbstractTileWidget(QWidget *parent = nullptr);
 
     QSize dimensions() const;
     int count() const;

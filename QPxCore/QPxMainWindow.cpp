@@ -13,29 +13,35 @@
 namespace
 {
 
+enum class Special { Menu, Separator, Unknown };
+
+Special special(const QString &key)
+{
+    static const QMap<QString, Special> m = { { "[Menu]", Special::Menu }, { "[Separator]", Special::Separator } };
+    return m.value(key, Special::Unknown);
+}
+
 template<typename T> void loadMenus(QPx::Settings &root, QPx::ActionList *actions, T *parent, QPx::MainWindow *window, void(QPx::MainWindow::*custom)(const QString&,QWidget*))
 {
     for(int i = 0; i < root.count(); ++i)
     {
         auto key = root[i].key();
 
-        if(key == "[Menu]")
+        switch(special(key))
         {
-            loadMenus(root[i], actions, parent->addMenu(root[i].value().toString()), window, custom);
-        }
-        else if(key == "[Separator]")
-        {
-            parent->addSeparator();
-        }
-        else
-        {
-            if(auto a = actions->find(key))
+            case Special::Menu: loadMenus(root[i], actions, parent->addMenu(root[i].value().toString()), window, custom); break;
+            case Special::Separator: parent->addSeparator(); break;
+
+            case Special::Unknown:
             {
-                parent->addAction(a);
-            }
-            else
-            {
-                (window->*custom)(key, parent);
+                if(auto a = actions->find(key))
+                {
+                    parent->addAction(a);
+                }
+                else
+                {
+                    (window->*custom)(key, parent);
+                }
             }
         }
     }
@@ -45,7 +51,7 @@ void loadToolBars(QPx::Settings &root, QPx::ActionList *actions, QPx::MainWindow
 {
     for(int i = 0; i < root.count(); ++i)
     {
-        auto toolbar = window->addToolBar("");
+        auto toolbar = window->addToolBar(root[i].value().toString());
 
         toolbar->setIconSize(QSize(16, 16));
         toolbar->setMovable(false);
@@ -54,13 +60,22 @@ void loadToolBars(QPx::Settings &root, QPx::ActionList *actions, QPx::MainWindow
         {
             auto key = root[i][j].key();
 
-            if(auto a = actions->find(key))
+            switch(special(key))
             {
-                toolbar->addAction(a);
-            }
-            else
-            {
-                (window->*custom)(key, toolbar);
+                case Special::Menu: break;
+                case Special::Separator: toolbar->addSeparator(); break;
+
+                case Special::Unknown:
+                {
+                    if(auto a = actions->find(key))
+                    {
+                        toolbar->addAction(a);
+                    }
+                    else
+                    {
+                        (window->*custom)(key, toolbar);
+                    }
+                }
             }
         }
     }

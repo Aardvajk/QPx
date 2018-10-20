@@ -11,7 +11,7 @@ class Action : public QAction
     Q_OBJECT
 
 public:
-    Action(const QString &id, QObject *parent = nullptr);
+    explicit Action(const QString &id, QObject *parent = nullptr);
 
     QString id() const;
 

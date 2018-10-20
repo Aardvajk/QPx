@@ -13,7 +13,7 @@ class AbstractEditorCommand : public QObject
     Q_OBJECT
 
 public:
-    AbstractEditorCommand(QString name, QObject *parent = nullptr);
+    explicit AbstractEditorCommand(QString name, QObject *parent = nullptr);
 
     QString name() const;
 

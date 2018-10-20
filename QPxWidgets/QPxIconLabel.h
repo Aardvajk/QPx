@@ -13,7 +13,7 @@ namespace QPx
 class IconLabel : public QLabel
 {
 public:
-    IconLabel(QWidget *parent = nullptr);
+    explicit IconLabel(QWidget *parent = nullptr);
 
     QIcon icon() const;
 

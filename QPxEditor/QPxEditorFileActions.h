@@ -18,7 +18,7 @@ class EditorFileActions : public QObject
     Q_OBJECT
 
 public:
-    EditorFileActions(AbstractEditorModel *model, QWidget *parent);
+    explicit EditorFileActions(AbstractEditorModel *model, QWidget *parent);
 
     bool canClose();
     

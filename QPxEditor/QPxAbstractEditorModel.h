@@ -15,7 +15,7 @@ class AbstractEditorModel : public QObject
     Q_OBJECT
     
 public:
-    AbstractEditorModel(QObject *parent = nullptr);
+    explicit AbstractEditorModel(QObject *parent = nullptr);
 
     virtual void beginCommand(AbstractEditorCommand *command) = 0;
     void endCommand(AbstractEditorCommand *command);

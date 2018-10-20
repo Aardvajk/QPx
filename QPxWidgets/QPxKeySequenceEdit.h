@@ -13,7 +13,7 @@ class KeySequenceEdit : public QLineEdit
     Q_OBJECT
     
 public:
-    KeySequenceEdit(QWidget *parent = nullptr);
+    explicit KeySequenceEdit(QWidget *parent = nullptr);
 
     QKeySequence KeySequence() const;
 

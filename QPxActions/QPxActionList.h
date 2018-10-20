@@ -19,7 +19,7 @@ class ActionList : public QObject
     Q_OBJECT
 
 public:
-    ActionList(QWidget *parent);
+    explicit ActionList(QWidget *parent);
 
     enum class Enable
     {

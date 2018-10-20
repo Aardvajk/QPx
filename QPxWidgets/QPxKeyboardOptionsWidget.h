@@ -17,7 +17,7 @@ class KeyboardOptionsWidget : public QWidget
     Q_OBJECT
 
 public:
-    KeyboardOptionsWidget(ActionList *actions, QWidget *parent = nullptr);
+    explicit KeyboardOptionsWidget(ActionList *actions, QWidget *parent = nullptr);
 
 public slots:
     void commit();
