@@ -266,7 +266,7 @@ QVariant expr(Context &c, bool get)
 void construct(Context &c, QPx::Settings &parent, bool get)
 {
     auto key = c.scanner.match(Token::Type::Id, get).text;
-    auto &node = parent[key];
+    auto &node = parent.append(key);
 
     auto tok = c.scanner.next(true);
     if(tok.type == Token::Type::Eq)
@@ -274,7 +274,7 @@ void construct(Context &c, QPx::Settings &parent, bool get)
         node.setValue(expr(c, true));
     }
 
-    if(tok.type == Token::Type::Lb)
+    if(c.scanner.token().type == Token::Type::Lb)
     {
         c.scanner.next(true);
         while(c.scanner.token().type != Token::Type::Rb)

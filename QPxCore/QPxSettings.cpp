@@ -48,6 +48,19 @@ void QPx::Settings::setValue(const QVariant &value)
     cache.get<Cache>().value = value;
 }
 
+QPx::Settings &QPx::Settings::append(const QString &key)
+{
+    auto &c = cache.get<Cache>();
+
+    if(c.map.find(key) == c.map.end())
+    {
+        return (*this)[key];
+    }
+
+    c.nodes.push_back(new QPx::Settings(key));
+    return c.nodes.back();
+}
+
 QPx::Settings &QPx::Settings::operator[](const QString &key)
 {
     auto &c = cache.get<Cache>();
@@ -105,11 +118,6 @@ QPx::SettingsMap::SettingsMap(const QString &path) : QPx::Settings({ })
     {
         qpx_settings_parse(*this, QString::fromUtf8(file.readAll()));
     }
-}
-
-QPx::SettingsMap::~SettingsMap()
-{
-    sync();
 }
 
 void QPx::SettingsMap::sync()

@@ -41,7 +41,9 @@ SOURCES += \
     QPxWidgets/QPxIconLabel.cpp \
     internal/qpx_settings_parser.cpp \
     QPxCore/QPxSettings.cpp \
-    QPxWidgets/QPxKeyboardOptionsWidget.cpp
+    QPxWidgets/QPxKeyboardOptionsWidget.cpp \
+    QPxProperties/QPxProperty.cpp \
+    QPxCore/QPxMainWindow.cpp
 
 HEADERS += \
     QPxWidgets/QPxAbstractTileWidget.h \
@@ -55,4 +57,6 @@ HEADERS += \
     QPxWidgets/QPxIconLabel.h \
     internal/qpx_settings_parser.h \
     QPxCore/QPxSettings.h \
-    QPxWidgets/QPxKeyboardOptionsWidget.h
+    QPxWidgets/QPxKeyboardOptionsWidget.h \
+    QPxProperties/QPxProperty.h \
+    QPxCore/QPxMainWindow.h

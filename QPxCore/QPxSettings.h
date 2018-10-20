@@ -16,6 +16,8 @@ public:
 
     void setValue(const QVariant &value);
 
+    Settings &append(const QString &key);
+
     Settings &operator[](const QString &key);
 
     Settings &operator[](int index);
@@ -38,7 +40,6 @@ class SettingsMap : public Settings
 {
 public:
     explicit SettingsMap(const QString &path = { });
-    virtual ~SettingsMap() override;
 
     void sync();
 
