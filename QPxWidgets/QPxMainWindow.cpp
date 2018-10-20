@@ -1,4 +1,4 @@
-#include "QPxCore/QPxMainWindow.h"
+#include "QPxWidgets/QPxMainWindow.h"
 
 #include "QPxCore/QPxSettings.h"
 

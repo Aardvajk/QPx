@@ -43,7 +43,7 @@ SOURCES += \
     QPxCore/QPxSettings.cpp \
     QPxWidgets/QPxKeyboardOptionsWidget.cpp \
     QPxProperties/QPxProperty.cpp \
-    QPxCore/QPxMainWindow.cpp \
+    QPxWidgets/QPxMainWindow.cpp \
     QPxProperties/QPxPropertyMap.cpp
 
 HEADERS += \
@@ -60,5 +60,5 @@ HEADERS += \
     QPxCore/QPxSettings.h \
     QPxWidgets/QPxKeyboardOptionsWidget.h \
     QPxProperties/QPxProperty.h \
-    QPxCore/QPxMainWindow.h \
+    QPxWidgets/QPxMainWindow.h \
     QPxProperties/QPxPropertyMap.h
