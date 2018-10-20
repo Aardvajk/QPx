@@ -4,16 +4,13 @@
 #include <pcx/aligned_store.h>
 #include <pcx/flags.h>
 
-#include <QtCore/QObject>
 #include <QtCore/QVariant>
 
 namespace QPx
 {
 
-class Property : public QObject
+class Property
 {
-    Q_OBJECT
-
 public:
     enum class Flag : std::uint8_t
     {
@@ -23,9 +20,14 @@ public:
 
     using Flags = pcx::flags<Flag>;
 
-    explicit Property(QObject *parent = nullptr);
-    Property(const QString &name, Flags flags, const QVariant &value, QObject *parent = nullptr);
+    Property();
+    Property(const QString &name, Flags flags, const QVariant &value);
 
+    void setName(const QString &value);
+    void setFlags(const Flags &flags);
+    void setVariant(const QVariant &value);
+
+    void setValue(const char *value);
     template<typename T> void setValue(const T &t){ setVariant(QVariant::fromValue(t)); }
 
     QString name() const;
@@ -33,11 +35,6 @@ public:
     QVariant variant() const;
 
     template<typename T> T value() const { return qvariant_cast<T>(variant()); }
-
-public slots:
-    void setName(const QString &value);
-    void setFlags(const Flags &flags);
-    void setVariant(const QVariant &value);
 
 private:
     pcx::aligned_store<32> cache;

@@ -12,40 +12,6 @@ namespace QPx
 class Settings
 {
 public:
-    class iterator
-    {
-    public:
-        bool operator!=(const iterator &o) const;
-        iterator &operator++();
-        Settings &operator*();
-
-    private:
-        friend class Settings;
-
-        iterator(Settings *s, int i);
-
-        Settings *s;
-        int i;
-    };
-
-    class const_iterator
-    {
-    public:
-        bool operator!=(const const_iterator &o) const;
-        const_iterator &operator++();
-        const Settings &operator*();
-
-    private:
-        friend class Settings;
-
-        const_iterator(const Settings *s, int i);
-
-        const Settings *s;
-        int i;
-    };
-
-    virtual ~Settings() = default;
-
     void setValue(const QVariant &value);
 
     Settings &append(const QString &key);
@@ -58,12 +24,6 @@ public:
     QVariant value(const QVariant &defaultValue = { }) const;
 
     int count() const;
-
-    iterator begin();
-    iterator end();
-
-    const_iterator begin() const;
-    const_iterator end() const;
 
 private:
     friend class SettingsMap;

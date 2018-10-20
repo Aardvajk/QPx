@@ -15,29 +15,14 @@ public:
 
 }
 
-QPx::Property::Property(QObject *parent) : QObject(parent)
+QPx::Property::Property()
 {
     cache.alloc<Cache>(QString(), Flags(), QVariant());
 }
 
-QPx::Property::Property(const QString &name, Flags flags, const QVariant &value, QObject *parent) : QObject(parent)
+QPx::Property::Property(const QString &name, Flags flags, const QVariant &value)
 {
     cache.alloc<Cache>(name, flags, value);
-}
-
-QString QPx::Property::name() const
-{
-    return cache.get<Cache>().name;
-}
-
-QPx::Property::Flags QPx::Property::flags() const
-{
-    return cache.get<Cache>().flags;
-}
-
-QVariant QPx::Property::variant() const
-{
-    return cache.get<Cache>().value;
 }
 
 void QPx::Property::setName(const QString &value)
@@ -55,3 +40,22 @@ void QPx::Property::setVariant(const QVariant &value)
     cache.get<Cache>().value = value;
 }
 
+void QPx::Property::setValue(const char *value)
+{
+    cache.get<Cache>().value = QString(value);
+}
+
+QString QPx::Property::name() const
+{
+    return cache.get<Cache>().name;
+}
+
+QPx::Property::Flags QPx::Property::flags() const
+{
+    return cache.get<Cache>().flags;
+}
+
+QVariant QPx::Property::variant() const
+{
+    return cache.get<Cache>().value;
+}
