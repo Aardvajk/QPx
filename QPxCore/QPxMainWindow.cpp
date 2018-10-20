@@ -5,6 +5,8 @@
 #include "QPxActions/QPxAction.h"
 #include "QPxActions/QPxActionList.h"
 
+#include <QtCore/QHash>
+
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QMenu>
@@ -17,63 +19,59 @@ enum class Special { Menu, Separator, Unknown };
 
 Special special(const QString &key)
 {
-    static const QMap<QString, Special> m = { { "[Menu]", Special::Menu }, { "[Separator]", Special::Separator } };
+    static const QHash<QString, Special> m = { { "[Menu]", Special::Menu }, { "[Separator]", Special::Separator } };
     return m.value(key, Special::Unknown);
 }
 
-template<typename T> void loadMenus(QPx::Settings &root, QPx::ActionList *actions, T *parent, QPx::MainWindow *window, void(QPx::MainWindow::*custom)(const QString&,QWidget*))
+template<typename T> void loadMenus(const QPx::Settings &root, QPx::ActionList *actions, T *parent, QPx::MainWindow *window, void(QPx::MainWindow::*custom)(const QString&,QWidget*))
 {
-    for(int i = 0; i < root.count(); ++i)
+    for(auto &menu: root)
     {
-        auto key = root[i].key();
-
-        switch(special(key))
+        switch(special(menu.key()))
         {
-            case Special::Menu: loadMenus(root[i], actions, parent->addMenu(root[i].value().toString()), window, custom); break;
+            case Special::Menu: loadMenus(menu, actions, parent->addMenu(menu.value().toString()), window, custom); break;
             case Special::Separator: parent->addSeparator(); break;
 
             case Special::Unknown:
             {
-                if(auto a = actions->find(key))
+                if(auto a = actions->find(menu.key()))
                 {
                     parent->addAction(a);
                 }
                 else
                 {
-                    (window->*custom)(key, parent);
+                    (window->*custom)(menu.key(), parent);
                 }
             }
         }
     }
 }
 
-void loadToolBars(QPx::Settings &root, QPx::ActionList *actions, QPx::MainWindow *window, void(QPx::MainWindow::*custom)(const QString&,QWidget*))
+void loadToolBars(const QPx::Settings &root, QPx::ActionList *actions, QPx::MainWindow *window, void(QPx::MainWindow::*custom)(const QString&,QWidget*))
 {
-    for(int i = 0; i < root.count(); ++i)
+    for(auto &section: root)
     {
-        auto toolbar = window->addToolBar(root[i].value().toString());
+        auto toolbar = window->addToolBar(section.value().toString());
 
         toolbar->setIconSize(QSize(16, 16));
         toolbar->setMovable(false);
 
-        for(int j = 0; j < root[i].count(); ++j)
+        for(auto &action: section)
         {
-            auto key = root[i][j].key();
-
-            switch(special(key))
+            switch(special(action.key()))
             {
                 case Special::Menu: break;
                 case Special::Separator: toolbar->addSeparator(); break;
 
                 case Special::Unknown:
                 {
-                    if(auto a = actions->find(key))
+                    if(auto a = actions->find(action.key()))
                     {
                         toolbar->addAction(a);
                     }
                     else
                     {
-                        (window->*custom)(key, toolbar);
+                        (window->*custom)(action.key(), toolbar);
                     }
                 }
             }

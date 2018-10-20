@@ -43,6 +43,46 @@ public:
 
 }
 
+bool QPx::Settings::iterator::operator!=(const iterator &o) const
+{
+    return s != o.s || i != o.i;
+}
+
+QPx::Settings::iterator &QPx::Settings::iterator::operator++()
+{
+    ++i;
+    return *this;
+}
+
+QPx::Settings &QPx::Settings::iterator::operator*()
+{
+    return (*s)[i];
+}
+
+QPx::Settings::iterator::iterator(Settings *s, int i) : s(s), i(i)
+{
+}
+
+bool QPx::Settings::const_iterator::operator!=(const const_iterator &o) const
+{
+    return s != o.s || i != o.i;
+}
+
+QPx::Settings::const_iterator &QPx::Settings::const_iterator::operator++()
+{
+    ++i;
+    return *this;
+}
+
+const QPx::Settings &QPx::Settings::const_iterator::operator*()
+{
+    return (*s)[i];
+}
+
+QPx::Settings::const_iterator::const_iterator(const Settings *s, int i) : s(s), i(i)
+{
+}
+
 void QPx::Settings::setValue(const QVariant &value)
 {
     cache.get<Cache>().value = value;
@@ -107,6 +147,26 @@ int QPx::Settings::count() const
 QPx::Settings::Settings(const QString &key)
 {
     cache.alloc<Cache>(key);
+}
+
+QPx::Settings::iterator QPx::Settings::begin()
+{
+    return iterator(this, 0);
+}
+
+QPx::Settings::iterator QPx::Settings::end()
+{
+    return iterator(this, count());
+}
+
+QPx::Settings::const_iterator QPx::Settings::begin() const
+{
+    return const_iterator(this, 0);
+}
+
+QPx::Settings::const_iterator QPx::Settings::end() const
+{
+    return const_iterator(this, count());
 }
 
 QPx::SettingsMap::SettingsMap(const QString &path) : QPx::Settings({ })
