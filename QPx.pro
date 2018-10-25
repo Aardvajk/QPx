@@ -44,7 +44,9 @@ SOURCES += \
     QPxWidgets/QPxKeyboardOptionsWidget.cpp \
     QPxProperties/QPxProperty.cpp \
     QPxWidgets/QPxMainWindow.cpp \
-    QPxProperties/QPxPropertyMap.cpp
+    QPxCore/QPxTreeModel.cpp \
+    QPxProperties/QPxPropertyBrowser.cpp \
+    internal/qpx_property_browser_model.cpp
 
 HEADERS += \
     QPxWidgets/QPxAbstractTileWidget.h \
@@ -56,9 +58,11 @@ HEADERS += \
     QPxActions/QPxActionList.h \
     QPxEditor/QPxEditorFileActions.h \
     QPxWidgets/QPxIconLabel.h \
-    internal/qpx_settings_parser.h \
     QPxCore/QPxSettings.h \
     QPxWidgets/QPxKeyboardOptionsWidget.h \
     QPxProperties/QPxProperty.h \
     QPxWidgets/QPxMainWindow.h \
-    QPxProperties/QPxPropertyMap.h
+    internal/qpx_settings_parser.h \
+    QPxCore/QPxTreeModel.h \
+    QPxProperties/QPxPropertyBrowser.h \
+    internal/qpx_property_browser_model.h

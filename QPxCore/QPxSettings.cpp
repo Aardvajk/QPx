@@ -33,7 +33,7 @@ struct ProxyHash
 class Cache
 {
 public:
-    Cache(QString key) : key(std::move(key)) { }
+    explicit Cache(QString key) : key(std::move(key)) { }
 
     QString key;
     std::unordered_map<Proxy, std::size_t, ProxyHash> map;

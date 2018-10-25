@@ -1,4 +1,4 @@
-#include "qpx_settings_parser.h"
+#include "internal/qpx_settings_parser.h"
 
 #include "QPxCore/QPxSettings.h"
 

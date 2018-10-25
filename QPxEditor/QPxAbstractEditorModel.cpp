@@ -10,8 +10,6 @@ namespace
 class Cache
 {
 public:
-    Cache(){ }
-    
     qpx_undolist undo;
     QString path;
 };
