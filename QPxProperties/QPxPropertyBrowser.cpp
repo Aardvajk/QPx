@@ -1,8 +1,6 @@
 #include "QPxProperties/QPxPropertyBrowser.h"
 
-#include "QPxCore/QPxTreeModel.h"
-
-#include "internal/qpx_property_browser_model.h"
+#include "QPxProperties/QPxPropertyBrowserModel.h"
 
 #include <QtWidgets/QTreeView>
 #include <QtWidgets/QHeaderView>
@@ -15,21 +13,24 @@ class Cache
 public:
     explicit Cache(QWidget *parent);
 
-    qpx_property_browser_model *model;
     QTreeView *tree;
 };
 
-Cache::Cache(QWidget *parent) : model(new qpx_property_browser_model(parent)), tree(new QTreeView(parent))
+Cache::Cache(QWidget *parent) : tree(new QTreeView(parent))
 {
     tree->header()->hide();
-    tree->setModel(model);
 }
 
 }
 
-QPx::PropertyBrowser::PropertyBrowser(QWidget *parent) : QWidget(parent)
+QPx::PropertyBrowser::PropertyBrowser(QWidget *parent)
 {
     cache.alloc<Cache>(this);
+}
+
+void QPx::PropertyBrowser::setModel(PropertyBrowserModel *model)
+{
+    cache.get<Cache>().tree->setModel(model);
 }
 
 void QPx::PropertyBrowser::resizeEvent(QResizeEvent *event)

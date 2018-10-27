@@ -8,7 +8,7 @@ namespace
 class Node
 {
 public:
-    explicit Node(Node *parent, int row);
+    explicit Node(Node *parent, int row, const QVariant &userData = QVariant()) : parent(parent), row(row), userData(userData) { }
     ~Node(){ qDeleteAll(children); }
 
     Node *parent;
@@ -17,10 +17,6 @@ public:
 
     QVariant userData;
 };
-
-Node::Node(Node *parent, int row) : parent(parent), row(row)
-{
-}
 
 class Cache
 {
@@ -31,9 +27,6 @@ public:
 };
 
 }
-
-int QPx::UserDataRole = Qt::UserRole;
-int QPx::UserRole = QPx::UserDataRole + 1;
 
 QPx::TreeModel::TreeModel(QObject *parent) : QAbstractItemModel(parent)
 {
@@ -47,12 +40,14 @@ Qt::ItemFlags QPx::TreeModel::flags(const QModelIndex &index) const
 
 QVariant QPx::TreeModel::data(const QModelIndex &index, int role) const
 {
-    if(role == UserDataRole)
+    return QVariant();
+}
+
+QVariant QPx::TreeModel::userData(const QModelIndex &index) const
+{
+    if(auto node = static_cast<Node*>(index.internalPointer()))
     {
-        if(auto node = static_cast<const Node*>(index.internalPointer()))
-        {
-            return node->userData;
-        }
+        return node->userData;
     }
 
     return QVariant();
@@ -60,15 +55,17 @@ QVariant QPx::TreeModel::data(const QModelIndex &index, int role) const
 
 bool QPx::TreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if(role == UserDataRole)
-    {
-        if(auto node = static_cast<Node*>(index.internalPointer()))
-        {
-            node->userData = value;
-            emit dataChanged(this->index(index.row(), 0, index.parent()), this->index(index.row(), columnCount(index.parent()), index.parent()));
+    return false;
+}
 
-            return true;
-        }
+bool QPx::TreeModel::setUserData(const QModelIndex &index, const QVariant &value)
+{
+    if(auto node = static_cast<Node*>(index.internalPointer()))
+    {
+        node->userData = value;
+
+        emit dataChanged(this->index(index.row(), 0, index.parent()), this->index(index.row(), columnCount(index.parent()), index.parent()));
+        return true;
     }
 
     return false;
@@ -136,6 +133,25 @@ bool QPx::TreeModel::removeRows(int row, int count, const QModelIndex &parent)
     return true;
 }
 
+QModelIndex QPx::TreeModel::insertRow(int row, const QVariant &userData, const QModelIndex &parent)
+{
+    Node *parentNode = parent.isValid() ? static_cast<Node*>(parent.internalPointer()) : cache.get<Cache>().root.get();
+
+    beginInsertRows(parent, row, row);
+
+    auto node = new Node(parentNode, row, userData);
+    parentNode->children.insert(row, node);
+
+    endInsertRows();
+
+    return index(row, 0, parent);
+}
+
+QModelIndex QPx::TreeModel::appendRow(const QVariant &userData, const QModelIndex &parent)
+{
+    return insertRow(rowCount(parent), userData, parent);
+}
+
 int QPx::TreeModel::rowCount(const QModelIndex &parent) const
 {
     return (parent.isValid() ? static_cast<Node*>(parent.internalPointer()) : cache.get<Cache>().root.get())->children.count();
@@ -143,5 +159,5 @@ int QPx::TreeModel::rowCount(const QModelIndex &parent) const
 
 int QPx::TreeModel::columnCount(const QModelIndex &parent) const
 {
-    return 0;
+    return 1;
 }

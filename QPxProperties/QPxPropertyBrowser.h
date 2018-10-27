@@ -8,18 +8,22 @@
 namespace QPx
 {
 
+class PropertyBrowserModel;
+
 class PropertyBrowser : public QWidget
 {
     Q_OBJECT
 
 public:
-    PropertyBrowser(QWidget *parent = nullptr);
+    explicit PropertyBrowser(QWidget *parent = nullptr);
+
+    void setModel(PropertyBrowserModel *model);
 
 protected:
     virtual void resizeEvent(QResizeEvent *event) override;
 
 private:
-    pcx::aligned_store<16> cache;
+    pcx::aligned_store<8> cache;
 };
 
 }

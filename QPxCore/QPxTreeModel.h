@@ -8,9 +8,6 @@
 namespace QPx
 {
 
-extern int UserDataRole;
-extern int UserRole;
-
 class TreeModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -19,15 +16,21 @@ public:
     explicit TreeModel(QObject *parent = nullptr);
 
     virtual Qt::ItemFlags flags(const QModelIndex &index) const override;
+
     virtual QVariant data(const QModelIndex &index, int role) const override;
+    virtual QVariant userData(const QModelIndex &index) const;
 
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+    virtual bool setUserData(const QModelIndex &index, const QVariant &value);
 
     virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     virtual QModelIndex parent(const QModelIndex &index) const override;
 
     virtual bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+
+    virtual QModelIndex insertRow(int row, const QVariant &userData, const QModelIndex &parent = QModelIndex());
+    virtual QModelIndex appendRow(const QVariant &userData, const QModelIndex &parent = QModelIndex());
 
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;

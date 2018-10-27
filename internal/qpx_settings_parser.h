@@ -1,7 +1,7 @@
 #ifndef QPX_SETTINGS_PARSER_H
 #define QPX_SETTINGS_PARSER_H
 
-#include <QString>
+#include <QtCore/QString>
 
 namespace QPx
 {
