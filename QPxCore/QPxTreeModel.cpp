@@ -8,14 +8,14 @@ namespace
 class Node
 {
 public:
-    explicit Node(Node *parent, int row, const QVariant &userData = QVariant()) : parent(parent), row(row), userData(userData) { }
+    explicit Node(Node *parent, int row, void *userData = nullptr) : parent(parent), row(row), userData(userData) { }
     ~Node(){ qDeleteAll(children); }
 
     Node *parent;
     QList<Node*> children;
     int row;
 
-    QVariant userData;
+    void *userData;
 };
 
 class Cache
@@ -33,32 +33,7 @@ QPx::TreeModel::TreeModel(QObject *parent) : QAbstractItemModel(parent)
     cache.alloc<Cache>();
 }
 
-Qt::ItemFlags QPx::TreeModel::flags(const QModelIndex &index) const
-{
-    return QAbstractItemModel::flags(index);
-}
-
-QVariant QPx::TreeModel::data(const QModelIndex &index, int role) const
-{
-    return QVariant();
-}
-
-QVariant QPx::TreeModel::userData(const QModelIndex &index) const
-{
-    if(auto node = static_cast<Node*>(index.internalPointer()))
-    {
-        return node->userData;
-    }
-
-    return QVariant();
-}
-
-bool QPx::TreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
-{
-    return false;
-}
-
-bool QPx::TreeModel::setUserData(const QModelIndex &index, const QVariant &value)
+bool QPx::TreeModel::setUserData(const QModelIndex &index, void *value)
 {
     if(auto node = static_cast<Node*>(index.internalPointer()))
     {
@@ -133,7 +108,7 @@ bool QPx::TreeModel::removeRows(int row, int count, const QModelIndex &parent)
     return true;
 }
 
-QModelIndex QPx::TreeModel::insertRow(int row, const QVariant &userData, const QModelIndex &parent)
+QModelIndex QPx::TreeModel::insertRow(int row, void *userData, const QModelIndex &parent)
 {
     Node *parentNode = parent.isValid() ? static_cast<Node*>(parent.internalPointer()) : cache.get<Cache>().root.get();
 
@@ -147,7 +122,7 @@ QModelIndex QPx::TreeModel::insertRow(int row, const QVariant &userData, const Q
     return index(row, 0, parent);
 }
 
-QModelIndex QPx::TreeModel::appendRow(const QVariant &userData, const QModelIndex &parent)
+QModelIndex QPx::TreeModel::appendRow(void *userData, const QModelIndex &parent)
 {
     return insertRow(rowCount(parent), userData, parent);
 }
@@ -160,4 +135,14 @@ int QPx::TreeModel::rowCount(const QModelIndex &parent) const
 int QPx::TreeModel::columnCount(const QModelIndex &parent) const
 {
     return 1;
+}
+
+void *QPx::TreeModel::userData(const QModelIndex &index)
+{
+    if(auto node = static_cast<Node*>(index.internalPointer()))
+    {
+        return node->userData;
+    }
+
+    return nullptr;
 }

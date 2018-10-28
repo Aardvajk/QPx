@@ -2,6 +2,8 @@
 
 #include "QPxProperties/QPxPropertyBrowserModel.h"
 
+#include <QtWidgets/QSpinBox>
+
 namespace
 {
 
@@ -36,6 +38,17 @@ QString QPx::PropertyBrowserItem::valueText() const
     return value().toString();
 }
 
+void QPx::PropertyBrowserItem::setValue(const QVariant &value)
+{
+    cache.get<Cache>().value = value;
+    emit valueChanged(value);
+}
+
+QPx::StringPropertyBrowserItem::StringPropertyBrowserItem(PropertyBrowserModel *model, const QModelIndex &index, const QString &name, const QVariant &value, QObject *parent) : PropertyBrowserItem(name, value, parent)
+{
+    model->appendRow(this, index);
+}
+
 QPx::IntPropertyBrowserItem::IntPropertyBrowserItem(PropertyBrowserModel *model, const QModelIndex &index, const QString &name, const QVariant &value, QObject *parent) : PropertyBrowserItem(name, value, parent)
 {
     model->appendRow(this, index);
@@ -47,12 +60,31 @@ QPx::PointPropertyBrowserItem::PointPropertyBrowserItem(PropertyBrowserModel *mo
 
     auto p = value.toPoint();
 
-    new IntPropertyBrowserItem(model, mi, "X", p.x(), this);
-    new IntPropertyBrowserItem(model, mi, "Y", p.y(), this);
+    x = new IntPropertyBrowserItem(model, mi, "X", p.x(), this);
+    connect(x, SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
+
+    y = new IntPropertyBrowserItem(model, mi, "Y", p.y(), this);
+    connect(y, SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
 }
 
 QString QPx::PointPropertyBrowserItem::valueText() const
 {
     auto p = value().toPoint();
     return QString("%1, %2").arg(p.x()).arg(p.y());
+}
+
+void QPx::PointPropertyBrowserItem::changed(const QVariant &value)
+{
+    QPoint p = this->value().toPoint();
+
+    if(sender() == x)
+    {
+        p.setX(value.toInt());
+    }
+    else
+    {
+        p.setY(value.toInt());
+    }
+
+    setValue(p);
 }

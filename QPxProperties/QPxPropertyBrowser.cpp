@@ -1,6 +1,8 @@
 #include "QPxProperties/QPxPropertyBrowser.h"
 
+#include "QPxProperties/QPxPropertyBrowserItem.h"
 #include "QPxProperties/QPxPropertyBrowserModel.h"
+#include "QPxProperties/QPxPropertyBrowserDelegate.h"
 
 #include <QtWidgets/QTreeView>
 #include <QtWidgets/QHeaderView>
@@ -19,6 +21,7 @@ public:
 Cache::Cache(QWidget *parent) : tree(new QTreeView(parent))
 {
     tree->header()->hide();
+    tree->setItemDelegate(new QPx::PropertyBrowserDelegate(tree));
 }
 
 }

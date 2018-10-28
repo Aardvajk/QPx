@@ -47,7 +47,9 @@ SOURCES += \
     QPxCore/QPxTreeModel.cpp \
     QPxProperties/QPxPropertyBrowserItem.cpp \
     QPxProperties/QPxPropertyBrowserModel.cpp \
-    QPxProperties/QPxPropertyBrowser.cpp
+    QPxProperties/QPxPropertyBrowser.cpp \
+    QPxProperties/QPxPropertyBrowserDelegate.cpp \
+    QPxProperties/QPxPropertyEditor.cpp
 
 HEADERS += \
     QPxWidgets/QPxAbstractTileWidget.h \
@@ -67,4 +69,6 @@ HEADERS += \
     QPxCore/QPxTreeModel.h \
     QPxProperties/QPxPropertyBrowserItem.h \
     QPxProperties/QPxPropertyBrowserModel.h \
-    QPxProperties/QPxPropertyBrowser.h
+    QPxProperties/QPxPropertyBrowser.h \
+    QPxProperties/QPxPropertyBrowserDelegate.h \
+    QPxProperties/QPxPropertyEditor.h

@@ -6,22 +6,16 @@ QPx::PropertyBrowserModel::PropertyBrowserModel(QObject *parent) : TreeModel(par
 {
 }
 
-QModelIndex QPx::PropertyBrowserModel::appendRow(PropertyBrowserItem *item, const QModelIndex &parent)
-{
-    return TreeModel::appendRow(QVariant::fromValue(item), parent);
-}
-
-QPx::PropertyBrowserItem *QPx::PropertyBrowserModel::browserItem(const QModelIndex &index) const
-{
-    return qvariant_cast<PropertyBrowserItem*>(userData(index));
-}
-
 Qt::ItemFlags QPx::PropertyBrowserModel::flags(const QModelIndex &index) const
 {
     auto value = TreeModel::flags(index);
 
-    if(auto item = browserItem(index))
+    if(auto item = static_cast<const PropertyBrowserItem*>(userData(index)))
     {
+        if(index.column() == 1 && !rowCount(index))
+        {
+            value |= Qt::ItemIsEditable;
+        }
     }
 
     return value;
@@ -29,7 +23,7 @@ Qt::ItemFlags QPx::PropertyBrowserModel::flags(const QModelIndex &index) const
 
 QVariant QPx::PropertyBrowserModel::data(const QModelIndex &index, int role) const
 {
-    if(auto item = browserItem(index))
+    if(auto item = static_cast<const PropertyBrowserItem*>(userData(index)))
     {
         if(role == Qt::DisplayRole)
         {
@@ -42,6 +36,28 @@ QVariant QPx::PropertyBrowserModel::data(const QModelIndex &index, int role) con
     }
 
     return QVariant();
+}
+
+bool QPx::PropertyBrowserModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if(auto item = static_cast<PropertyBrowserItem*>(userData(index)))
+    {
+        if(role == Qt::EditRole)
+        {
+            item->setValue(value);
+
+            auto i = index;
+            while(i.isValid())
+            {
+                emit dataChanged(i, i);
+                i = i.parent().sibling(i.parent().row(), 1);
+            }
+
+            return true;
+        }
+    }
+
+    return false;
 }
 
 int QPx::PropertyBrowserModel::columnCount(const QModelIndex &parent) const
