@@ -31,7 +31,7 @@ signals:
     void valueChanged(const QVariant &value);
 
 public slots:
-    void setValue(const QVariant &value);
+    virtual void setValue(const QVariant &value);
 
 private:
     pcx::aligned_store<24> cache;
@@ -62,12 +62,14 @@ public:
 
     virtual QString valueText() const;
 
+public slots:
+    virtual void setValue(const QVariant &value);
+
 private slots:
     void changed(const QVariant &value);
 
 private:
-    PropertyBrowserItem *x;
-    PropertyBrowserItem *y;
+    pcx::aligned_store<32> cache;
 };
 
 }

@@ -2,35 +2,48 @@
 
 #include "QPxProperties/QPxPropertyBrowserModel.h"
 
+#include <pcx/scoped_lock.h>
+
 #include <QtWidgets/QSpinBox>
 
 namespace
 {
 
-class Cache
+class ItemCache
 {
 public:
-    Cache(const QString &name, const QVariant &value) : name(name), value(value) { }
+    ItemCache(const QString &name, const QVariant &value) : name(name), value(value) { }
 
     QString name;
     QVariant value;
+};
+
+class PointCache
+{
+public:
+    PointCache() : lock(false) { }
+
+    bool lock;
+
+    QPx::PropertyBrowserItem *x;
+    QPx::PropertyBrowserItem *y;
 };
 
 }
 
 QPx::PropertyBrowserItem::PropertyBrowserItem(const QString &name, const QVariant &value, QObject *parent) : QObject(parent)
 {
-    cache.alloc<Cache>(name, value);
+    cache.alloc<ItemCache>(name, value);
 }
 
 QString QPx::PropertyBrowserItem::name() const
 {
-    return cache.get<Cache>().name;
+    return cache.get<ItemCache>().name;
 }
 
 QVariant QPx::PropertyBrowserItem::value() const
 {
-    return cache.get<Cache>().value;
+    return cache.get<ItemCache>().value;
 }
 
 QString QPx::PropertyBrowserItem::valueText() const
@@ -40,31 +53,32 @@ QString QPx::PropertyBrowserItem::valueText() const
 
 void QPx::PropertyBrowserItem::setValue(const QVariant &value)
 {
-    cache.get<Cache>().value = value;
+    cache.get<ItemCache>().value = value;
     emit valueChanged(value);
 }
 
 QPx::StringPropertyBrowserItem::StringPropertyBrowserItem(PropertyBrowserModel *model, const QModelIndex &index, const QString &name, const QVariant &value, QObject *parent) : PropertyBrowserItem(name, value, parent)
 {
-    model->appendRow(this, index);
+    model->appendItem(this, index);
 }
 
 QPx::IntPropertyBrowserItem::IntPropertyBrowserItem(PropertyBrowserModel *model, const QModelIndex &index, const QString &name, const QVariant &value, QObject *parent) : PropertyBrowserItem(name, value, parent)
 {
-    model->appendRow(this, index);
+    model->appendItem(this, index);
 }
 
 QPx::PointPropertyBrowserItem::PointPropertyBrowserItem(PropertyBrowserModel *model, const QModelIndex &index, const QString &name, const QVariant &value, QObject *parent) : PropertyBrowserItem(name, value, parent)
 {
-    auto mi = model->appendRow(this, index);
+    auto &c = cache.alloc<PointCache>();
 
+    auto i = model->appendItem(this, index);
     auto p = value.toPoint();
 
-    x = new IntPropertyBrowserItem(model, mi, "X", p.x(), this);
-    connect(x, SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
+    c.x = new IntPropertyBrowserItem(model, i, "X", p.x(), this);
+    connect(c.x, SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
 
-    y = new IntPropertyBrowserItem(model, mi, "Y", p.y(), this);
-    connect(y, SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
+    c.y = new IntPropertyBrowserItem(model, i, "Y", p.y(), this);
+    connect(c.y, SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
 }
 
 QString QPx::PointPropertyBrowserItem::valueText() const
@@ -73,11 +87,27 @@ QString QPx::PointPropertyBrowserItem::valueText() const
     return QString("%1, %2").arg(p.x()).arg(p.y());
 }
 
+void QPx::PointPropertyBrowserItem::setValue(const QVariant &value)
+{
+    auto &c = cache.get<PointCache>();
+
+    if(!c.lock)
+    {
+        auto g = pcx::scoped_lock(c.lock);
+
+        c.x->setValue(value.toPoint().x());
+        c.y->setValue(value.toPoint().y());
+
+        PropertyBrowserItem::setValue(value);
+    }
+}
+
 void QPx::PointPropertyBrowserItem::changed(const QVariant &value)
 {
+    auto &c = cache.get<PointCache>();
     QPoint p = this->value().toPoint();
 
-    if(sender() == x)
+    if(sender() == c.x)
     {
         p.setX(value.toInt());
     }

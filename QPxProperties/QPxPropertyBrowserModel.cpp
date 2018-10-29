@@ -2,8 +2,37 @@
 
 #include "QPxProperties/QPxPropertyBrowserItem.h"
 
+#include <pcx/scoped_lock.h>
+
+#include <QtCore/QMap>
+#include <QtCore/QPersistentModelIndex>
+
+namespace
+{
+
+class Cache
+{
+public:
+    Cache() : valueChangeLock(false) { }
+
+    QMap<QPx::PropertyBrowserItem*, QPersistentModelIndex> map;
+    bool valueChangeLock;
+};
+
+}
+
 QPx::PropertyBrowserModel::PropertyBrowserModel(QObject *parent) : TreeModel(parent)
 {
+    cache.alloc<Cache>();
+}
+
+QModelIndex QPx::PropertyBrowserModel::appendItem(PropertyBrowserItem *item, const QModelIndex &parent)
+{
+    auto index = appendRow(item, parent);
+    cache.get<Cache>().map[item] = index;
+
+    connect(item, SIGNAL(valueChanged(QVariant)), SLOT(valueChanged(QVariant)));
+    return index;
 }
 
 Qt::ItemFlags QPx::PropertyBrowserModel::flags(const QModelIndex &index) const
@@ -44,6 +73,8 @@ bool QPx::PropertyBrowserModel::setData(const QModelIndex &index, const QVariant
     {
         if(role == Qt::EditRole)
         {
+            auto lock = pcx::scoped_lock(cache.get<Cache>().valueChangeLock);
+
             item->setValue(value);
 
             auto i = index;
@@ -64,3 +95,19 @@ int QPx::PropertyBrowserModel::columnCount(const QModelIndex &parent) const
 {
     return 2;
 }
+
+void QPx::PropertyBrowserModel::valueChanged(const QVariant &value)
+{
+    if(!cache.get<Cache>().valueChangeLock)
+    {
+        auto index = cache.get<Cache>().map[static_cast<PropertyBrowserItem*>(sender())];
+        auto i = index.sibling(index.row(), 1);
+
+        while(i.isValid())
+        {
+            emit dataChanged(i, i);
+            i = i.parent().sibling(i.parent().row(), 1);
+        }
+    }
+}
+

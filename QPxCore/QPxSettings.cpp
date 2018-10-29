@@ -30,10 +30,10 @@ struct ProxyHash
     std::size_t operator()(const Proxy &p) const { return std::hash<std::string>()(p.s->toStdString()); }
 };
 
-class Cache
+class SettingsCache
 {
 public:
-    explicit Cache(QString key) : key(std::move(key)) { }
+    explicit SettingsCache(QString key) : key(std::move(key)) { }
 
     QString key;
     std::unordered_map<Proxy, std::size_t, ProxyHash> map;
@@ -41,16 +41,24 @@ public:
     QVariant value;
 };
 
+class MapCache
+{
+public:
+    explicit MapCache(const QString &path) : path(path) { }
+
+    QString path;
+};
+
 }
 
 void QPx::Settings::setValue(const QVariant &value)
 {
-    cache.get<Cache>().value = value;
+    cache.get<SettingsCache>().value = value;
 }
 
 QPx::Settings &QPx::Settings::append(const QString &key)
 {
-    auto &c = cache.get<Cache>();
+    auto &c = cache.get<SettingsCache>();
 
     if(c.map.find(key) == c.map.end())
     {
@@ -63,13 +71,13 @@ QPx::Settings &QPx::Settings::append(const QString &key)
 
 QPx::Settings &QPx::Settings::operator[](const QString &key)
 {
-    auto &c = cache.get<Cache>();
+    auto &c = cache.get<SettingsCache>();
 
     auto i = c.map.find(key);
     if(i == c.map.end())
     {
         c.nodes.push_back(new QPx::Settings(key));
-        c.map.insert({ c.nodes.back().cache.get<Cache>().key, c.nodes.size() - 1});
+        c.map.insert({ c.nodes.back().cache.get<SettingsCache>().key, c.nodes.size() - 1});
 
         return c.nodes.back();
     }
@@ -79,41 +87,41 @@ QPx::Settings &QPx::Settings::operator[](const QString &key)
 
 QPx::Settings &QPx::Settings::operator[](int index)
 {
-    return cache.get<Cache>().nodes[static_cast<std::size_t>(index)];
+    return cache.get<SettingsCache>().nodes[static_cast<std::size_t>(index)];
 }
 
 const QPx::Settings &QPx::Settings::operator[](int index) const
 {
-    return cache.get<Cache>().nodes[static_cast<std::size_t>(index)];
+    return cache.get<SettingsCache>().nodes[static_cast<std::size_t>(index)];
 }
 
 QString QPx::Settings::key() const
 {
-    return cache.get<Cache>().key;
+    return cache.get<SettingsCache>().key;
 }
 
 QVariant QPx::Settings::value(const QVariant &defaultValue) const
 {
-    auto &value = cache.get<Cache>().value;
+    auto &value = cache.get<SettingsCache>().value;
 
     return value.isValid() ? value : defaultValue;
 }
 
 int QPx::Settings::count() const
 {
-    return static_cast<int>(cache.get<Cache>().nodes.size());
+    return static_cast<int>(cache.get<SettingsCache>().nodes.size());
 }
 
 QPx::Settings::Settings(const QString &key)
 {
-    cache.alloc<Cache>(key);
+    cache.alloc<SettingsCache>(key);
 }
 
 QPx::SettingsMap::SettingsMap(const QString &path) : QPx::Settings({ })
 {
-    cache.alloc<QString>(path.isEmpty() ? QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QDir::separator() + QCoreApplication::applicationName() + ".qps" : path);
+    cache.alloc<MapCache>(path.isEmpty() ? QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QDir::separator() + QCoreApplication::applicationName() + ".qps" : path);
 
-    QFile file(cache.get<QString>());
+    QFile file(cache.get<MapCache>().path);
     if(file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         qpx_settings_parse(*this, QString::fromUtf8(file.readAll()));
@@ -122,13 +130,13 @@ QPx::SettingsMap::SettingsMap(const QString &path) : QPx::Settings({ })
 
 void QPx::SettingsMap::sync()
 {
-    QDir dir(QFileInfo(cache.get<QString>()).dir());
+    QDir dir(QFileInfo(cache.get<MapCache>().path).dir());
     if(!dir.exists())
     {
         dir.mkpath(dir.path());
     }
 
-    QFile file(cache.get<QString>());
+    QFile file(cache.get<MapCache>().path);
     if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         throw std::runtime_error("unable to sync settings");
