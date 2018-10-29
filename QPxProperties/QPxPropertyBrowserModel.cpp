@@ -15,24 +15,28 @@ class Cache
 public:
     Cache() : valueChangeLock(false) { }
 
+    void remove(QPx::PropertyBrowserModel *model, int row, int count, const QModelIndex &parent);
+
     QMap<QPx::PropertyBrowserItem*, QPersistentModelIndex> map;
     bool valueChangeLock;
 };
+
+void Cache::remove(QPx::PropertyBrowserModel *model, int row, int count, const QModelIndex &parent)
+{
+    for(int i = row; i < row + count; ++i)
+    {
+        auto index = model->index(i, 0, parent);
+        remove(model, 0, model->rowCount(index), index);
+
+        map.remove(static_cast<QPx::PropertyBrowserItem*>(model->userData(index)));
+    }
+}
 
 }
 
 QPx::PropertyBrowserModel::PropertyBrowserModel(QObject *parent) : TreeModel(parent)
 {
     cache.alloc<Cache>();
-}
-
-QModelIndex QPx::PropertyBrowserModel::appendItem(PropertyBrowserItem *item, const QModelIndex &parent)
-{
-    auto index = appendRow(item, parent);
-    cache.get<Cache>().map[item] = index;
-
-    connect(item, SIGNAL(valueChanged(QVariant)), SLOT(valueChanged(QVariant)));
-    return index;
 }
 
 Qt::ItemFlags QPx::PropertyBrowserModel::flags(const QModelIndex &index) const
@@ -91,6 +95,29 @@ bool QPx::PropertyBrowserModel::setData(const QModelIndex &index, const QVariant
     return false;
 }
 
+bool QPx::PropertyBrowserModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    cache.get<Cache>().remove(this, row, count, parent);
+
+    return TreeModel::removeRows(row, count, parent);
+}
+
+QModelIndex QPx::PropertyBrowserModel::insertRow(int row, void *userData, const QModelIndex &parent)
+{
+    auto index = TreeModel::insertRow(row, userData, parent);
+    auto item = static_cast<PropertyBrowserItem*>(userData);
+
+    cache.get<Cache>().map[item] = index;
+    connect(item, SIGNAL(valueChanged(QVariant)), SLOT(valueChanged(QVariant)));
+
+    return index;
+}
+
+QModelIndex QPx::PropertyBrowserModel::appendRow(void *item, const QModelIndex &parent)
+{
+    return insertRow(rowCount(parent), item, parent);
+}
+
 int QPx::PropertyBrowserModel::columnCount(const QModelIndex &parent) const
 {
     return 2;
@@ -111,3 +138,13 @@ void QPx::PropertyBrowserModel::valueChanged(const QVariant &value)
     }
 }
 
+void QPx::PropertyBrowserModel::dump()
+{
+    auto &m = cache.get<Cache>().map;
+
+    qDebug() << "keys";
+    for(auto i: m.keys())
+    {
+        qDebug() << "    " << i->name();
+    }
+}

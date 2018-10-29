@@ -59,19 +59,19 @@ void QPx::PropertyBrowserItem::setValue(const QVariant &value)
 
 QPx::StringPropertyBrowserItem::StringPropertyBrowserItem(PropertyBrowserModel *model, const QModelIndex &index, const QString &name, const QVariant &value, QObject *parent) : PropertyBrowserItem(name, value, parent)
 {
-    model->appendItem(this, index);
+    model->appendRow(this, index);
 }
 
 QPx::IntPropertyBrowserItem::IntPropertyBrowserItem(PropertyBrowserModel *model, const QModelIndex &index, const QString &name, const QVariant &value, QObject *parent) : PropertyBrowserItem(name, value, parent)
 {
-    model->appendItem(this, index);
+    model->appendRow(this, index);
 }
 
 QPx::PointPropertyBrowserItem::PointPropertyBrowserItem(PropertyBrowserModel *model, const QModelIndex &index, const QString &name, const QVariant &value, QObject *parent) : PropertyBrowserItem(name, value, parent)
 {
     auto &c = cache.alloc<PointCache>();
 
-    auto i = model->appendItem(this, index);
+    auto i = model->appendRow(this, index);
     auto p = value.toPoint();
 
     c.x = new IntPropertyBrowserItem(model, i, "X", p.x(), this);

@@ -17,14 +17,19 @@ class PropertyBrowserModel : public TreeModel
 public:
     PropertyBrowserModel(QObject *parent = nullptr);
 
-    QModelIndex appendItem(PropertyBrowserItem *item, const QModelIndex &parent);
-
     virtual Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     virtual QVariant data(const QModelIndex &index, int role) const override;
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
+    virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+
+    virtual QModelIndex insertRow(int row, void *userData, const QModelIndex &parent = QModelIndex());
+    virtual QModelIndex appendRow(void *item, const QModelIndex &parent = QModelIndex()) override;
+
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+
+    void dump();
 
 private slots:
     void valueChanged(const QVariant &value);
