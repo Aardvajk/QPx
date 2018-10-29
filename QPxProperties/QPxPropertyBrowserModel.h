@@ -29,8 +29,6 @@ public:
 
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    void dump();
-
 private slots:
     void valueChanged(const QVariant &value);
 

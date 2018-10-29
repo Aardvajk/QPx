@@ -137,14 +137,3 @@ void QPx::PropertyBrowserModel::valueChanged(const QVariant &value)
         }
     }
 }
-
-void QPx::PropertyBrowserModel::dump()
-{
-    auto &m = cache.get<Cache>().map;
-
-    qDebug() << "keys";
-    for(auto i: m.keys())
-    {
-        qDebug() << "    " << i->name();
-    }
-}
