@@ -1,8 +1,12 @@
 #include "QPxProperties/QPxPropertyBrowserItem.h"
 
 #include "QPxProperties/QPxPropertyBrowserModel.h"
+#include "QPxProperties/QPxPropertyBrowserEditor.h"
+#include "QPxProperties/QPxPropertyBrowserDialog.h"
 
 #include <pcx/scoped_lock.h>
+
+#include <QtGui/QPainter>
 
 #include <QtWidgets/QSpinBox>
 
@@ -51,6 +55,21 @@ QString QPx::PropertyBrowserItem::valueText() const
     return value().toString();
 }
 
+void QPx::PropertyBrowserItem::paint(QPainter *painter, const QRect &rect) const
+{
+    painter->drawText(rect.adjusted(2, 0, 0, 0), Qt::AlignVCenter | Qt::AlignLeft, valueText());
+}
+
+QPx::PropertyBrowserEditor *QPx::PropertyBrowserItem::createEditor(QWidget *parent) const
+{
+    return nullptr;
+}
+
+QPx::PropertyBrowserDialog *QPx::PropertyBrowserItem::createDialog(QWidget *parent) const
+{
+    return nullptr;
+}
+
 void QPx::PropertyBrowserItem::setValue(const QVariant &value)
 {
     cache.get<ItemCache>().value = value;
@@ -62,9 +81,29 @@ QPx::StringPropertyBrowserItem::StringPropertyBrowserItem(PropertyBrowserModel *
     model->appendRow(this, index);
 }
 
+QPx::PropertyBrowserEditor *QPx::StringPropertyBrowserItem::createEditor(QWidget *parent) const
+{
+    return new StringPropertyBrowserEditor(parent);
+}
+
 QPx::IntPropertyBrowserItem::IntPropertyBrowserItem(PropertyBrowserModel *model, const QModelIndex &index, const QString &name, const QVariant &value, QObject *parent) : PropertyBrowserItem(name, value, parent)
 {
     model->appendRow(this, index);
+}
+
+QPx::PropertyBrowserEditor *QPx::IntPropertyBrowserItem::createEditor(QWidget *parent) const
+{
+    return new IntPropertyBrowserEditor(parent);
+}
+
+QPx::BoolPropertyBrowserItem::BoolPropertyBrowserItem(QPx::PropertyBrowserModel *model, const QModelIndex &index, const QString &name, const QVariant &value, QObject *parent) : PropertyBrowserItem(name, value, parent)
+{
+    model->appendRow(this, index);
+}
+
+QString QPx::BoolPropertyBrowserItem::valueText() const
+{
+    return QString();
 }
 
 QPx::PointPropertyBrowserItem::PointPropertyBrowserItem(PropertyBrowserModel *model, const QModelIndex &index, const QString &name, const QVariant &value, QObject *parent) : PropertyBrowserItem(name, value, parent)
@@ -117,4 +156,19 @@ void QPx::PointPropertyBrowserItem::changed(const QVariant &value)
     }
 
     setValue(p);
+}
+
+QPx::ColorPropertyBrowserItem::ColorPropertyBrowserItem(QPx::PropertyBrowserModel *model, const QModelIndex &index, const QString &name, const QVariant &value, QObject *parent) : PropertyBrowserItem(name, value, parent)
+{
+    model->appendRow(this, index);
+}
+
+void QPx::ColorPropertyBrowserItem::paint(QPainter *painter, const QRect &rect) const
+{
+    painter->fillRect(rect.adjusted(2, 2, -4, -2), qvariant_cast<QColor>(value()));
+}
+
+QPx::PropertyBrowserDialog *QPx::ColorPropertyBrowserItem::createDialog(QWidget *parent) const
+{
+    return new ColorPropertyBrowserDialog(parent);
 }

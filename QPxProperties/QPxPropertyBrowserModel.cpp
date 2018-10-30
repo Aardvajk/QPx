@@ -47,7 +47,14 @@ Qt::ItemFlags QPx::PropertyBrowserModel::flags(const QModelIndex &index) const
     {
         if(index.column() == 1 && !rowCount(index))
         {
-            value |= Qt::ItemIsEditable;
+            if(item->value().type() == QVariant::Bool)
+            {
+                value |= Qt::ItemIsUserCheckable;
+            }
+            else
+            {
+                value |= Qt::ItemIsEditable;
+            }
         }
     }
 
@@ -64,6 +71,13 @@ QVariant QPx::PropertyBrowserModel::data(const QModelIndex &index, int role) con
             {
                 case 0: return item->name();
                 case 1: return item->valueText();
+            }
+        }
+        else if(role == Qt::CheckStateRole)
+        {
+            if(item->value().type() == QVariant::Bool && index.column() == 1)
+            {
+                return item->value().toBool() ? Qt::Checked : Qt::Unchecked;
             }
         }
     }
@@ -87,6 +101,15 @@ bool QPx::PropertyBrowserModel::setData(const QModelIndex &index, const QVariant
                 emit dataChanged(i, i);
                 i = i.parent().sibling(i.parent().row(), 1);
             }
+
+            return true;
+        }
+        else if(role == Qt::CheckStateRole)
+        {
+            auto lock = pcx::scoped_lock(cache.get<Cache>().valueChangeLock);
+            item->setValue(value.toInt() == Qt::Checked ? true : false);
+
+            emit dataChanged(index, index);
 
             return true;
         }
