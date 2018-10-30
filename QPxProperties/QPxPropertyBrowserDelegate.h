@@ -27,6 +27,9 @@ public:
 protected:
     virtual bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index) override;
 
+private slots:
+    void commit();
+
 private:
     pcx::aligned_store<8> cache;
 };

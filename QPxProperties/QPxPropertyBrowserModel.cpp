@@ -1,5 +1,6 @@
 #include "QPxPropertyBrowserModel.h"
 
+#include "QPxProperties/QPxPropertyBrowserType.h"
 #include "QPxProperties/QPxPropertyBrowserItem.h"
 
 #include <pcx/scoped_lock.h>
@@ -70,7 +71,7 @@ QVariant QPx::PropertyBrowserModel::data(const QModelIndex &index, int role) con
             switch(index.column())
             {
                 case 0: return item->name();
-                case 1: return item->valueText();
+                case 1: return item->type()->valueText(item);
             }
         }
         else if(role == Qt::CheckStateRole)

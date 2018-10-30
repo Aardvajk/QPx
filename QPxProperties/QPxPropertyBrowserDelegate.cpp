@@ -1,5 +1,6 @@
 #include "QPxProperties/QPxPropertyBrowserDelegate.h"
 
+#include "QPxProperties/QPxPropertyBrowserType.h"
 #include "QPxProperties/QPxPropertyBrowserItem.h"
 #include "QPxProperties/QPxPropertyBrowserModel.h"
 #include "QPxProperties/QPxPropertyBrowserEditor.h"
@@ -34,7 +35,7 @@ void QPx::PropertyBrowserDelegate::paint(QPainter *painter, const QStyleOptionVi
     if(item->value().type() != QVariant::Bool && index.column() == 1)
     {
         QStyledItemDelegate::paint(painter, option, QModelIndex());
-        item->paint(painter, option.rect);
+        item->type()->paint(item, painter, option.rect);
     }
     else
     {
@@ -44,7 +45,12 @@ void QPx::PropertyBrowserDelegate::paint(QPainter *painter, const QStyleOptionVi
 
 QWidget *QPx::PropertyBrowserDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    return static_cast<const PropertyBrowserItem*>(QPx::TreeModel::userData(index))->createEditor(parent);
+    auto item = static_cast<const PropertyBrowserItem*>(QPx::TreeModel::userData(index));
+    auto edit = item->type()->createEditor(item, parent);
+
+    connect(edit, SIGNAL(commit()), SLOT(commit()));
+
+    return edit;
 }
 
 void QPx::PropertyBrowserDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
@@ -68,7 +74,7 @@ bool QPx::PropertyBrowserDelegate::editorEvent(QEvent *event, QAbstractItemModel
     {
         auto item = static_cast<const PropertyBrowserItem*>(QPx::TreeModel::userData(index));
 
-        if(pcx::scoped_ptr<PropertyBrowserDialog> dialog = item->createDialog(cache.get<Cache>().widget))
+        if(pcx::scoped_ptr<PropertyBrowserDialog> dialog = item->type()->createDialog(item, cache.get<Cache>().widget))
         {
             dialog->setValue(item->value());
 
@@ -82,4 +88,9 @@ bool QPx::PropertyBrowserDelegate::editorEvent(QEvent *event, QAbstractItemModel
     }
 
     return QStyledItemDelegate::editorEvent(event, model, option, index);
+}
+
+void QPx::PropertyBrowserDelegate::commit()
+{
+    emit commitData(static_cast<QWidget*>(sender()));
 }
