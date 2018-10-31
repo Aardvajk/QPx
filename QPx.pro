@@ -44,7 +44,6 @@ SOURCES += \
     QPxWidgets/QPxKeyboardOptionsWidget.cpp \
     QPxWidgets/QPxMainWindow.cpp \
     QPxCore/QPxTreeModel.cpp \
-    QPxProperties/QPxPropertyBrowser.cpp \
     QPxProperties/QPxPropertyBrowserDelegate.cpp \
     QPxProperties/QPxPropertyBrowserDialog.cpp \
     QPxProperties/QPxPropertyBrowserEditor.cpp \
@@ -68,7 +67,6 @@ HEADERS += \
     QPxWidgets/QPxMainWindow.h \
     internal/qpx_settings_parser.h \
     QPxCore/QPxTreeModel.h \
-    QPxProperties/QPxPropertyBrowser.h \
     QPxProperties/QPxPropertyBrowserDelegate.h \
     QPxProperties/QPxPropertyBrowserDialog.h \
     QPxProperties/QPxPropertyBrowserEditor.h \

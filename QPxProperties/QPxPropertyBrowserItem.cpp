@@ -1,6 +1,7 @@
 #include "QPxProperties/QPxPropertyBrowserItem.h"
 
 #include "QPxProperties/QPxPropertyBrowserModel.h"
+#include "QPxProperties/QPxPropertyBrowserType.h"
 
 #include <pcx/scoped_lock.h>
 
@@ -11,46 +12,69 @@
 namespace
 {
 
-class ItemCache
+class Cache
 {
 public:
-    ItemCache(const QPx::PropertyBrowserType *type, const QString &name, const QVariant &value) : type(type), name(name), value(value) { }
+    Cache(const QPx::PropertyBrowserType *type, const QString &name, const QVariant &value) : type(type), name(name), value(value), lock(false) { }
 
     const QPx::PropertyBrowserType *type;
     QString name;
     QVariant value;
+    QVector<QPx::PropertyBrowserItem*> props;
+    bool lock;
 };
 
 }
 
-QPx::PropertyBrowserItem::PropertyBrowserItem(const PropertyBrowserType *type, const QString &name, const QVariant &value, QObject *parent) : QObject(parent)
+QPx::PropertyBrowserItem::PropertyBrowserItem(const QPx::PropertyBrowserType *type, QPx::PropertyBrowserModel *model, const QModelIndex &index, const QString &name, const QVariant &value, QObject *parent) : QObject(parent)
 {
-    cache.alloc<ItemCache>(type, name, value);
-}
+    cache.alloc<Cache>(type, name, value);
+    auto m = model->appendRow(this, index);
 
-QPx::PropertyBrowserItem::PropertyBrowserItem(const QPx::PropertyBrowserType *type, QPx::PropertyBrowserModel *model, const QModelIndex &index, const QString &name, const QVariant &value, QObject *parent)
-{
-    cache.alloc<ItemCache>(type, name, value);
-    model->appendRow(this, index);
+    type->addProperties(this, model, m);
 }
 
 const QPx::PropertyBrowserType *QPx::PropertyBrowserItem::type() const
 {
-    return cache.get<ItemCache>().type;
+    return cache.get<Cache>().type;
 }
 
 QString QPx::PropertyBrowserItem::name() const
 {
-    return cache.get<ItemCache>().name;
+    return cache.get<Cache>().name;
 }
 
 QVariant QPx::PropertyBrowserItem::value() const
 {
-    return cache.get<ItemCache>().value;
+    return cache.get<Cache>().value;
+}
+
+QPx::PropertyBrowserItem *QPx::PropertyBrowserItem::addProperty(PropertyBrowserItem *property)
+{
+    cache.get<Cache>().props.append(property);
+    return property;
+}
+
+QPx::PropertyBrowserItem *QPx::PropertyBrowserItem::property(int index) const
+{
+    return cache.get<Cache>().props[index];
+}
+
+int QPx::PropertyBrowserItem::propertyCount() const
+{
+    return cache.get<Cache>().props.count();
 }
 
 void QPx::PropertyBrowserItem::setValue(const QVariant &value)
 {
-    cache.get<ItemCache>().value = value;
-    emit valueChanged(value);
+    auto &c = cache.get<Cache>();
+    if(!c.lock)
+    {
+        auto g = pcx::scoped_lock(c.lock);
+
+        type()->updateProperties(this, value);
+
+        c.value = value;
+        emit valueChanged(value);
+    }
 }

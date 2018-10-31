@@ -18,21 +18,26 @@ class PropertyBrowserItem : public QObject
     Q_OBJECT
 
 public:
-    PropertyBrowserItem(const PropertyBrowserType *type, const QString &name, const QVariant &value, QObject *parent = nullptr);
     PropertyBrowserItem(const PropertyBrowserType *type, PropertyBrowserModel *model, const QModelIndex &index, const QString &name, const QVariant &value, QObject *parent = nullptr);
 
     const PropertyBrowserType *type() const;
+
     QString name() const;
     QVariant value() const;
+
+    PropertyBrowserItem *addProperty(PropertyBrowserItem *property);
+    PropertyBrowserItem *property(int index) const;
+
+    int propertyCount() const;
 
 signals:
     void valueChanged(const QVariant &value);
 
 public slots:
-    virtual void setValue(const QVariant &value);
+    void setValue(const QVariant &value);
 
 private:
-    pcx::aligned_store<32> cache;
+    pcx::aligned_store<48> cache;
 };
 
 }

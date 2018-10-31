@@ -2,6 +2,7 @@
 #define QPXPROPERTYBROWSERTYPE_H
 
 #include <QtCore/QObject>
+#include <QtCore/QVariant>
 
 #include <pcx/aligned_store.h>
 
@@ -12,6 +13,7 @@ namespace QPx
 {
 
 class PropertyBrowserItem;
+class PropertyBrowserModel;
 class PropertyBrowserEditor;
 class PropertyBrowserDialog;
 
@@ -21,6 +23,9 @@ class PropertyBrowserType : public QObject
 
 public:
     explicit PropertyBrowserType(QObject *parent = nullptr);
+
+    virtual void addProperties(PropertyBrowserItem *item, PropertyBrowserModel *model, const QModelIndex &parent) const;
+    virtual void updateProperties(PropertyBrowserItem *item, const QVariant &value) const;
 
     virtual QString valueText(const PropertyBrowserItem *item) const;
 
@@ -84,18 +89,52 @@ public:
     virtual PropertyBrowserDialog *createDialog(const PropertyBrowserItem *item, QWidget *parent) const override;
 };
 
-class EnumPropertyBrowserType : public PropertyBrowserType
+class AbstractEnumPropertyBrowserType : public PropertyBrowserType
 {
+    Q_OBJECT
+
 public:
-    EnumPropertyBrowserType(const QStringList &values, QObject *parent = nullptr);
-    EnumPropertyBrowserType(const QList<QPair<int, QString> > &values, QObject *parent = nullptr);
+    AbstractEnumPropertyBrowserType(const QStringList &values, QObject *parent = nullptr);
+    AbstractEnumPropertyBrowserType(const QList<QPair<int, QString> > &values, QObject *parent = nullptr);
 
     virtual QString valueText(const PropertyBrowserItem *item) const override;
 
     virtual PropertyBrowserEditor *createEditor(const PropertyBrowserItem *item, QWidget *parent) const override;
+    virtual QVariant toEnumValue(const QVariant &value) const = 0;
 
 private:
     pcx::aligned_store<64> cache;
+};
+
+template<typename T> class EnumPropertyBrowserType : public AbstractEnumPropertyBrowserType
+{
+public:
+    EnumPropertyBrowserType(const QStringList &values, QObject *parent = nullptr) : AbstractEnumPropertyBrowserType(values, parent) { }
+    EnumPropertyBrowserType(const QList<QPair<T, QString> > &values, QObject *parent = nullptr) : AbstractEnumPropertyBrowserType(convert(values), parent) { }
+
+    virtual QVariant toEnumValue(const QVariant &value) const override { return QVariant::fromValue(static_cast<T>(value.toInt())); }
+
+private:
+    static QList<QPair<int, QString> > convert(const QList<QPair<T, QString> > &values){ QList<QPair<int, QString> > r; for(auto i: values) r.append(qMakePair(static_cast<int>(i.first), i.second)); return r; }
+};
+
+class PointPropertyBrowserType : public PropertyBrowserType
+{
+    Q_OBJECT
+
+public:
+    PointPropertyBrowserType(QObject *parent = nullptr);
+
+    virtual void addProperties(PropertyBrowserItem *item, PropertyBrowserModel *model, const QModelIndex &parent) const;
+    virtual void updateProperties(PropertyBrowserItem *item, const QVariant &value) const override;
+
+    virtual QString valueText(const PropertyBrowserItem *item) const override;
+
+private slots:
+    void changed(const QVariant &value);
+
+private:
+    pcx::aligned_store<8> cache;
 };
 
 }

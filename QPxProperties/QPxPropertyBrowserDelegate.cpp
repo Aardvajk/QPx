@@ -46,11 +46,14 @@ void QPx::PropertyBrowserDelegate::paint(QPainter *painter, const QStyleOptionVi
 QWidget *QPx::PropertyBrowserDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     auto item = static_cast<const PropertyBrowserItem*>(QPx::TreeModel::userData(index));
-    auto edit = item->type()->createEditor(item, parent);
 
-    connect(edit, SIGNAL(commit()), SLOT(commit()));
+    if(auto edit = item->type()->createEditor(item, parent))
+    {
+        connect(edit, SIGNAL(commit()), SLOT(commit()));
+        return edit;
+    }
 
-    return edit;
+    return nullptr;
 }
 
 void QPx::PropertyBrowserDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
@@ -70,7 +73,7 @@ void QPx::PropertyBrowserDelegate::updateEditorGeometry(QWidget *editor, const Q
 
 bool QPx::PropertyBrowserDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
 {
-    if(event->type() == QEvent::MouseButtonDblClick && !model->rowCount(index))
+    if(event->type() == QEvent::MouseButtonDblClick && (index.flags() & Qt::ItemIsEditable))
     {
         auto item = static_cast<const PropertyBrowserItem*>(QPx::TreeModel::userData(index));
 

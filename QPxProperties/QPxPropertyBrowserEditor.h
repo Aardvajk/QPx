@@ -5,9 +5,6 @@
 
 #include <pcx/aligned_store.h>
 
-class QLineEdit;
-class QComboBox;
-
 namespace QPx
 {
 
@@ -36,7 +33,7 @@ public:
     virtual void setValue(const QVariant &value) override;
 
 protected:
-    QLineEdit *edit;
+    pcx::aligned_store<8> cache;
 };
 
 class IntPropertyBrowserEditor : public StringPropertyBrowserEditor
@@ -60,18 +57,20 @@ public:
     virtual void setValue(const QVariant &value) override;
 };
 
+class AbstractEnumPropertyBrowserType;
+
 class EnumPropertyBrowserEditor : public PropertyBrowserEditor
 {
     Q_OBJECT
 
 public:
-    EnumPropertyBrowserEditor(const QMap<int, QString> &values, QWidget *parent = nullptr);
+    EnumPropertyBrowserEditor(const AbstractEnumPropertyBrowserType *type, const QMap<int, QString> &values, QWidget *parent = nullptr);
 
     virtual QVariant value() const override;
     virtual void setValue(const QVariant &value) override;
 
 private:
-    QComboBox *combo;
+    pcx::aligned_store<16> cache;
 };
 
 }

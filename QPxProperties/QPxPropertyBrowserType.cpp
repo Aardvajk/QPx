@@ -36,28 +36,44 @@ EnumCache::EnumCache(const QList<QPair<int, QString> > &values)
     }
 }
 
+class PointCache
+{
+public:
+    PointCache(QObject *parent) : type(new QPx::IntPropertyBrowserType(parent)) { }
+
+    QPx::IntPropertyBrowserType *type;
+};
+
 }
 
 QPx::PropertyBrowserType::PropertyBrowserType(QObject *parent) : QObject(parent)
 {
 }
 
-QString QPx::PropertyBrowserType::valueText(const QPx::PropertyBrowserItem *item) const
+void QPx::PropertyBrowserType::addProperties(PropertyBrowserItem *item, PropertyBrowserModel *model, const QModelIndex &parent) const
+{
+}
+
+void QPx::PropertyBrowserType::updateProperties(PropertyBrowserItem *item, const QVariant &value) const
+{
+}
+
+QString QPx::PropertyBrowserType::valueText(const PropertyBrowserItem *item) const
 {
     return item->value().toString();
 }
 
-void QPx::PropertyBrowserType::paint(const QPx::PropertyBrowserItem *item, QPainter *painter, const QRect &rect) const
+void QPx::PropertyBrowserType::paint(const PropertyBrowserItem *item, QPainter *painter, const QRect &rect) const
 {
     painter->drawText(rect.adjusted(2, 0, 0, 0), Qt::AlignVCenter | Qt::AlignLeft, valueText(item));
 }
 
-QPx::PropertyBrowserEditor *QPx::PropertyBrowserType::createEditor(const QPx::PropertyBrowserItem *item, QWidget *parent) const
+QPx::PropertyBrowserEditor *QPx::PropertyBrowserType::createEditor(const PropertyBrowserItem *item, QWidget *parent) const
 {
     return nullptr;
 }
 
-QPx::PropertyBrowserDialog *QPx::PropertyBrowserType::createDialog(const QPx::PropertyBrowserItem *item, QWidget *parent) const
+QPx::PropertyBrowserDialog *QPx::PropertyBrowserType::createDialog(const PropertyBrowserItem *item, QWidget *parent) const
 {
     return nullptr;
 }
@@ -66,7 +82,7 @@ QPx::StringPropertyBrowserType::StringPropertyBrowserType(QObject *parent) : Pro
 {
 }
 
-QPx::PropertyBrowserEditor *QPx::StringPropertyBrowserType::createEditor(const QPx::PropertyBrowserItem *item, QWidget *parent) const
+QPx::PropertyBrowserEditor *QPx::StringPropertyBrowserType::createEditor(const PropertyBrowserItem *item, QWidget *parent) const
 {
     return new StringPropertyBrowserEditor(parent);
 }
@@ -75,7 +91,7 @@ QPx::IntPropertyBrowserType::IntPropertyBrowserType(QObject *parent) : PropertyB
 {
 }
 
-QPx::PropertyBrowserEditor *QPx::IntPropertyBrowserType::createEditor(const QPx::PropertyBrowserItem *item, QWidget *parent) const
+QPx::PropertyBrowserEditor *QPx::IntPropertyBrowserType::createEditor(const PropertyBrowserItem *item, QWidget *parent) const
 {
     return new IntPropertyBrowserEditor(parent);
 }
@@ -84,12 +100,12 @@ QPx::FloatPropertyBrowserType::FloatPropertyBrowserType(QObject *parent) : Prope
 {
 }
 
-QString QPx::FloatPropertyBrowserType::valueText(const QPx::PropertyBrowserItem *item) const
+QString QPx::FloatPropertyBrowserType::valueText(const PropertyBrowserItem *item) const
 {
     return QString::number(item->value().toFloat());
 }
 
-QPx::PropertyBrowserEditor *QPx::FloatPropertyBrowserType::createEditor(const QPx::PropertyBrowserItem *item, QWidget *parent) const
+QPx::PropertyBrowserEditor *QPx::FloatPropertyBrowserType::createEditor(const PropertyBrowserItem *item, QWidget *parent) const
 {
     return new FloatPropertyBrowserEditor(parent);
 }
@@ -98,7 +114,7 @@ QPx::BoolPropertyBrowserType::BoolPropertyBrowserType(QObject *parent) : Propert
 {
 }
 
-QString QPx::BoolPropertyBrowserType::valueText(const QPx::PropertyBrowserItem *item) const
+QString QPx::BoolPropertyBrowserType::valueText(const PropertyBrowserItem *item) const
 {
     return QString();
 }
@@ -107,32 +123,80 @@ QPx::ColorPropertyBrowserType::ColorPropertyBrowserType(QObject *parent) : Prope
 {
 }
 
-void QPx::ColorPropertyBrowserType::paint(const QPx::PropertyBrowserItem *item, QPainter *painter, const QRect &rect) const
+void QPx::ColorPropertyBrowserType::paint(const PropertyBrowserItem *item, QPainter *painter, const QRect &rect) const
 {
     painter->fillRect(rect.adjusted(2, 2, -4, -2), qvariant_cast<QColor>(item->value()));
 }
 
-QPx::PropertyBrowserDialog *QPx::ColorPropertyBrowserType::createDialog(const QPx::PropertyBrowserItem *item, QWidget *parent) const
+QPx::PropertyBrowserDialog *QPx::ColorPropertyBrowserType::createDialog(const PropertyBrowserItem *item, QWidget *parent) const
 {
     return new ColorPropertyBrowserDialog(parent);
 }
 
-QPx::EnumPropertyBrowserType::EnumPropertyBrowserType(const QStringList &values, QObject *parent) : PropertyBrowserType(parent)
+QPx::AbstractEnumPropertyBrowserType::AbstractEnumPropertyBrowserType(const QStringList &values, QObject *parent) : PropertyBrowserType(parent)
 {
     cache.alloc<EnumCache>(values);
 }
 
-QPx::EnumPropertyBrowserType::EnumPropertyBrowserType(const QList<QPair<int, QString> > &values, QObject *parent)
+QPx::AbstractEnumPropertyBrowserType::AbstractEnumPropertyBrowserType(const QList<QPair<int, QString> > &values, QObject *parent)
 {
     cache.alloc<EnumCache>(values);
 }
 
-QString QPx::EnumPropertyBrowserType::valueText(const QPx::PropertyBrowserItem *item) const
+QString QPx::AbstractEnumPropertyBrowserType::valueText(const PropertyBrowserItem *item) const
 {
     return cache.get<EnumCache>().map[item->value().toInt()];
 }
 
-QPx::PropertyBrowserEditor *QPx::EnumPropertyBrowserType::createEditor(const QPx::PropertyBrowserItem *item, QWidget *parent) const
+QPx::PropertyBrowserEditor *QPx::AbstractEnumPropertyBrowserType::createEditor(const PropertyBrowserItem *item, QWidget *parent) const
 {
-    return new EnumPropertyBrowserEditor(cache.get<EnumCache>().map, parent);
+    return new EnumPropertyBrowserEditor(this, cache.get<EnumCache>().map, parent);
 }
+
+QPx::PointPropertyBrowserType::PointPropertyBrowserType(QObject *parent) : PropertyBrowserType(parent)
+{
+    cache.alloc<PointCache>(this);
+}
+
+void QPx::PointPropertyBrowserType::addProperties(QPx::PropertyBrowserItem *item, QPx::PropertyBrowserModel *model, const QModelIndex &parent) const
+{
+    auto type = cache.get<PointCache>().type;
+
+    item->addProperty(new PropertyBrowserItem(type, model, parent, "X", item->value().toPoint().x(), item));
+    connect(item->property(0), SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
+
+    item->addProperty(new PropertyBrowserItem(type, model, parent, "Y", item->value().toPoint().y(), item));
+    connect(item->property(1), SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
+}
+
+void QPx::PointPropertyBrowserType::updateProperties(QPx::PropertyBrowserItem *item, const QVariant &value) const
+{
+    item->property(0)->setValue(value.toPoint().x());
+    item->property(1)->setValue(value.toPoint().y());
+}
+
+QString QPx::PointPropertyBrowserType::valueText(const PropertyBrowserItem *item) const
+{
+    auto p = item->value().toPoint();
+    return QString("%1, %2").arg(p.x()).arg(p.y());
+}
+
+void QPx::PointPropertyBrowserType::changed(const QVariant &value)
+{
+    auto item = static_cast<PropertyBrowserItem*>(sender());
+    auto parent = static_cast<PropertyBrowserItem*>(item->parent());
+
+    auto p = parent->value().toPoint();
+
+    if(item->name() == "X")
+    {
+        p.setX(value.toInt());
+    }
+    else
+    {
+        p.setY(value.toInt());
+    }
+
+    parent->setValue(p);
+}
+
