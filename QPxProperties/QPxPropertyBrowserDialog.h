@@ -31,8 +31,11 @@ public:
     virtual QVariant value() const override;
     virtual void setValue(const QVariant &value) override;
 
+public slots:
+    virtual int exec() override;
+
 private:
-    pcx::aligned_store<8> cache;
+    pcx::aligned_store<16> cache;
 };
 
 }
