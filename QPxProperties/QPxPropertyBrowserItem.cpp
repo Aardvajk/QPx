@@ -15,10 +15,11 @@ namespace
 class Cache
 {
 public:
-    Cache(const QPx::PropertyBrowserType *type, const QString &name, const QVariant &value) : type(type), name(name), value(value), lock(false) { }
+    Cache(const QPx::PropertyBrowserType *type, const QString &name, QPx::PropertyBrowserItem::Flags flags, const QVariant &value) : type(type), name(name), flags(flags), value(value), lock(false) { }
 
     const QPx::PropertyBrowserType *type;
     QString name;
+    QPx::PropertyBrowserItem::Flags flags;
     QVariant value;
     QVector<QPx::PropertyBrowserItem*> props;
     bool lock;
@@ -26,9 +27,9 @@ public:
 
 }
 
-QPx::PropertyBrowserItem::PropertyBrowserItem(const QPx::PropertyBrowserType *type, QPx::PropertyBrowserModel *model, const QModelIndex &index, const QString &name, const QVariant &value, QObject *parent) : QObject(parent)
+QPx::PropertyBrowserItem::PropertyBrowserItem(const QPx::PropertyBrowserType *type, QPx::PropertyBrowserModel *model, const QModelIndex &index, const QString &name, Flags flags, const QVariant &value, QObject *parent) : QObject(parent)
 {
-    cache.alloc<Cache>(type, name, value);
+    cache.alloc<Cache>(type, name, flags, value);
     auto m = model->appendRow(this, index);
 
     type->addProperties(this, model, m);
@@ -42,6 +43,11 @@ const QPx::PropertyBrowserType *QPx::PropertyBrowserItem::type() const
 QString QPx::PropertyBrowserItem::name() const
 {
     return cache.get<Cache>().name;
+}
+
+QPx::PropertyBrowserItem::Flags QPx::PropertyBrowserItem::flags() const
+{
+    return cache.get<Cache>().flags;
 }
 
 QVariant QPx::PropertyBrowserItem::value() const

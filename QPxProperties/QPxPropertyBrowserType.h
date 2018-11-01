@@ -28,6 +28,7 @@ public:
     virtual void updateProperties(PropertyBrowserItem *item, const QVariant &value) const;
 
     virtual QString valueText(const PropertyBrowserItem *item) const;
+    virtual bool readOnly() const;
 
     virtual void paint(const PropertyBrowserItem *item, QPainter *painter, const QRect &rect) const;
 
@@ -129,6 +130,7 @@ public:
     virtual void updateProperties(PropertyBrowserItem *item, const QVariant &value) const override;
 
     virtual QString valueText(const PropertyBrowserItem *item) const override;
+    virtual bool readOnly() const override;
 
 private slots:
     void changed(const QVariant &value);

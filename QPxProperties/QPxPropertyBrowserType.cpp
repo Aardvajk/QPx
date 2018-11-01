@@ -63,6 +63,11 @@ QString QPx::PropertyBrowserType::valueText(const PropertyBrowserItem *item) con
     return item->value().toString();
 }
 
+bool QPx::PropertyBrowserType::readOnly() const
+{
+    return false;
+}
+
 void QPx::PropertyBrowserType::paint(const PropertyBrowserItem *item, QPainter *painter, const QRect &rect) const
 {
     painter->drawText(rect.adjusted(2, 0, 0, 0), Qt::AlignVCenter | Qt::AlignLeft, valueText(item));
@@ -162,10 +167,10 @@ void QPx::PointPropertyBrowserType::addProperties(QPx::PropertyBrowserItem *item
 {
     auto type = cache.get<PointCache>().type;
 
-    item->addProperty(new PropertyBrowserItem(type, model, parent, "X", item->value().toPoint().x(), item));
+    item->addProperty(new PropertyBrowserItem(type, model, parent, "X", item->flags(), item->value().toPoint().x(), item));
     connect(item->property(0), SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
 
-    item->addProperty(new PropertyBrowserItem(type, model, parent, "Y", item->value().toPoint().y(), item));
+    item->addProperty(new PropertyBrowserItem(type, model, parent, "Y", item->flags(), item->value().toPoint().y(), item));
     connect(item->property(1), SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
 }
 
@@ -179,6 +184,11 @@ QString QPx::PointPropertyBrowserType::valueText(const PropertyBrowserItem *item
 {
     auto p = item->value().toPoint();
     return QString("%1, %2").arg(p.x()).arg(p.y());
+}
+
+bool QPx::PointPropertyBrowserType::readOnly() const
+{
+    return true;
 }
 
 void QPx::PointPropertyBrowserType::changed(const QVariant &value)

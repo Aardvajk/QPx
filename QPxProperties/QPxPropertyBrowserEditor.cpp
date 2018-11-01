@@ -101,7 +101,6 @@ QPx::EnumPropertyBrowserEditor::EnumPropertyBrowserEditor(const AbstractEnumProp
 QVariant QPx::EnumPropertyBrowserEditor::value() const
 {
     auto &c = cache.get<EnumCache>();
-
     return c.type->toEnumValue(c.combo->itemData(c.combo->currentIndex()));
 }
 

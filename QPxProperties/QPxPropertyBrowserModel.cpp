@@ -14,12 +14,9 @@ namespace
 class Cache
 {
 public:
-    Cache() : valueChangeLock(false) { }
-
     void remove(QPx::PropertyBrowserModel *model, int row, int count, const QModelIndex &parent);
 
     QMap<QPx::PropertyBrowserItem*, QPersistentModelIndex> map;
-    bool valueChangeLock;
 };
 
 void Cache::remove(QPx::PropertyBrowserModel *model, int row, int count, const QModelIndex &parent)
@@ -46,7 +43,7 @@ Qt::ItemFlags QPx::PropertyBrowserModel::flags(const QModelIndex &index) const
 
     if(auto item = static_cast<const PropertyBrowserItem*>(userData(index)))
     {
-        if(index.column() == 1 && !rowCount(index))
+        if(index.column() == 1 && !item->type()->readOnly() && !(item->flags() & PropertyBrowserItem::Flag::ReadOnly))
         {
             if(item->value().type() == QVariant::Bool)
             {
@@ -92,26 +89,16 @@ bool QPx::PropertyBrowserModel::setData(const QModelIndex &index, const QVariant
     {
         if(role == Qt::EditRole)
         {
-            auto lock = pcx::scoped_lock(cache.get<Cache>().valueChangeLock);
-
             item->setValue(value);
 
-            auto i = index;
-            while(i.isValid())
-            {
-                emit dataChanged(i, i);
-                i = i.parent().sibling(i.parent().row(), 1);
-            }
-
+            emit dataChanged(index, index);
             return true;
         }
         else if(role == Qt::CheckStateRole)
         {
-            auto lock = pcx::scoped_lock(cache.get<Cache>().valueChangeLock);
             item->setValue(value.toInt() == Qt::Checked ? true : false);
 
             emit dataChanged(index, index);
-
             return true;
         }
     }
@@ -149,15 +136,8 @@ int QPx::PropertyBrowserModel::columnCount(const QModelIndex &parent) const
 
 void QPx::PropertyBrowserModel::valueChanged(const QVariant &value)
 {
-    if(!cache.get<Cache>().valueChangeLock)
-    {
-        auto index = cache.get<Cache>().map[static_cast<PropertyBrowserItem*>(sender())];
-        auto i = index.sibling(index.row(), 1);
+//    auto index = cache.get<Cache>().map[static_cast<PropertyBrowserItem*>(sender())];
+//    auto i = index.sibling(index.row(), 1);
 
-        while(i.isValid())
-        {
-            emit dataChanged(i, i);
-            i = i.parent().sibling(i.parent().row(), 1);
-        }
-    }
+//    emit dataChanged(i, i);
 }

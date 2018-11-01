@@ -54,7 +54,6 @@ void loadToolBars(QPx::Settings &toolBars, QPx::ActionList *actions, QPx::MainWi
     for(int i = 0; i < toolBars.count(); ++i)
     {
         auto toolbar = window->addToolBar(toolBars[i].value().toString());
-        toolbar->addAction(actions->find("Application.Options"));
 
         toolbar->setIconSize(QSize(16, 16));
         toolbar->setMovable(false);
