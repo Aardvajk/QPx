@@ -83,6 +83,15 @@ QPx::PropertyBrowserDialog *QPx::PropertyBrowserType::createDialog(const Propert
     return nullptr;
 }
 
+QPx::GroupPropertyBrowserType::GroupPropertyBrowserType(QObject *parent) : PropertyBrowserType(parent)
+{
+}
+
+bool QPx::GroupPropertyBrowserType::readOnly() const
+{
+    return true;
+}
+
 QPx::StringPropertyBrowserType::StringPropertyBrowserType(QObject *parent) : PropertyBrowserType(parent)
 {
 }
@@ -209,4 +218,3 @@ void QPx::PointPropertyBrowserType::changed(const QVariant &value)
 
     parent->setValue(p);
 }
-

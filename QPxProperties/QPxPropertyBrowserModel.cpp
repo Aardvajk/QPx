@@ -16,7 +16,7 @@ class Cache
 public:
     void remove(QPx::PropertyBrowserModel *model, int row, int count, const QModelIndex &parent);
 
-    QMap<QPx::PropertyBrowserItem*, QPersistentModelIndex> map;
+    QMap<const QPx::PropertyBrowserItem*, QPersistentModelIndex> map;
 };
 
 void Cache::remove(QPx::PropertyBrowserModel *model, int row, int count, const QModelIndex &parent)
@@ -57,6 +57,20 @@ Qt::ItemFlags QPx::PropertyBrowserModel::flags(const QModelIndex &index) const
     }
 
     return value;
+}
+
+QVariant QPx::PropertyBrowserModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if(orientation == Qt::Horizontal && role == Qt::DisplayRole)
+    {
+        switch(section)
+        {
+            case 0: return "Property";
+            case 1: return "Value";
+        }
+    }
+
+    return QVariant();
 }
 
 QVariant QPx::PropertyBrowserModel::data(const QModelIndex &index, int role) const
@@ -129,6 +143,11 @@ QModelIndex QPx::PropertyBrowserModel::appendRow(void *item, const QModelIndex &
     return insertRow(rowCount(parent), item, parent);
 }
 
+QModelIndex QPx::PropertyBrowserModel::indexOf(const QPx::PropertyBrowserItem *item) const
+{
+    return cache.get<Cache>().map[item];
+}
+
 int QPx::PropertyBrowserModel::columnCount(const QModelIndex &parent) const
 {
     return 2;
@@ -136,8 +155,8 @@ int QPx::PropertyBrowserModel::columnCount(const QModelIndex &parent) const
 
 void QPx::PropertyBrowserModel::valueChanged(const QVariant &value)
 {
-//    auto index = cache.get<Cache>().map[static_cast<PropertyBrowserItem*>(sender())];
-//    auto i = index.sibling(index.row(), 1);
+    auto index = cache.get<Cache>().map[static_cast<PropertyBrowserItem*>(sender())];
+    auto i = index.sibling(index.row(), 1);
 
-//    emit dataChanged(i, i);
+    emit dataChanged(i, i);
 }

@@ -36,6 +36,16 @@ public:
     virtual PropertyBrowserDialog *createDialog(const PropertyBrowserItem *item, QWidget *parent) const;
 };
 
+class GroupPropertyBrowserType : public PropertyBrowserType
+{
+    Q_OBJECT
+
+public:
+    explicit GroupPropertyBrowserType(QObject *parent = nullptr);
+
+    virtual bool readOnly() const override;
+};
+
 class StringPropertyBrowserType : public PropertyBrowserType
 {
     Q_OBJECT
