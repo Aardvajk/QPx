@@ -63,7 +63,13 @@ void QPx::PropertyBrowserDelegate::setEditorData(QWidget *editor, const QModelIn
 
 void QPx::PropertyBrowserDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
-    model->setData(index, static_cast<const PropertyBrowserEditor*>(editor)->value(), Qt::EditRole);
+    auto item = static_cast<const PropertyBrowserItem*>(QPx::TreeModel::userData(index));
+    auto value = static_cast<const PropertyBrowserEditor*>(editor)->value();
+
+    if(item->type()->validate(item, value))
+    {
+        model->setData(index, value, Qt::EditRole);
+    }
 }
 
 void QPx::PropertyBrowserDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -81,7 +87,7 @@ bool QPx::PropertyBrowserDelegate::editorEvent(QEvent *event, QAbstractItemModel
         {
             dialog->setValue(item->value());
 
-            if(dialog->exec() == QDialog::Accepted)
+            if(dialog->exec() == QDialog::Accepted && item->type()->validate(item, dialog->value()))
             {
                 model->setData(index, dialog->value(), Qt::EditRole);
             }

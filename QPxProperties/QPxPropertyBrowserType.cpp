@@ -11,6 +11,25 @@
 namespace
 {
 
+class NumericCache
+{
+public:
+    NumericCache(const QVariant &min, const QVariant &max) : min(min), max(max) { }
+
+    template<typename T> bool validate(const QVariant &value) const;
+
+    QVariant min;
+    QVariant max;
+};
+
+template<typename T> bool NumericCache::validate(const QVariant &value) const
+{
+    if(min.isValid() && qvariant_cast<T>(value) < qvariant_cast<T>(min)) return false;
+    if(max.isValid() && qvariant_cast<T>(value) > qvariant_cast<T>(max)) return false;
+
+    return true;
+}
+
 class EnumCache
 {
 public:
@@ -68,6 +87,11 @@ bool QPx::PropertyBrowserType::readOnly() const
     return false;
 }
 
+bool QPx::PropertyBrowserType::validate(const QPx::PropertyBrowserItem *item, const QVariant &value) const
+{
+    return true;
+}
+
 void QPx::PropertyBrowserType::paint(const PropertyBrowserItem *item, QPainter *painter, const QRect &rect) const
 {
     painter->drawText(rect.adjusted(2, 0, 0, 0), Qt::AlignVCenter | Qt::AlignLeft, valueText(item));
@@ -101,17 +125,25 @@ QPx::PropertyBrowserEditor *QPx::StringPropertyBrowserType::createEditor(const P
     return new StringPropertyBrowserEditor(parent);
 }
 
-QPx::IntPropertyBrowserType::IntPropertyBrowserType(QObject *parent) : PropertyBrowserType(parent)
+QPx::NumericPropertyBrowserType::NumericPropertyBrowserType(QObject *parent) : PropertyBrowserType(parent)
 {
+    cache.alloc<NumericCache>(QVariant(), QVariant());
+}
+
+QPx::NumericPropertyBrowserType::NumericPropertyBrowserType(const QVariant &min, const QVariant &max, QObject *parent) : PropertyBrowserType(parent)
+{
+    cache.alloc<NumericCache>(min, max);
+}
+
+bool QPx::IntPropertyBrowserType::validate(const QPx::PropertyBrowserItem *item, const QVariant &value) const
+{
+    return cache.get<NumericCache>().validate<int>(value);
 }
 
 QPx::PropertyBrowserEditor *QPx::IntPropertyBrowserType::createEditor(const PropertyBrowserItem *item, QWidget *parent) const
 {
-    return new IntPropertyBrowserEditor(parent);
-}
-
-QPx::FloatPropertyBrowserType::FloatPropertyBrowserType(QObject *parent) : PropertyBrowserType(parent)
-{
+    auto &c = cache.get<NumericCache>();
+    return new IntPropertyBrowserEditor(c.min, c.max, parent);
 }
 
 QString QPx::FloatPropertyBrowserType::valueText(const PropertyBrowserItem *item) const
@@ -119,9 +151,15 @@ QString QPx::FloatPropertyBrowserType::valueText(const PropertyBrowserItem *item
     return QString::number(item->value().toFloat());
 }
 
+bool QPx::FloatPropertyBrowserType::validate(const QPx::PropertyBrowserItem *item, const QVariant &value) const
+{
+    return cache.get<NumericCache>().validate<float>(value);
+}
+
 QPx::PropertyBrowserEditor *QPx::FloatPropertyBrowserType::createEditor(const PropertyBrowserItem *item, QWidget *parent) const
 {
-    return new FloatPropertyBrowserEditor(parent);
+    auto &c = cache.get<NumericCache>();
+    return new FloatPropertyBrowserEditor(c.min, c.max, parent);
 }
 
 QPx::BoolPropertyBrowserType::BoolPropertyBrowserType(QObject *parent) : PropertyBrowserType(parent)

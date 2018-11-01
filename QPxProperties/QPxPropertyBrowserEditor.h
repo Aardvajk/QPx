@@ -41,7 +41,7 @@ class IntPropertyBrowserEditor : public StringPropertyBrowserEditor
     Q_OBJECT
 
 public:
-    explicit IntPropertyBrowserEditor(QWidget *parent = nullptr);
+    explicit IntPropertyBrowserEditor(const QVariant &min, const QVariant &max, QWidget *parent = nullptr);
 
     virtual QVariant value() const override;
 };
@@ -51,7 +51,7 @@ class FloatPropertyBrowserEditor : public StringPropertyBrowserEditor
     Q_OBJECT
 
 public:
-    explicit FloatPropertyBrowserEditor(QWidget *parent = nullptr);
+    explicit FloatPropertyBrowserEditor(const QVariant &min, const QVariant &max, QWidget *parent = nullptr);
 
     virtual QVariant value() const override;
     virtual void setValue(const QVariant &value) override;

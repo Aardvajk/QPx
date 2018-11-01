@@ -25,6 +25,14 @@ public:
     QComboBox *combo;
 };
 
+template<typename T, typename V> V *setupValidator(const QVariant &min, const QVariant &max, V *validator)
+{
+    if(min.isValid()) validator->setBottom(qvariant_cast<T>(min));
+    if(max.isValid()) validator->setTop(qvariant_cast<T>(max));
+
+    return validator;
+}
+
 }
 
 QPx::PropertyBrowserEditor::PropertyBrowserEditor(QWidget *parent) : QWidget(parent)
@@ -53,9 +61,9 @@ void QPx::StringPropertyBrowserEditor::setValue(const QVariant &value)
     cache.get<QLineEdit*>()->setText(value.toString());
 }
 
-QPx::IntPropertyBrowserEditor::IntPropertyBrowserEditor(QWidget *parent) : StringPropertyBrowserEditor(parent)
+QPx::IntPropertyBrowserEditor::IntPropertyBrowserEditor(const QVariant &min, const QVariant &max, QWidget *parent) : StringPropertyBrowserEditor(parent)
 {
-    cache.get<QLineEdit*>()->setValidator(new QIntValidator(this));
+    cache.get<QLineEdit*>()->setValidator(setupValidator<int>(min, max, new QIntValidator(this)));
 }
 
 QVariant QPx::IntPropertyBrowserEditor::value() const
@@ -63,9 +71,9 @@ QVariant QPx::IntPropertyBrowserEditor::value() const
     return cache.get<QLineEdit*>()->text().toInt();
 }
 
-QPx::FloatPropertyBrowserEditor::FloatPropertyBrowserEditor(QWidget *parent) : StringPropertyBrowserEditor(parent)
+QPx::FloatPropertyBrowserEditor::FloatPropertyBrowserEditor(const QVariant &min, const QVariant &max, QWidget *parent) : StringPropertyBrowserEditor(parent)
 {
-    cache.get<QLineEdit*>()->setValidator(new QDoubleValidator(this));
+    cache.get<QLineEdit*>()->setValidator(setupValidator<float>(min, max, new QDoubleValidator(this)));
 }
 
 QVariant QPx::FloatPropertyBrowserEditor::value() const

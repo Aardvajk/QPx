@@ -30,6 +30,8 @@ public:
     virtual QString valueText(const PropertyBrowserItem *item) const;
     virtual bool readOnly() const;
 
+    virtual bool validate(const PropertyBrowserItem *item, const QVariant &value) const;
+
     virtual void paint(const PropertyBrowserItem *item, QPainter *painter, const QRect &rect) const;
 
     virtual PropertyBrowserEditor *createEditor(const PropertyBrowserItem *item, QWidget *parent) const;
@@ -56,24 +58,40 @@ public:
     virtual PropertyBrowserEditor *createEditor(const PropertyBrowserItem *item, QWidget *parent) const override;
 };
 
-class IntPropertyBrowserType : public PropertyBrowserType
+class NumericPropertyBrowserType : public PropertyBrowserType
 {
     Q_OBJECT
 
 public:
-    explicit IntPropertyBrowserType(QObject *parent = nullptr);
+    explicit NumericPropertyBrowserType(QObject *parent = nullptr);
+    NumericPropertyBrowserType(const QVariant &min, const QVariant &max, QObject *parent = nullptr);
+
+protected:
+    pcx::aligned_store<32> cache;
+};
+
+class IntPropertyBrowserType : public NumericPropertyBrowserType
+{
+    Q_OBJECT
+
+public:
+    using NumericPropertyBrowserType::NumericPropertyBrowserType;
+
+    virtual bool validate(const PropertyBrowserItem *item, const QVariant &value) const override;
 
     virtual PropertyBrowserEditor *createEditor(const PropertyBrowserItem *item, QWidget *parent) const override;
 };
 
-class FloatPropertyBrowserType : public PropertyBrowserType
+class FloatPropertyBrowserType : public NumericPropertyBrowserType
 {
     Q_OBJECT
 
 public:
-    explicit FloatPropertyBrowserType(QObject *parent = nullptr);
+    using NumericPropertyBrowserType::NumericPropertyBrowserType;
 
     virtual QString valueText(const PropertyBrowserItem *item) const override;
+
+    virtual bool validate(const PropertyBrowserItem *item, const QVariant &value) const override;
 
     virtual PropertyBrowserEditor *createEditor(const PropertyBrowserItem *item, QWidget *parent) const override;
 };
