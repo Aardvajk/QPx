@@ -34,10 +34,11 @@ public:
     Flags flags() const;
     QVariant value() const;
 
-    PropertyBrowserItem *addProperty(PropertyBrowserItem *property);
-    PropertyBrowserItem *property(int index) const;
+    PropertyBrowserItem *addItem(PropertyBrowserItem *item);
+    PropertyBrowserItem *item(int index) const;
 
-    int propertyCount() const;
+    int itemCount() const;
+    int itemIndex(const PropertyBrowserItem *item) const;
 
 signals:
     void valueChanged(const QVariant &value);

@@ -55,20 +55,31 @@ QVariant QPx::PropertyBrowserItem::value() const
     return cache.get<Cache>().value;
 }
 
-QPx::PropertyBrowserItem *QPx::PropertyBrowserItem::addProperty(PropertyBrowserItem *property)
+QPx::PropertyBrowserItem *QPx::PropertyBrowserItem::addItem(PropertyBrowserItem *property)
 {
     cache.get<Cache>().props.append(property);
     return property;
 }
 
-QPx::PropertyBrowserItem *QPx::PropertyBrowserItem::property(int index) const
+QPx::PropertyBrowserItem *QPx::PropertyBrowserItem::item(int index) const
 {
     return cache.get<Cache>().props[index];
 }
 
-int QPx::PropertyBrowserItem::propertyCount() const
+int QPx::PropertyBrowserItem::itemCount() const
 {
     return cache.get<Cache>().props.count();
+}
+
+int QPx::PropertyBrowserItem::itemIndex(const QPx::PropertyBrowserItem *item) const
+{
+    auto &p = cache.get<Cache>().props;
+    for(int i = 0; i < p.count(); ++i)
+    {
+        if(p[i] == item) return i;
+    }
+
+    return -1;
 }
 
 void QPx::PropertyBrowserItem::setValue(const QVariant &value)

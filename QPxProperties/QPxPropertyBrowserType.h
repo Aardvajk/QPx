@@ -179,9 +179,15 @@ class ColorPropertyBrowserType : public PropertyBrowserType
 public:
     explicit ColorPropertyBrowserType(QObject *parent = nullptr);
 
+    virtual void addProperties(PropertyBrowserItem *item, PropertyBrowserModel *model, const QModelIndex &parent) const override;
+    virtual void updateProperties(PropertyBrowserItem *item, const QVariant &value) const override;
+
     virtual void paint(const PropertyBrowserItem *item, QPainter *painter, const QStyleOptionViewItem &option) const override;
 
     virtual PropertyBrowserDialog *createDialog(const PropertyBrowserItem *item, QWidget *parent) const override;
+
+private slots:
+    void changed(const QVariant &value);
 
 private:
     pcx::aligned_store<8> cache;
