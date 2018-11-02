@@ -8,6 +8,7 @@
 
 class QWidget;
 class QPainter;
+class QStyleOptionViewItem;
 
 namespace QPx
 {
@@ -34,7 +35,7 @@ public:
 
     virtual bool validate(const PropertyBrowserItem *item, const QVariant &value) const;
 
-    virtual void paint(const PropertyBrowserItem *item, QPainter *painter, const QRect &rect) const;
+    virtual void paint(const PropertyBrowserItem *item, QPainter *painter, const QStyleOptionViewItem &option) const;
 
     virtual PropertyBrowserEditor *createEditor(const PropertyBrowserItem *item, QWidget *parent) const;
     virtual PropertyBrowserDialog *createDialog(const PropertyBrowserItem *item, QWidget *parent) const;
@@ -178,7 +179,7 @@ class ColorPropertyBrowserType : public PropertyBrowserType
 public:
     explicit ColorPropertyBrowserType(QObject *parent = nullptr);
 
-    virtual void paint(const PropertyBrowserItem *item, QPainter *painter, const QRect &rect) const override;
+    virtual void paint(const PropertyBrowserItem *item, QPainter *painter, const QStyleOptionViewItem &option) const override;
 
     virtual PropertyBrowserDialog *createDialog(const PropertyBrowserItem *item, QWidget *parent) const override;
 };

@@ -8,6 +8,8 @@
 
 #include <QtGui/QPainter>
 
+#include <QtWidgets/QStyleOptionViewItem>
+
 namespace
 {
 
@@ -90,10 +92,19 @@ bool QPx::PropertyBrowserType::validate(const QPx::PropertyBrowserItem *item, co
     return true;
 }
 
-void QPx::PropertyBrowserType::paint(const PropertyBrowserItem *item, QPainter *painter, const QRect &rect) const
+void QPx::PropertyBrowserType::paint(const PropertyBrowserItem *item, QPainter *painter, const QStyleOptionViewItem &option) const
 {
-    auto r = rect.adjusted(2, 0, 0, 0);
+    auto r = option.rect.adjusted(2, 0, 0, 0);
+
+    auto pen = painter->pen();
+    if(!(option.state & QStyle::State_Enabled))
+    {
+        painter->setPen(option.palette.color(QPalette::Disabled, QPalette::Text));
+    }
+
     painter->drawText(r, Qt::AlignVCenter | Qt::AlignLeft, QFontMetrics(painter->font()).elidedText(valueText(item), Qt::ElideRight, r.width()));
+
+    painter->setPen(pen);
 }
 
 QPx::PropertyBrowserEditor *QPx::PropertyBrowserType::createEditor(const PropertyBrowserItem *item, QWidget *parent) const
@@ -267,9 +278,9 @@ QPx::ColorPropertyBrowserType::ColorPropertyBrowserType(QObject *parent) : Prope
 {
 }
 
-void QPx::ColorPropertyBrowserType::paint(const PropertyBrowserItem *item, QPainter *painter, const QRect &rect) const
+void QPx::ColorPropertyBrowserType::paint(const PropertyBrowserItem *item, QPainter *painter, const QStyleOptionViewItem &option) const
 {
-    painter->fillRect(rect.adjusted(2, 2, -4, -2), qvariant_cast<QColor>(item->value()));
+    painter->fillRect(option.rect.adjusted(2, 2, -4, -2), qvariant_cast<QColor>(item->value()));
 }
 
 QPx::PropertyBrowserDialog *QPx::ColorPropertyBrowserType::createDialog(const PropertyBrowserItem *item, QWidget *parent) const
