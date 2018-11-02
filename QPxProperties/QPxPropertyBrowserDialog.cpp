@@ -7,33 +7,33 @@ QPx::PropertyBrowserDialog::PropertyBrowserDialog(QWidget *parent) : QDialog(par
 {
 }
 
-QPx::ColorPropertyBrowserDialog::ColorPropertyBrowserDialog(QWidget *parent)
+QPx::ProxyPropertyBrowserDialog::ProxyPropertyBrowserDialog(QWidget *parent)
 {
-    cache.alloc<QColor>();
+    cache.alloc<QVariant>();
     setAttribute(Qt::WA_DontShowOnScreen);
 }
 
-QVariant QPx::ColorPropertyBrowserDialog::value() const
+QVariant QPx::ProxyPropertyBrowserDialog::value() const
 {
-    return QVariant::fromValue(cache.get<QColor>());
+    return cache.get<QVariant>();
 }
 
-void QPx::ColorPropertyBrowserDialog::setValue(const QVariant &value)
+void QPx::ProxyPropertyBrowserDialog::setValue(const QVariant &value)
 {
-    cache.get<QColor>() = qvariant_cast<QColor>(value);
+    cache.get<QVariant>() = value;
 }
 
 int QPx::ColorPropertyBrowserDialog::exec()
 {
-    auto &color = cache.get<QColor>();
+    auto &value = cache.get<QVariant>();
 
     QColorDialog d(this);
-    d.setCurrentColor(color);
+    d.setCurrentColor(qvariant_cast<QColor>(value));
 
     int r = d.exec();
     if(r == QDialog::Accepted)
     {
-        color = d.currentColor();
+        value = QVariant::fromValue(d.currentColor());
     }
 
     return r;

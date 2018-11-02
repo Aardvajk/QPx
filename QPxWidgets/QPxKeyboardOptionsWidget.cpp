@@ -203,7 +203,7 @@ void QPx::KeyboardOptionsWidget::currentItemChanged(QTreeWidgetItem *current, QT
     {
         if(static_cast<TreeWidgetItem*>(current)->conflict)
         {
-            c.warning->setText(QString("Key sequence has conflicts. <a href=\"%1\">View</a>.").arg(current->data(2, Qt::DisplayRole).toString()));
+            c.warning->setText(QString("Key sequence has conflicts <a href=\"%1\">View</a>").arg(current->data(2, Qt::DisplayRole).toString()));
             c.warning->setIcon(style()->standardIcon(QStyle::SP_MessageBoxWarning));
 
             clearWarning = false;

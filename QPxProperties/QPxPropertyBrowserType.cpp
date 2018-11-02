@@ -33,27 +33,20 @@ template<typename T> bool NumericCache::validate(const QVariant &value) const
 class EnumCache
 {
 public:
-    explicit EnumCache(const QStringList &values);
-    explicit EnumCache(const QList<QPair<int, QString> > &values);
+    explicit EnumCache(const QStringList &values){ for(int i = 0; i < values.count(); ++i) map[i] = values[i]; }
+    explicit EnumCache(const QList<QPair<int, QString> > &values){ for(int i = 0; i < values.count(); ++i) map[values[i].first] = values[i].second; }
 
     QMap<int, QString> map;
 };
 
-EnumCache::EnumCache(const QStringList &values)
+class FlagCache
 {
-    for(int i = 0; i < values.count(); ++i)
-    {
-        map[i] = values[i];
-    }
-}
+public:
+    FlagCache(const QStringList &values, QObject *parent) : type(new QPx::BoolPropertyBrowserType(parent)) { unsigned v = 1; foreach(const QString &value, values){ map[v] = value; v *= 2; } }
 
-EnumCache::EnumCache(const QList<QPair<int, QString> > &values)
-{
-    for(int i = 0; i < values.count(); ++i)
-    {
-        map[values[i].first] = values[i].second;
-    }
-}
+    QPx::BoolPropertyBrowserType *type;
+    QMap<unsigned, QString> map;
+};
 
 class PointCache
 {
@@ -87,6 +80,11 @@ bool QPx::PropertyBrowserType::readOnly() const
     return false;
 }
 
+bool QPx::PropertyBrowserType::checkable() const
+{
+    return false;
+}
+
 bool QPx::PropertyBrowserType::validate(const QPx::PropertyBrowserItem *item, const QVariant &value) const
 {
     return true;
@@ -94,7 +92,8 @@ bool QPx::PropertyBrowserType::validate(const QPx::PropertyBrowserItem *item, co
 
 void QPx::PropertyBrowserType::paint(const PropertyBrowserItem *item, QPainter *painter, const QRect &rect) const
 {
-    painter->drawText(rect.adjusted(2, 0, 0, 0), Qt::AlignVCenter | Qt::AlignLeft, valueText(item));
+    auto r = rect.adjusted(2, 0, 0, 0);
+    painter->drawText(r, Qt::AlignVCenter | Qt::AlignLeft, QFontMetrics(painter->font()).elidedText(valueText(item), Qt::ElideRight, r.width()));
 }
 
 QPx::PropertyBrowserEditor *QPx::PropertyBrowserType::createEditor(const PropertyBrowserItem *item, QWidget *parent) const
@@ -171,18 +170,9 @@ QString QPx::BoolPropertyBrowserType::valueText(const PropertyBrowserItem *item)
     return QString();
 }
 
-QPx::ColorPropertyBrowserType::ColorPropertyBrowserType(QObject *parent) : PropertyBrowserType(parent)
+bool QPx::BoolPropertyBrowserType::checkable() const
 {
-}
-
-void QPx::ColorPropertyBrowserType::paint(const PropertyBrowserItem *item, QPainter *painter, const QRect &rect) const
-{
-    painter->fillRect(rect.adjusted(2, 2, -4, -2), qvariant_cast<QColor>(item->value()));
-}
-
-QPx::PropertyBrowserDialog *QPx::ColorPropertyBrowserType::createDialog(const PropertyBrowserItem *item, QWidget *parent) const
-{
-    return new ColorPropertyBrowserDialog(parent);
+    return true;
 }
 
 QPx::AbstractEnumPropertyBrowserType::AbstractEnumPropertyBrowserType(const QStringList &values, QObject *parent) : PropertyBrowserType(parent)
@@ -203,6 +193,88 @@ QString QPx::AbstractEnumPropertyBrowserType::valueText(const PropertyBrowserIte
 QPx::PropertyBrowserEditor *QPx::AbstractEnumPropertyBrowserType::createEditor(const PropertyBrowserItem *item, QWidget *parent) const
 {
     return new EnumPropertyBrowserEditor(this, cache.get<EnumCache>().map, parent);
+}
+
+QPx::AbstractFlagPropertyBrowserType::AbstractFlagPropertyBrowserType(const QStringList &values, QObject *parent) : PropertyBrowserType(parent)
+{
+    cache.alloc<FlagCache>(values, this);
+}
+
+void QPx::AbstractFlagPropertyBrowserType::addProperties(QPx::PropertyBrowserItem *item, QPx::PropertyBrowserModel *model, const QModelIndex &parent) const
+{
+    auto &c = cache.get<FlagCache>();
+
+    foreach(auto v, c.map.keys())
+    {
+        auto i = item->addProperty(new QPx::PropertyBrowserItem(c.type, model, parent, c.map[v], item->flags(), toUnsigned(item->value()) & v, item));
+        connect(i, SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
+    }
+}
+
+void QPx::AbstractFlagPropertyBrowserType::updateProperties(QPx::PropertyBrowserItem *item, const QVariant &value) const
+{
+    auto val = toUnsigned(value);
+
+    unsigned v = 1;
+    for(int i = 0; i < item->propertyCount(); ++i)
+    {
+        item->property(i)->setValue(val & v);
+        v *= 2;
+    }
+}
+
+QString QPx::AbstractFlagPropertyBrowserType::valueText(const QPx::PropertyBrowserItem *item) const
+{
+    auto &map = cache.get<FlagCache>().map;
+    auto value = toUnsigned(item->value());
+
+    QStringList vs;
+    foreach(auto v, map.keys())
+    {
+        if(value & v) vs.append(map[v]);
+    }
+
+    return vs.join(", ");
+}
+
+bool QPx::AbstractFlagPropertyBrowserType::readOnly() const
+{
+    return true;
+}
+
+void QPx::AbstractFlagPropertyBrowserType::changed(const QVariant &value)
+{
+    auto &map = cache.get<FlagCache>().map;
+
+    auto item = static_cast<PropertyBrowserItem*>(sender());
+    auto parent = static_cast<PropertyBrowserItem*>(item->parent());
+
+    auto p = toUnsigned(parent->value());
+
+    foreach(auto v, map.keys())
+    {
+        if(item->name() == map[v])
+        {
+            value.toBool() ? p |= v : p &= (~v);
+            break;
+        }
+    }
+
+    parent->setValue(toFlagValue(p));
+}
+
+QPx::ColorPropertyBrowserType::ColorPropertyBrowserType(QObject *parent) : PropertyBrowserType(parent)
+{
+}
+
+void QPx::ColorPropertyBrowserType::paint(const PropertyBrowserItem *item, QPainter *painter, const QRect &rect) const
+{
+    painter->fillRect(rect.adjusted(2, 2, -4, -2), qvariant_cast<QColor>(item->value()));
+}
+
+QPx::PropertyBrowserDialog *QPx::ColorPropertyBrowserType::createDialog(const PropertyBrowserItem *item, QWidget *parent) const
+{
+    return new ColorPropertyBrowserDialog(parent);
 }
 
 QPx::PointPropertyBrowserType::PointPropertyBrowserType(QObject *parent) : PropertyBrowserType(parent)

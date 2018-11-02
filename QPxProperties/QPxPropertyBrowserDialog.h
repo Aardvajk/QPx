@@ -21,21 +21,29 @@ public:
     virtual void setValue(const QVariant &value) = 0;
 };
 
-class ColorPropertyBrowserDialog : public PropertyBrowserDialog
+class ProxyPropertyBrowserDialog : public PropertyBrowserDialog
 {
     Q_OBJECT
 
 public:
-    explicit ColorPropertyBrowserDialog(QWidget *parent = nullptr);
+    explicit ProxyPropertyBrowserDialog(QWidget *parent = nullptr);
 
     virtual QVariant value() const override;
     virtual void setValue(const QVariant &value) override;
 
+protected:
+    pcx::aligned_store<16> cache;
+};
+
+class ColorPropertyBrowserDialog : public ProxyPropertyBrowserDialog
+{
+    Q_OBJECT
+
+public:
+    using ProxyPropertyBrowserDialog::ProxyPropertyBrowserDialog;
+
 public slots:
     virtual int exec() override;
-
-private:
-    pcx::aligned_store<16> cache;
 };
 
 }

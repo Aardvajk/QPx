@@ -32,7 +32,7 @@ void QPx::PropertyBrowserDelegate::paint(QPainter *painter, const QStyleOptionVi
 {
     auto item = static_cast<const PropertyBrowserItem*>(QPx::TreeModel::userData(index));
 
-    if(item->value().type() != QVariant::Bool && index.column() == 1)
+    if(!item->type()->checkable() && index.column() == 1)
     {
         QStyledItemDelegate::paint(painter, option, QModelIndex());
         item->type()->paint(item, painter, option.rect);

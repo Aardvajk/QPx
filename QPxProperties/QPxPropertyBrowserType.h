@@ -28,7 +28,9 @@ public:
     virtual void updateProperties(PropertyBrowserItem *item, const QVariant &value) const;
 
     virtual QString valueText(const PropertyBrowserItem *item) const;
+
     virtual bool readOnly() const;
+    virtual bool checkable() const;
 
     virtual bool validate(const PropertyBrowserItem *item, const QVariant &value) const;
 
@@ -104,18 +106,8 @@ public:
     explicit BoolPropertyBrowserType(QObject *parent = nullptr);
 
     virtual QString valueText(const PropertyBrowserItem *item) const override;
-};
 
-class ColorPropertyBrowserType : public PropertyBrowserType
-{
-    Q_OBJECT
-
-public:
-    explicit ColorPropertyBrowserType(QObject *parent = nullptr);
-
-    virtual void paint(const PropertyBrowserItem *item, QPainter *painter, const QRect &rect) const override;
-
-    virtual PropertyBrowserDialog *createDialog(const PropertyBrowserItem *item, QWidget *parent) const override;
+    virtual bool checkable() const override;
 };
 
 class AbstractEnumPropertyBrowserType : public PropertyBrowserType
@@ -147,6 +139,50 @@ private:
     static QList<QPair<int, QString> > convert(const QList<QPair<T, QString> > &values){ QList<QPair<int, QString> > r; for(auto i: values) r.append(qMakePair(static_cast<int>(i.first), i.second)); return r; }
 };
 
+class AbstractFlagPropertyBrowserType : public PropertyBrowserType
+{
+    Q_OBJECT
+
+public:
+    AbstractFlagPropertyBrowserType(const QStringList &values, QObject *parent = nullptr);
+
+    virtual void addProperties(PropertyBrowserItem *item, PropertyBrowserModel *model, const QModelIndex &parent) const override;
+    virtual void updateProperties(PropertyBrowserItem *item, const QVariant &value) const override;
+
+    virtual QString valueText(const PropertyBrowserItem *item) const override;
+    virtual bool readOnly() const override;
+
+    virtual QVariant toFlagValue(unsigned value) const = 0;
+    virtual unsigned toUnsigned(const QVariant &value) const = 0;
+
+private slots:
+    void changed(const QVariant &value);
+
+private:
+    pcx::aligned_store<64> cache;
+};
+
+template<typename F, typename T> class FlagPropertyBrowserType : public AbstractFlagPropertyBrowserType
+{
+public:
+    FlagPropertyBrowserType(const QStringList &values, QObject *parent = nullptr) : AbstractFlagPropertyBrowserType(values, parent) { }
+
+    virtual QVariant toFlagValue(unsigned value) const { return QVariant::fromValue(T(static_cast<F>(value))); }
+    virtual unsigned toUnsigned(const QVariant &value) const { return static_cast<unsigned>(static_cast<F>(qvariant_cast<T>(value))); }
+};
+
+class ColorPropertyBrowserType : public PropertyBrowserType
+{
+    Q_OBJECT
+
+public:
+    explicit ColorPropertyBrowserType(QObject *parent = nullptr);
+
+    virtual void paint(const PropertyBrowserItem *item, QPainter *painter, const QRect &rect) const override;
+
+    virtual PropertyBrowserDialog *createDialog(const PropertyBrowserItem *item, QWidget *parent) const override;
+};
+
 class PointPropertyBrowserType : public PropertyBrowserType
 {
     Q_OBJECT
@@ -154,7 +190,7 @@ class PointPropertyBrowserType : public PropertyBrowserType
 public:
     PointPropertyBrowserType(QObject *parent = nullptr);
 
-    virtual void addProperties(PropertyBrowserItem *item, PropertyBrowserModel *model, const QModelIndex &parent) const;
+    virtual void addProperties(PropertyBrowserItem *item, PropertyBrowserModel *model, const QModelIndex &parent) const override;
     virtual void updateProperties(PropertyBrowserItem *item, const QVariant &value) const override;
 
     virtual QString valueText(const PropertyBrowserItem *item) const override;
