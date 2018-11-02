@@ -1,5 +1,5 @@
-#ifndef QPXPROPERTYBROWSERTYPE_H
-#define QPXPROPERTYBROWSERTYPE_H
+#ifndef QPX_PROPERTYBROWSERTYPE_H
+#define QPX_PROPERTYBROWSERTYPE_H
 
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
@@ -215,4 +215,4 @@ private:
 
 }
 
-#endif // QPXPROPERTYBROWSERTYPE_H
+#endif // QPX_PROPERTYBROWSERTYPE_H
