@@ -182,6 +182,9 @@ public:
     virtual void paint(const PropertyBrowserItem *item, QPainter *painter, const QStyleOptionViewItem &option) const override;
 
     virtual PropertyBrowserDialog *createDialog(const PropertyBrowserItem *item, QWidget *parent) const override;
+
+private:
+    pcx::aligned_store<8> cache;
 };
 
 class PointPropertyBrowserType : public PropertyBrowserType

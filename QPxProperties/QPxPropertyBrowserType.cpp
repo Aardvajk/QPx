@@ -280,7 +280,15 @@ QPx::ColorPropertyBrowserType::ColorPropertyBrowserType(QObject *parent) : Prope
 
 void QPx::ColorPropertyBrowserType::paint(const PropertyBrowserItem *item, QPainter *painter, const QStyleOptionViewItem &option) const
 {
-    painter->fillRect(option.rect.adjusted(2, 2, -4, -2), qvariant_cast<QColor>(item->value()));
+    auto r = option.rect.adjusted(2, 2, -2, -2);
+    auto c = qvariant_cast<QColor>(item->value());
+
+    if(c.alpha() < 255)
+    {
+        painter->fillRect(r, QBrush(QColor(220, 220, 220), Qt::DiagCrossPattern));
+    }
+
+    painter->fillRect(r, c);
 }
 
 QPx::PropertyBrowserDialog *QPx::ColorPropertyBrowserType::createDialog(const PropertyBrowserItem *item, QWidget *parent) const

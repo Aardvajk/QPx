@@ -44,6 +44,9 @@ public:
 
 public slots:
     virtual int exec() override;
+
+private:
+    bool alpha;
 };
 
 }

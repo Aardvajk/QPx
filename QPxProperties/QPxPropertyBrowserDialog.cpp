@@ -28,6 +28,8 @@ int QPx::ColorPropertyBrowserDialog::exec()
     auto &value = cache.get<QVariant>();
 
     QColorDialog d(this);
+
+    d.setOption(QColorDialog::ShowAlphaChannel);
     d.setCurrentColor(qvariant_cast<QColor>(value));
 
     int r = d.exec();
