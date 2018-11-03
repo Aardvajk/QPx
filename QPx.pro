@@ -44,12 +44,12 @@ SOURCES += \
     QPxWidgets/QPxKeyboardOptionsWidget.cpp \
     QPxWidgets/QPxMainWindow.cpp \
     QPxCore/QPxTreeModel.cpp \
-    QPxProperties/QPxPropertyBrowserDelegate.cpp \
-    QPxProperties/QPxPropertyBrowserDialog.cpp \
-    QPxProperties/QPxPropertyBrowserEditor.cpp \
-    QPxProperties/QPxPropertyBrowserItem.cpp \
-    QPxProperties/QPxPropertyBrowserModel.cpp \
-    QPxProperties/QPxPropertyBrowserType.cpp \
+    QPxPropertyBrowser/QPxPropertyBrowserDelegate.cpp \
+    QPxPropertyBrowser/QPxPropertyBrowserDialog.cpp \
+    QPxPropertyBrowser/QPxPropertyBrowserEditor.cpp \
+    QPxPropertyBrowser/QPxPropertyBrowserItem.cpp \
+    QPxPropertyBrowser/QPxPropertyBrowserModel.cpp \
+    QPxPropertyBrowser/QPxPropertyBrowserType.cpp \
     internal/qpx_combo_box.cpp
 
 HEADERS += \
@@ -67,10 +67,10 @@ HEADERS += \
     QPxWidgets/QPxMainWindow.h \
     internal/qpx_settings_parser.h \
     QPxCore/QPxTreeModel.h \
-    QPxProperties/QPxPropertyBrowserDelegate.h \
-    QPxProperties/QPxPropertyBrowserDialog.h \
-    QPxProperties/QPxPropertyBrowserEditor.h \
-    QPxProperties/QPxPropertyBrowserItem.h \
-    QPxProperties/QPxPropertyBrowserModel.h \
-    QPxProperties/QPxPropertyBrowserType.h \
+    QPxPropertyBrowser/QPxPropertyBrowserDelegate.h \
+    QPxPropertyBrowser/QPxPropertyBrowserDialog.h \
+    QPxPropertyBrowser/QPxPropertyBrowserEditor.h \
+    QPxPropertyBrowser/QPxPropertyBrowserItem.h \
+    QPxPropertyBrowser/QPxPropertyBrowserModel.h \
+    QPxPropertyBrowser/QPxPropertyBrowserType.h \
     internal/qpx_combo_box.h

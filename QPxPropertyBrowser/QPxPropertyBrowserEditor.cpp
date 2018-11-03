@@ -1,4 +1,4 @@
-#include "QPxProperties/QPxPropertyBrowserEditor.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserEditor.h"
 
 #include "QPxPropertyBrowserType.h"
 

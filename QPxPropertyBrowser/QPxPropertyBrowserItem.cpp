@@ -1,13 +1,11 @@
-#include "QPxProperties/QPxPropertyBrowserItem.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserItem.h"
 
-#include "QPxProperties/QPxPropertyBrowserModel.h"
-#include "QPxProperties/QPxPropertyBrowserType.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserModel.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserType.h"
 
 #include <pcx/scoped_lock.h>
 
 #include <QtGui/QPainter>
-
-#include <QtWidgets/QSpinBox>
 
 namespace
 {
@@ -21,7 +19,7 @@ public:
     QString name;
     QPx::PropertyBrowserItem::Flags flags;
     QVariant value;
-    QVector<QPx::PropertyBrowserItem*> props;
+    QList<QPx::PropertyBrowserItem*> props;
     bool lock;
 };
 
@@ -55,31 +53,15 @@ QVariant QPx::PropertyBrowserItem::value() const
     return cache.get<Cache>().value;
 }
 
-QPx::PropertyBrowserItem *QPx::PropertyBrowserItem::addItem(PropertyBrowserItem *property)
+QPx::PropertyBrowserItem *QPx::PropertyBrowserItem::addItem(PropertyBrowserItem *item)
 {
-    cache.get<Cache>().props.append(property);
-    return property;
+    cache.get<Cache>().props.append(item);
+    return item;
 }
 
-QPx::PropertyBrowserItem *QPx::PropertyBrowserItem::item(int index) const
+QList<QPx::PropertyBrowserItem*> QPx::PropertyBrowserItem::items() const
 {
-    return cache.get<Cache>().props[index];
-}
-
-int QPx::PropertyBrowserItem::itemCount() const
-{
-    return cache.get<Cache>().props.count();
-}
-
-int QPx::PropertyBrowserItem::itemIndex(const QPx::PropertyBrowserItem *item) const
-{
-    auto &p = cache.get<Cache>().props;
-    for(int i = 0; i < p.count(); ++i)
-    {
-        if(p[i] == item) return i;
-    }
-
-    return -1;
+    return cache.get<Cache>().props;
 }
 
 void QPx::PropertyBrowserItem::setValue(const QVariant &value)

@@ -1,7 +1,7 @@
 #include "QPxPropertyBrowserModel.h"
 
-#include "QPxProperties/QPxPropertyBrowserType.h"
-#include "QPxProperties/QPxPropertyBrowserItem.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserType.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserItem.h"
 
 #include <pcx/scoped_lock.h>
 

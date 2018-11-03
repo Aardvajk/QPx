@@ -1,8 +1,8 @@
-#include "QPxProperties/QPxPropertyBrowserType.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserType.h"
 
-#include "QPxProperties/QPxPropertyBrowserItem.h"
-#include "QPxProperties/QPxPropertyBrowserEditor.h"
-#include "QPxProperties/QPxPropertyBrowserDialog.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserItem.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserEditor.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserDialog.h"
 
 #include <QtCore/QMap>
 
@@ -48,14 +48,6 @@ public:
 
     QPx::BoolPropertyBrowserType *type;
     QMap<unsigned, QString> map;
-};
-
-class ColorCache
-{
-public:
-    ColorCache(QObject *parent) : type(new QPx::IntPropertyBrowserType(0, 255, parent)) { }
-
-    QPx::IntPropertyBrowserType *type;
 };
 
 class PointCache
@@ -235,9 +227,9 @@ void QPx::AbstractFlagPropertyBrowserType::updateProperties(QPx::PropertyBrowser
     auto val = toUnsigned(value);
 
     unsigned v = 1;
-    for(int i = 0; i < item->itemCount(); ++i)
+    for(int i = 0; i < item->items().count(); ++i)
     {
-        item->item(i)->setValue(val & v);
+        item->items()[i]->setValue(val & v);
         v *= 2;
     }
 }
@@ -284,33 +276,6 @@ void QPx::AbstractFlagPropertyBrowserType::changed(const QVariant &value)
 
 QPx::ColorPropertyBrowserType::ColorPropertyBrowserType(QObject *parent) : PropertyBrowserType(parent)
 {
-    cache.alloc<ColorCache>(this);
-}
-
-void QPx::ColorPropertyBrowserType::addProperties(QPx::PropertyBrowserItem *item, QPx::PropertyBrowserModel *model, const QModelIndex &parent) const
-{
-    auto type = cache.get<ColorCache>().type;
-    auto color = qvariant_cast<QColor>(item->value());
-
-    item->addItem(new PropertyBrowserItem(type, model, parent, "Red", item->flags(), color.red(), item));
-    item->addItem(new PropertyBrowserItem(type, model, parent, "Green", item->flags(), color.green(), item));
-    item->addItem(new PropertyBrowserItem(type, model, parent, "Blue", item->flags(), color.blue(), item));
-    item->addItem(new PropertyBrowserItem(type, model, parent, "Alpha", item->flags(), color.alpha(), item));
-
-    for(int i = 0; i < item->itemCount(); ++i)
-    {
-        connect(item->item(i), SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
-    }
-}
-
-void QPx::ColorPropertyBrowserType::updateProperties(QPx::PropertyBrowserItem *item, const QVariant &value) const
-{
-    auto color = qvariant_cast<QColor>(value);
-
-    item->item(0)->setValue(color.red());
-    item->item(1)->setValue(color.green());
-    item->item(2)->setValue(color.blue());
-    item->item(3)->setValue(color.alpha());
 }
 
 void QPx::ColorPropertyBrowserType::paint(const PropertyBrowserItem *item, QPainter *painter, const QStyleOptionViewItem &option) const
@@ -331,24 +296,6 @@ QPx::PropertyBrowserDialog *QPx::ColorPropertyBrowserType::createDialog(const Pr
     return new ColorPropertyBrowserDialog(parent);
 }
 
-void QPx::ColorPropertyBrowserType::changed(const QVariant &value)
-{
-    auto item = static_cast<PropertyBrowserItem*>(sender());
-    auto parent = static_cast<PropertyBrowserItem*>(item->parent());
-
-    auto color = qvariant_cast<QColor>(parent->value());
-
-    switch(parent->itemIndex(item))
-    {
-        case 0: color.setRed(value.toInt()); break;
-        case 1: color.setGreen(value.toInt()); break;
-        case 2: color.setBlue(value.toInt()); break;
-        case 3: color.setAlpha(value.toInt()); break;
-    }
-
-    parent->setValue(QVariant::fromValue(color));
-}
-
 QPx::PointPropertyBrowserType::PointPropertyBrowserType(QObject *parent) : PropertyBrowserType(parent)
 {
     cache.alloc<PointCache>(this);
@@ -359,16 +306,16 @@ void QPx::PointPropertyBrowserType::addProperties(QPx::PropertyBrowserItem *item
     auto type = cache.get<PointCache>().type;
 
     item->addItem(new PropertyBrowserItem(type, model, parent, "X", item->flags(), item->value().toPoint().x(), item));
-    connect(item->item(0), SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
+    connect(item->items()[0], SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
 
     item->addItem(new PropertyBrowserItem(type, model, parent, "Y", item->flags(), item->value().toPoint().y(), item));
-    connect(item->item(1), SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
+    connect(item->items()[1], SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
 }
 
 void QPx::PointPropertyBrowserType::updateProperties(QPx::PropertyBrowserItem *item, const QVariant &value) const
 {
-    item->item(0)->setValue(value.toPoint().x());
-    item->item(1)->setValue(value.toPoint().y());
+    item->items()[0]->setValue(value.toPoint().x());
+    item->items()[1]->setValue(value.toPoint().y());
 }
 
 QString QPx::PointPropertyBrowserType::valueText(const PropertyBrowserItem *item) const
@@ -389,7 +336,7 @@ void QPx::PointPropertyBrowserType::changed(const QVariant &value)
 
     auto p = parent->value().toPoint();
 
-    switch(parent->itemIndex(item))
+    switch(parent->items().indexOf(item))
     {
         case 0: p.setX(value.toInt()); break;
         case 1: p.setY(value.toInt()); break;

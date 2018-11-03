@@ -1,10 +1,10 @@
-#include "QPxProperties/QPxPropertyBrowserDelegate.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserDelegate.h"
 
-#include "QPxProperties/QPxPropertyBrowserType.h"
-#include "QPxProperties/QPxPropertyBrowserItem.h"
-#include "QPxProperties/QPxPropertyBrowserModel.h"
-#include "QPxProperties/QPxPropertyBrowserEditor.h"
-#include "QPxProperties/QPxPropertyBrowserDialog.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserType.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserItem.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserModel.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserEditor.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserDialog.h"
 
 #include <pcx/scoped_ptr.h>
 

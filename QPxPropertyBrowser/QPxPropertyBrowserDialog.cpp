@@ -1,7 +1,8 @@
-#include "QPxProperties/QPxPropertyBrowserDialog.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserDialog.h"
 
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QColorDialog>
+#include <QtWidgets/QApplication>
 
 QPx::PropertyBrowserDialog::PropertyBrowserDialog(QWidget *parent) : QDialog(parent)
 {

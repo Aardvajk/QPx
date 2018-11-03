@@ -35,10 +35,7 @@ public:
     QVariant value() const;
 
     PropertyBrowserItem *addItem(PropertyBrowserItem *item);
-    PropertyBrowserItem *item(int index) const;
-
-    int itemCount() const;
-    int itemIndex(const PropertyBrowserItem *item) const;
+    QList<PropertyBrowserItem*> items() const;
 
 signals:
     void valueChanged(const QVariant &value);
