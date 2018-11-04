@@ -217,7 +217,7 @@ void QPx::AbstractFlagPropertyBrowserType::addProperties(QPx::PropertyBrowserIte
 
     foreach(auto v, c.map.keys())
     {
-        auto i = item->addItem(new QPx::PropertyBrowserItem(c.type, model, parent, c.map[v], item->flags(), toUnsigned(item->value()) & v, item));
+        auto i = item->addItem(new QPx::PropertyBrowserItem(c.type, model, parent, item->flags(), c.map[v], toUnsigned(item->value()) & v, item));
         connect(i, SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
     }
 }
@@ -305,10 +305,10 @@ void QPx::PointPropertyBrowserType::addProperties(QPx::PropertyBrowserItem *item
 {
     auto type = cache.get<PointCache>().type;
 
-    item->addItem(new PropertyBrowserItem(type, model, parent, "X", item->flags(), item->value().toPoint().x(), item));
+    item->addItem(new PropertyBrowserItem(type, model, parent, item->flags(), "X", item->value().toPoint().x(), item));
     connect(item->items()[0], SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
 
-    item->addItem(new PropertyBrowserItem(type, model, parent, "Y", item->flags(), item->value().toPoint().y(), item));
+    item->addItem(new PropertyBrowserItem(type, model, parent, item->flags(), "Y", item->value().toPoint().y(), item));
     connect(item->items()[1], SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
 }
 
