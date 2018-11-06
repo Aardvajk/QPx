@@ -1,6 +1,5 @@
 #include "QPxPropertyBrowser/QPxPropertyBrowserItem.h"
 
-#include "QPxPropertyBrowser/QPxPropertyBrowserItemProxy.h"
 #include "QPxPropertyBrowser/QPxPropertyBrowserModel.h"
 #include "QPxPropertyBrowser/QPxPropertyBrowserType.h"
 

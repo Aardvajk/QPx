@@ -17,7 +17,6 @@ class AbstractEditorModel : public QObject
 public:
     explicit AbstractEditorModel(QObject *parent = nullptr);
 
-    virtual void beginCommand(AbstractEditorCommand *command) = 0;
     void endCommand(AbstractEditorCommand *command);
 
     bool isModified() const;
