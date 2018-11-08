@@ -76,4 +76,5 @@ HEADERS += \
     QPxPropertyBrowser/QPxPropertyBrowserType.h \
     internal/qpx_combo_box.h \
     QPxCore/QPxStdHash.h \
-    QPxWidgets/QPxLayouts.h
+    QPxWidgets/QPxLayouts.h \
+    QPxCore/QPxMetaType.h
