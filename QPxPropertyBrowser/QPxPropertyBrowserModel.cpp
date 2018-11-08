@@ -37,6 +37,12 @@ QPx::PropertyBrowserModel::PropertyBrowserModel(QObject *parent) : TreeModel(par
     cache.alloc<Cache>();
 }
 
+void QPx::PropertyBrowserModel::clear()
+{
+    cache.get<Cache>().map.clear();
+    TreeModel::clear();
+}
+
 Qt::ItemFlags QPx::PropertyBrowserModel::flags(const QModelIndex &index) const
 {
     auto value = TreeModel::flags(index);
@@ -103,17 +109,25 @@ bool QPx::PropertyBrowserModel::setData(const QModelIndex &index, const QVariant
     {
         if(role == Qt::EditRole)
         {
-            item->setValue(value);
+            if(item->value() != value)
+            {
+                item->setValue(value);
 
-            emit dataChanged(index, index);
-            return true;
+                emit dataChanged(index, index);
+                return true;
+            }
         }
         else if(role == Qt::CheckStateRole)
         {
-            item->setValue(value.toInt() == Qt::Checked ? true : false);
+            bool checkState = value.toInt() == Qt::Checked ? true : false;
 
-            emit dataChanged(index, index);
-            return true;
+            if(item->value().toBool() != checkState)
+            {
+                item->setValue(checkState);
+
+                emit dataChanged(index, index);
+                return true;
+            }
         }
     }
 

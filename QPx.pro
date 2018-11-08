@@ -50,7 +50,8 @@ SOURCES += \
     QPxPropertyBrowser/QPxPropertyBrowserItem.cpp \
     QPxPropertyBrowser/QPxPropertyBrowserModel.cpp \
     QPxPropertyBrowser/QPxPropertyBrowserType.cpp \
-    internal/qpx_combo_box.cpp
+    internal/qpx_combo_box.cpp \
+    QPxWidgets/QPxLayouts.cpp
 
 HEADERS += \
     QPxWidgets/QPxAbstractTileWidget.h \
@@ -74,4 +75,5 @@ HEADERS += \
     QPxPropertyBrowser/QPxPropertyBrowserModel.h \
     QPxPropertyBrowser/QPxPropertyBrowserType.h \
     internal/qpx_combo_box.h \
-    QPxCore/QPxStdHash.h
+    QPxCore/QPxStdHash.h \
+    QPxWidgets/QPxLayouts.h

@@ -15,6 +15,8 @@ class TreeModel : public QAbstractItemModel
 public:
     explicit TreeModel(QObject *parent = nullptr);
 
+    virtual void clear();
+
     virtual bool setUserData(const QModelIndex &index, void *value);
 
     virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;

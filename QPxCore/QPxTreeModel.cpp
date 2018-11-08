@@ -33,6 +33,18 @@ QPx::TreeModel::TreeModel(QObject *parent) : QAbstractItemModel(parent)
     cache.alloc<Cache>();
 }
 
+void QPx::TreeModel::clear()
+{
+    beginResetModel();
+
+    auto &c = cache.get<Cache>();
+
+    qDeleteAll(c.root->children);
+    c.root->children.clear();
+
+    endResetModel();
+}
+
 bool QPx::TreeModel::setUserData(const QModelIndex &index, void *value)
 {
     if(auto node = static_cast<Node*>(index.internalPointer()))

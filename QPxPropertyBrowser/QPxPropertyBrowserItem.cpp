@@ -89,14 +89,17 @@ QList<QPx::PropertyBrowserItem*> QPx::PropertyBrowserItem::items() const
 
 void QPx::PropertyBrowserItem::setValue(const QVariant &value)
 {
-    auto &c = cache.get<Cache>();
-    if(!c.lock)
+    if(this->value() != value)
     {
-        auto g = pcx::scoped_lock(c.lock);
+        auto &c = cache.get<Cache>();
+        if(!c.lock)
+        {
+            auto g = pcx::scoped_lock(c.lock);
 
-        type()->updateProperties(this, value);
+            type()->updateProperties(this, value);
 
-        c.proxy->setValue(value);
-        emit valueChanged(value);
+            c.proxy->setValue(value);
+            emit valueChanged(value);
+        }
     }
 }

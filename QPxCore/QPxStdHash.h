@@ -6,9 +6,9 @@
 namespace QPx
 {
 
-template<typename T> struct StdHash
+struct StdHash
 {
-    std::size_t operator()(const T &v) const { return static_cast<std::size_t>(qHash(v)); }
+    template<typename T> std::size_t operator()(const T &v) const { return static_cast<std::size_t>(qHash(v)); }
 };
 
 }
