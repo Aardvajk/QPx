@@ -15,17 +15,6 @@ class PropertyBrowserItemProxy;
 class PropertyBrowserModel;
 class PropertyBrowserType;
 
-class PropertyBrowserItemProxy
-{
-public:
-    virtual ~PropertyBrowserItemProxy() = default;
-
-    virtual QString name() const = 0;
-    virtual QVariant value() const = 0;
-
-    virtual void setValue(const QVariant &value) = 0;
-};
-
 class PropertyBrowserItem : public QObject
 {
     Q_OBJECT
@@ -38,8 +27,7 @@ public:
 
     using Flags = pcx::flags<Flag>;
 
-    PropertyBrowserItem(const PropertyBrowserType *type, PropertyBrowserModel *model, const QModelIndex &index, Flags flags, const QString &name, const QVariant &value, QObject *parent = nullptr);
-    PropertyBrowserItem(const PropertyBrowserType *type, PropertyBrowserModel *model, const QModelIndex &index, Flags flags, PropertyBrowserItemProxy *proxy, QObject *parent = nullptr);
+    PropertyBrowserItem(const PropertyBrowserType *type, PropertyBrowserModel *model, const QModelIndex &index, const QString &name, Flags flags, const QVariant &value, QObject *parent = nullptr);
 
     const PropertyBrowserType *type() const;
 

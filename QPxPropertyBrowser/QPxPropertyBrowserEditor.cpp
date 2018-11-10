@@ -33,6 +33,19 @@ template<typename T, typename V> V *setupValidator(const QVariant &min, const QV
     return validator;
 }
 
+template<typename T> T fromString(const QString &value, bool &ok);
+
+template<> int fromString(const QString &value, bool &ok){ return value.toInt(&ok); }
+template<> float fromString(const QString &value, bool &ok){ return value.toFloat(&ok); }
+
+template<typename T> QVariant lineEditValue(const QString &text)
+{
+    bool ok = false;
+    T value = fromString<T>(text, ok);
+
+    return ok ? value : QVariant();
+}
+
 }
 
 QPx::PropertyBrowserEditor::PropertyBrowserEditor(QWidget *parent) : QWidget(parent)
@@ -58,7 +71,7 @@ QVariant QPx::StringPropertyBrowserEditor::value() const
 
 void QPx::StringPropertyBrowserEditor::setValue(const QVariant &value)
 {
-    cache.get<QLineEdit*>()->setText(value.toString());
+    cache.get<QLineEdit*>()->setText(value.isValid() ? value.toString() : QString());
 }
 
 QPx::IntPropertyBrowserEditor::IntPropertyBrowserEditor(const QVariant &min, const QVariant &max, QWidget *parent) : StringPropertyBrowserEditor(parent)
@@ -68,7 +81,7 @@ QPx::IntPropertyBrowserEditor::IntPropertyBrowserEditor(const QVariant &min, con
 
 QVariant QPx::IntPropertyBrowserEditor::value() const
 {
-    return cache.get<QLineEdit*>()->text().toInt();
+    return lineEditValue<int>(cache.get<QLineEdit*>()->text());
 }
 
 QPx::FloatPropertyBrowserEditor::FloatPropertyBrowserEditor(const QVariant &min, const QVariant &max, QWidget *parent) : StringPropertyBrowserEditor(parent)
@@ -78,7 +91,7 @@ QPx::FloatPropertyBrowserEditor::FloatPropertyBrowserEditor(const QVariant &min,
 
 QVariant QPx::FloatPropertyBrowserEditor::value() const
 {
-    return cache.get<QLineEdit*>()->text().toFloat();
+    return lineEditValue<float>(cache.get<QLineEdit*>()->text());
 }
 
 void QPx::FloatPropertyBrowserEditor::setValue(const QVariant &value)

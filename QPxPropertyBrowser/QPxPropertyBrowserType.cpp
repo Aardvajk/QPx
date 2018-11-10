@@ -26,6 +26,8 @@ public:
 
 template<typename T> bool NumericCache::validate(const QVariant &value) const
 {
+    if(value.toString().isEmpty()) return false;
+
     if(min.isValid() && qvariant_cast<T>(value) < qvariant_cast<T>(min)) return false;
     if(max.isValid() && qvariant_cast<T>(value) > qvariant_cast<T>(max)) return false;
 
@@ -57,6 +59,11 @@ public:
 
     QPx::IntPropertyBrowserType *type;
 };
+
+QPair<QVariant, QVariant> pointValues(const QVariant &value)
+{
+    return value.isValid() ? qMakePair(QVariant(value.toPoint().x()), QVariant(value.toPoint().y())) : qMakePair(QVariant(), QVariant());
+}
 
 }
 
@@ -158,7 +165,7 @@ QPx::PropertyBrowserEditor *QPx::IntPropertyBrowserType::createEditor(const Prop
 
 QString QPx::FloatPropertyBrowserType::valueText(const PropertyBrowserItem *item) const
 {
-    return QString::number(item->value().toFloat());
+    return item->value().isValid() ? QString::number(item->value().toFloat()) : QString();
 }
 
 bool QPx::FloatPropertyBrowserType::validate(const QPx::PropertyBrowserItem *item, const QVariant &value) const
@@ -198,7 +205,7 @@ QPx::AbstractEnumPropertyBrowserType::AbstractEnumPropertyBrowserType(const QLis
 
 QString QPx::AbstractEnumPropertyBrowserType::valueText(const PropertyBrowserItem *item) const
 {
-    return cache.get<EnumCache>().map[item->value().toInt()];
+    return item->value().isValid() ? cache.get<EnumCache>().map[item->value().toInt()] : QString();
 }
 
 QPx::PropertyBrowserEditor *QPx::AbstractEnumPropertyBrowserType::createEditor(const PropertyBrowserItem *item, QWidget *parent) const
@@ -217,7 +224,7 @@ void QPx::AbstractFlagPropertyBrowserType::addProperties(QPx::PropertyBrowserIte
 
     foreach(auto v, c.map.keys())
     {
-        auto i = item->addItem(new QPx::PropertyBrowserItem(c.type, model, parent, item->flags(), c.map[v], toUnsigned(item->value()) & v, item));
+        auto i = item->addItem(new QPx::PropertyBrowserItem(c.type, model, parent, c.map[v], item->flags(), toUnsigned(item->value()) & v, item));
         connect(i, SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
     }
 }
@@ -283,12 +290,15 @@ void QPx::ColorPropertyBrowserType::paint(const PropertyBrowserItem *item, QPain
     auto r = option.rect.adjusted(2, 2, -2, -2);
     auto c = qvariant_cast<QColor>(item->value());
 
-    if(c.alpha() < 255)
+    if(!item->value().isValid() || c.alpha() < 255)
     {
         painter->fillRect(r, QBrush(QColor(220, 220, 220), Qt::DiagCrossPattern));
     }
 
-    painter->fillRect(r, c);
+    if(item->value().isValid())
+    {
+        painter->fillRect(r, c);
+    }
 }
 
 QPx::PropertyBrowserDialog *QPx::ColorPropertyBrowserType::createDialog(const PropertyBrowserItem *item, QWidget *parent) const
@@ -305,23 +315,32 @@ void QPx::PointPropertyBrowserType::addProperties(QPx::PropertyBrowserItem *item
 {
     auto type = cache.get<PointCache>().type;
 
-    item->addItem(new PropertyBrowserItem(type, model, parent, item->flags(), "X", item->value().toPoint().x(), item));
+    auto values = pointValues(item->value());
+
+    item->addItem(new PropertyBrowserItem(type, model, parent, "X", item->flags(), values.first, item));
     connect(item->items()[0], SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
 
-    item->addItem(new PropertyBrowserItem(type, model, parent, item->flags(), "Y", item->value().toPoint().y(), item));
+    item->addItem(new PropertyBrowserItem(type, model, parent, "Y", item->flags(), values.second, item));
     connect(item->items()[1], SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
 }
 
 void QPx::PointPropertyBrowserType::updateProperties(QPx::PropertyBrowserItem *item, const QVariant &value) const
 {
-    item->items()[0]->setValue(value.toPoint().x());
-    item->items()[1]->setValue(value.toPoint().y());
+    auto values = pointValues(value);
+
+    item->items()[0]->setValue(values.first);
+    item->items()[1]->setValue(values.second);
 }
 
 QString QPx::PointPropertyBrowserType::valueText(const PropertyBrowserItem *item) const
 {
-    auto p = item->value().toPoint();
-    return QString("%1, %2").arg(p.x()).arg(p.y());
+    if(item->value().isValid())
+    {
+        auto p = item->value().toPoint();
+        return QString("%1, %2").arg(p.x()).arg(p.y());
+    }
+
+    return QString();
 }
 
 bool QPx::PointPropertyBrowserType::readOnly() const

@@ -11,46 +11,24 @@
 namespace
 {
 
-class Proxy : public QPx::PropertyBrowserItemProxy
-{
-public:
-    Proxy(const QString &name, const QVariant &value) : n(name), v(value) { }
-
-    virtual QString name() const override { return n; }
-    virtual QVariant value() const override { return v; }
-
-    virtual void setValue(const QVariant &value) override { v = value; }
-
-private:
-    QString n;
-    QVariant v;
-};
-
 class Cache
 {
 public:
-    Cache(const QPx::PropertyBrowserType *type, QPx::PropertyBrowserItem::Flags flags, QPx::PropertyBrowserItemProxy *proxy) : type(type), flags(flags), proxy(proxy), lock(false) { }
+    Cache(const QPx::PropertyBrowserType *type, const QString &name, QPx::PropertyBrowserItem::Flags flags, const QVariant &value) : type(type), name(name), flags(flags), value(value), lock(false) { }
 
     const QPx::PropertyBrowserType *type;
+    QString name;
     QPx::PropertyBrowserItem::Flags flags;
-    pcx::scoped_ptr<QPx::PropertyBrowserItemProxy> proxy;
+    QVariant value;
     QList<QPx::PropertyBrowserItem*> props;
     bool lock;
 };
 
 }
 
-QPx::PropertyBrowserItem::PropertyBrowserItem(const QPx::PropertyBrowserType *type, QPx::PropertyBrowserModel *model, const QModelIndex &index, Flags flags, const QString &name, const QVariant &value, QObject *parent) : QObject(parent)
+QPx::PropertyBrowserItem::PropertyBrowserItem(const QPx::PropertyBrowserType *type, QPx::PropertyBrowserModel *model, const QModelIndex &index, const QString &name, Flags flags, const QVariant &value, QObject *parent) : QObject(parent)
 {
-    cache.alloc<Cache>(type, flags, new Proxy(name, value));
-    auto m = model->appendRow(this, index);
-
-    type->addProperties(this, model, m);
-}
-
-QPx::PropertyBrowserItem::PropertyBrowserItem(const QPx::PropertyBrowserType *type, QPx::PropertyBrowserModel *model, const QModelIndex &index, Flags flags, QPx::PropertyBrowserItemProxy *proxy, QObject *parent) : QObject(parent)
-{
-    cache.alloc<Cache>(type, flags, proxy);
+    cache.alloc<Cache>(type, name, flags, value);
     auto m = model->appendRow(this, index);
 
     type->addProperties(this, model, m);
@@ -68,12 +46,12 @@ QPx::PropertyBrowserItem::Flags QPx::PropertyBrowserItem::flags() const
 
 QString QPx::PropertyBrowserItem::name() const
 {
-    return cache.get<Cache>().proxy->name();
+    return cache.get<Cache>().name;
 }
 
 QVariant QPx::PropertyBrowserItem::value() const
 {
-    return cache.get<Cache>().proxy->value();
+    return cache.get<Cache>().value;
 }
 
 QPx::PropertyBrowserItem *QPx::PropertyBrowserItem::addItem(PropertyBrowserItem *item)
@@ -98,7 +76,7 @@ void QPx::PropertyBrowserItem::setValue(const QVariant &value)
 
             type()->updateProperties(this, value);
 
-            c.proxy->setValue(value);
+            c.value = value;
             emit valueChanged(value);
         }
     }
