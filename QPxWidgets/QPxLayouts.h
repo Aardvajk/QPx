@@ -4,6 +4,7 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QSplitter>
 
 namespace QPx
 {
@@ -14,6 +15,8 @@ class VBoxLayout : public QVBoxLayout
 
 public:
     VBoxLayout(QWidget *parent = nullptr);
+
+    template<typename T> T *addTypedWidget(T *widget){ addWidget(widget); return widget; }
 };
 
 class HBoxLayout : public QHBoxLayout
@@ -22,6 +25,8 @@ class HBoxLayout : public QHBoxLayout
 
 public:
     HBoxLayout(QWidget *parent = nullptr);
+
+    template<typename T> T *addTypedWidget(T *widget){ addWidget(widget); return widget; }
 };
 
 class LayoutWidget : public QWidget
@@ -33,6 +38,14 @@ public:
 
     void addWidget(QWidget *widget);
     template<typename T> T *addTypedWidget(T *widget){ addWidget(widget); return widget; }
+};
+
+class Splitter : public QSplitter
+{
+    Q_OBJECT
+
+public:
+    Splitter(Qt::Orientation orientation, const QVector<QWidget*> &widgets, QWidget *parent = nullptr);
 };
 
 }
