@@ -78,5 +78,4 @@ HEADERS += \
     internal/qpx_combo_box.h \
     QPxCore/QPxStdHash.h \
     QPxWidgets/QPxLayouts.h \
-    QPxCore/QPxMetaType.h \
     QPxWidgets/QPxRichTextComboBox.h

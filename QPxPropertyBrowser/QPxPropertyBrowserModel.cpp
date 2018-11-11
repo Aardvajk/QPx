@@ -51,7 +51,7 @@ Qt::ItemFlags QPx::PropertyBrowserModel::flags(const QModelIndex &index) const
     {
         if(index.column() == 1 && !item->type()->readOnly() && !(item->flags() & PropertyBrowserItem::Flag::ReadOnly))
         {
-            if(item->type()->checkable())
+            if(item->value().type() == QVariant::Bool)
             {
                 value |= Qt::ItemIsUserCheckable;
             }
@@ -93,7 +93,7 @@ QVariant QPx::PropertyBrowserModel::data(const QModelIndex &index, int role) con
         }
         else if(role == Qt::CheckStateRole)
         {
-            if(item->type()->checkable() && index.column() == 1)
+            if(item->value().type() == QVariant::Bool && index.column() == 1)
             {
                 return item->value().toBool() ? Qt::Checked : Qt::Unchecked;
             }
@@ -109,7 +109,7 @@ bool QPx::PropertyBrowserModel::setData(const QModelIndex &index, const QVariant
     {
         if(role == Qt::EditRole)
         {
-            if(item->value() != value)
+            if(!item->type()->compare(item->value(), value))
             {
                 item->setValue(value);
 

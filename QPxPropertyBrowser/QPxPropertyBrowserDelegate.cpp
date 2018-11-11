@@ -38,7 +38,7 @@ void QPx::PropertyBrowserDelegate::paint(QPainter *painter, const QStyleOptionVi
         o.state &= (~QStyle::State_Enabled);
     }
 
-    if(!item->type()->checkable() && index.column() == 1)
+    if(item->value().type() != QVariant::Bool && index.column() == 1)
     {
         QStyledItemDelegate::paint(painter, o, QModelIndex());
         item->type()->paint(item, painter, o);

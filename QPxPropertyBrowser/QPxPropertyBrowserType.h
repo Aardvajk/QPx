@@ -31,9 +31,9 @@ public:
     virtual QString valueText(const PropertyBrowserItem *item) const;
 
     virtual bool readOnly() const;
-    virtual bool checkable() const;
 
     virtual bool validate(const PropertyBrowserItem *item, const QVariant &value) const;
+    virtual bool compare(const QVariant &value1, const QVariant &value2) const;
 
     virtual void paint(const PropertyBrowserItem *item, QPainter *painter, const QStyleOptionViewItem &option) const;
 
@@ -107,8 +107,6 @@ public:
     explicit BoolPropertyBrowserType(QObject *parent = nullptr);
 
     virtual QString valueText(const PropertyBrowserItem *item) const override;
-
-    virtual bool checkable() const override;
 };
 
 class AbstractEnumPropertyBrowserType : public PropertyBrowserType
@@ -120,6 +118,8 @@ public:
     AbstractEnumPropertyBrowserType(const QList<QPair<int, QString> > &values, QObject *parent = nullptr);
 
     virtual QString valueText(const PropertyBrowserItem *item) const override;
+
+    virtual bool compare(const QVariant &value1, const QVariant &value2) const override;
 
     virtual PropertyBrowserEditor *createEditor(const PropertyBrowserItem *item, QWidget *parent) const override;
     virtual QVariant toEnumValue(const QVariant &value) const = 0;
@@ -153,6 +153,8 @@ public:
     virtual QString valueText(const PropertyBrowserItem *item) const override;
     virtual bool readOnly() const override;
 
+    virtual bool compare(const QVariant &value1, const QVariant &value2) const override;
+
     virtual QVariant toFlagValue(unsigned value) const = 0;
     virtual unsigned toUnsigned(const QVariant &value) const = 0;
 
@@ -179,6 +181,8 @@ class ColorPropertyBrowserType : public PropertyBrowserType
 public:
     explicit ColorPropertyBrowserType(QObject *parent = nullptr);
 
+    virtual bool compare(const QVariant &value1, const QVariant &value2) const override;
+
     virtual void paint(const PropertyBrowserItem *item, QPainter *painter, const QStyleOptionViewItem &option) const override;
 
     virtual PropertyBrowserDialog *createDialog(const PropertyBrowserItem *item, QWidget *parent) const override;
@@ -196,6 +200,8 @@ public:
 
     virtual QString valueText(const PropertyBrowserItem *item) const override;
     virtual bool readOnly() const override;
+
+    virtual bool compare(const QVariant &value1, const QVariant &value2) const override;
 
 private slots:
     void changed(const QVariant &value);
