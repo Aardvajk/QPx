@@ -30,3 +30,11 @@ QPx::Splitter::Splitter(Qt::Orientation orientation, const QVector<QWidget*> &wi
 {
     for(auto w: widgets) addWidget(w);
 }
+
+QPx::FramedWidget::FramedWidget(QWidget *widget, QWidget *parent) : QFrame(parent)
+{
+    setFrameShape(QFrame::StyledPanel);
+
+    auto layout = new VBoxLayout(this);
+    layout->addWidget(widget);
+}

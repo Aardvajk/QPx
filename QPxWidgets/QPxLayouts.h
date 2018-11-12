@@ -48,6 +48,14 @@ public:
     Splitter(Qt::Orientation orientation, const QVector<QWidget*> &widgets, QWidget *parent = nullptr);
 };
 
+class FramedWidget : public QFrame
+{
+    Q_OBJECT
+
+public:
+    FramedWidget(QWidget *widget, QWidget *parent = nullptr);
+};
+
 }
 
 #endif // QPX_LAYOUTS_H
