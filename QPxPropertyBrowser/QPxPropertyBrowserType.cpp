@@ -94,11 +94,6 @@ bool QPx::PropertyBrowserType::validate(const QPx::PropertyBrowserItem *item, co
     return true;
 }
 
-bool QPx::PropertyBrowserType::compare(const QVariant &value1, const QVariant &value2) const
-{
-    return value1 == value2;
-}
-
 void QPx::PropertyBrowserType::paint(const PropertyBrowserItem *item, QPainter *painter, const QStyleOptionViewItem &option) const
 {
     auto r = option.rect.adjusted(2, 0, 0, 0);
@@ -203,11 +198,6 @@ QString QPx::AbstractEnumPropertyBrowserType::valueText(const PropertyBrowserIte
     return item->value().isValid() ? cache.get<EnumCache>().map[item->value().toInt()] : QString();
 }
 
-bool QPx::AbstractEnumPropertyBrowserType::compare(const QVariant &value1, const QVariant &value2) const
-{
-    return value1.toInt() == value2.toInt();
-}
-
 QPx::PropertyBrowserEditor *QPx::AbstractEnumPropertyBrowserType::createEditor(const PropertyBrowserItem *item, QWidget *parent) const
 {
     return new EnumPropertyBrowserEditor(this, cache.get<EnumCache>().map, parent);
@@ -260,11 +250,6 @@ bool QPx::AbstractFlagPropertyBrowserType::readOnly() const
     return true;
 }
 
-bool QPx::AbstractFlagPropertyBrowserType::compare(const QVariant &value1, const QVariant &value2) const
-{
-    return toUnsigned(value1) == toUnsigned(value2);
-}
-
 void QPx::AbstractFlagPropertyBrowserType::changed(const QVariant &value)
 {
     auto &map = cache.get<FlagCache>().map;
@@ -288,11 +273,6 @@ void QPx::AbstractFlagPropertyBrowserType::changed(const QVariant &value)
 
 QPx::ColorPropertyBrowserType::ColorPropertyBrowserType(QObject *parent) : PropertyBrowserType(parent)
 {
-}
-
-bool QPx::ColorPropertyBrowserType::compare(const QVariant &value1, const QVariant &value2) const
-{
-    return qvariant_cast<QColor>(value1) == qvariant_cast<QColor>(value2);
 }
 
 void QPx::ColorPropertyBrowserType::paint(const PropertyBrowserItem *item, QPainter *painter, const QStyleOptionViewItem &option) const
@@ -356,11 +336,6 @@ QString QPx::PointPropertyBrowserType::valueText(const PropertyBrowserItem *item
 bool QPx::PointPropertyBrowserType::readOnly() const
 {
     return true;
-}
-
-bool QPx::PointPropertyBrowserType::compare(const QVariant &value1, const QVariant &value2) const
-{
-    return value1.toPoint() == value2.toPoint();
 }
 
 void QPx::PointPropertyBrowserType::changed(const QVariant &value)

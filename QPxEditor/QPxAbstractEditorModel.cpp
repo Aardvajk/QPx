@@ -20,15 +20,15 @@ QPx::AbstractEditorModel::AbstractEditorModel(QObject *parent) : QObject(parent)
 {
     cache.alloc<Cache>();
 
-    auto &u = cache.get<Cache>().undo;
-    connect(&u, SIGNAL(modifiedStateChanged(bool)), SIGNAL(modifiedStateChanged(bool)));
-    connect(&u, SIGNAL(undoStateChanged()), SIGNAL(undoStateChanged()));
+    connect(&cache.get<Cache>().undo, SIGNAL(modifiedStateChanged(bool)), SIGNAL(modifiedStateChanged(bool)));
+    connect(&cache.get<Cache>().undo, SIGNAL(undoStateChanged()), SIGNAL(undoStateChanged()));
 }
 
 void QPx::AbstractEditorModel::endCommand(QPx::AbstractEditorCommand *command)
 {
     if(command->isValid())
     {
+        command->redo();
         cache.get<Cache>().undo.addCommand(command);
     }
     else

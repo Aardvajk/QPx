@@ -67,7 +67,7 @@ QList<QPx::PropertyBrowserItem*> QPx::PropertyBrowserItem::items() const
 
 void QPx::PropertyBrowserItem::setValue(const QVariant &value)
 {
-    if(!type()->compare(this->value(), value))
+    if(this->value() != value)
     {
         auto &c = cache.get<Cache>();
         if(!c.lock)

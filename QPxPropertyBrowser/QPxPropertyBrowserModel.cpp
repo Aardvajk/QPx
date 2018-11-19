@@ -109,7 +109,7 @@ bool QPx::PropertyBrowserModel::setData(const QModelIndex &index, const QVariant
     {
         if(role == Qt::EditRole)
         {
-            if(!item->type()->compare(item->value(), value))
+            if(item->value() != value)
             {
                 item->setValue(value);
 
