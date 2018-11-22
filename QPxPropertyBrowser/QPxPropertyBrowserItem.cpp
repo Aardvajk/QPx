@@ -32,8 +32,6 @@ QPx::PropertyBrowserItem::PropertyBrowserItem(const QPx::PropertyBrowserType *ty
     auto m = model->appendRow(this, index);
 
     type->addProperties(this, model, m);
-
-qDebug() << "create" << name;
 }
 
 const QPx::PropertyBrowserType *QPx::PropertyBrowserItem::type() const

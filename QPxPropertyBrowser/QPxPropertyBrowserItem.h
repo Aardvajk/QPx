@@ -28,7 +28,6 @@ public:
     using Flags = pcx::flags<Flag>;
 
     PropertyBrowserItem(const PropertyBrowserType *type, PropertyBrowserModel *model, const QModelIndex &index, const QString &name, Flags flags, const QVariant &value, QObject *parent = nullptr);
-    ~PropertyBrowserItem(){ qDebug() << "delete" << name(); }
 
     const PropertyBrowserType *type() const;
 
