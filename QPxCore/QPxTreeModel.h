@@ -5,12 +5,8 @@
 
 #include <QtCore/QAbstractItemModel>
 
-#include <pcx/aligned_store.h>
-
 namespace QPx
 {
-
-class TreeModelNode;
 
 class TreeModel : public QAbstractItemModel
 {
@@ -18,11 +14,12 @@ class TreeModel : public QAbstractItemModel
 
 public:
     explicit TreeModel(QObject *parent = nullptr);
+    virtual ~TreeModel() override;
 
     virtual void clear();
 
     virtual bool setUserData(const QModelIndex &index, void *value);
-    virtual void setUserDataDeleter(AbstractDeleter *deleter);
+    virtual void setUserDataDeleter(AbstractDeleter *value);
 
     virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     virtual QModelIndex parent(const QModelIndex &index) const override;
@@ -38,8 +35,11 @@ public:
     static void *userData(const QModelIndex &index);
 
 private:
-    friend class TreeModelNode;
-    pcx::aligned_store<16> cache;
+    class Node;
+    friend class Node;
+
+    Node *root;
+    AbstractDeleter *deleter;
 };
 
 }
