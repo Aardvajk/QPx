@@ -80,5 +80,4 @@ HEADERS += \
     QPxCore/QPxStdHash.h \
     QPxWidgets/QPxLayouts.h \
     QPxWidgets/QPxRichTextComboBox.h \
-    QPxCore/QPxMetaType.h \
     QPxCore/QPxDeleter.h
