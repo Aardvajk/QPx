@@ -10,6 +10,8 @@
 namespace QPx
 {
 
+class TreeModelNode;
+
 class TreeModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -20,9 +22,7 @@ public:
     virtual void clear();
 
     virtual bool setUserData(const QModelIndex &index, void *value);
-
     virtual void setUserDataDeleter(AbstractDeleter *deleter);
-    virtual void invokeUserDataDeleter(void *data) const;
 
     virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     virtual QModelIndex parent(const QModelIndex &index) const override;
@@ -38,6 +38,7 @@ public:
     static void *userData(const QModelIndex &index);
 
 private:
+    friend class TreeModelNode;
     pcx::aligned_store<16> cache;
 };
 
