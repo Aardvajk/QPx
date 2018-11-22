@@ -35,6 +35,7 @@ void Cache::remove(QPx::PropertyBrowserModel *model, int row, int count, const Q
 QPx::PropertyBrowserModel::PropertyBrowserModel(QObject *parent) : TreeModel(parent)
 {
     cache.alloc<Cache>();
+    setUserDataDeleter(new Deleter<PropertyBrowserItem>(this));
 }
 
 void QPx::PropertyBrowserModel::clear()

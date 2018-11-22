@@ -52,7 +52,8 @@ SOURCES += \
     QPxPropertyBrowser/QPxPropertyBrowserType.cpp \
     internal/qpx_combo_box.cpp \
     QPxWidgets/QPxLayouts.cpp \
-    QPxWidgets/QPxRichTextComboBox.cpp
+    QPxWidgets/QPxRichTextComboBox.cpp \
+    QPxCore/QPxDeleter.cpp
 
 HEADERS += \
     QPxWidgets/QPxAbstractTileWidget.h \
@@ -79,4 +80,5 @@ HEADERS += \
     QPxCore/QPxStdHash.h \
     QPxWidgets/QPxLayouts.h \
     QPxWidgets/QPxRichTextComboBox.h \
-    QPxCore/QPxMetaType.h
+    QPxCore/QPxMetaType.h \
+    QPxCore/QPxDeleter.h

@@ -1,6 +1,8 @@
 #ifndef QPX_TREEMODEL_H
 #define QPX_TREEMODEL_H
 
+#include <QPxCore/QPxDeleter.h>
+
 #include <QtCore/QAbstractItemModel>
 
 #include <pcx/aligned_store.h>
@@ -19,6 +21,9 @@ public:
 
     virtual bool setUserData(const QModelIndex &index, void *value);
 
+    virtual void setUserDataDeleter(AbstractDeleter *deleter);
+    virtual void invokeUserDataDeleter(void *data) const;
+
     virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     virtual QModelIndex parent(const QModelIndex &index) const override;
 
@@ -33,7 +38,7 @@ public:
     static void *userData(const QModelIndex &index);
 
 private:
-    pcx::aligned_store<8> cache;
+    pcx::aligned_store<16> cache;
 };
 
 }

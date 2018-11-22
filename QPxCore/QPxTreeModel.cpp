@@ -2,14 +2,18 @@
 
 #include <pcx/scoped_ptr.h>
 
+#include "QPxPropertyBrowser/QPxPropertyBrowserItem.h"
+
 namespace
 {
 
 class Node
 {
 public:
-    explicit Node(Node *parent, int row, void *userData = nullptr) : parent(parent), row(row), userData(userData) { }
-    ~Node(){ qDeleteAll(children); }
+    explicit Node(QPx::TreeModel *model, Node *parent, int row, void *userData) : model(model), parent(parent), row(row), userData(userData) { }
+    ~Node();
+
+    QPx::TreeModel *model;
 
     Node *parent;
     QList<Node*> children;
@@ -18,19 +22,26 @@ public:
     void *userData;
 };
 
+Node::~Node()
+{
+    qDeleteAll(children);
+    model->invokeUserDataDeleter(userData);
+}
+
 class Cache
 {
 public:
-    explicit Cache() : root(new Node(nullptr, 0)) { }
+    Cache(QPx::TreeModel *model) : root(new Node(model, nullptr, 0, nullptr)), deleter(nullptr) { }
 
     pcx::scoped_ptr<Node> root;
+    QPx::AbstractDeleter *deleter;
 };
 
 }
 
 QPx::TreeModel::TreeModel(QObject *parent) : QAbstractItemModel(parent)
 {
-    cache.alloc<Cache>();
+    cache.alloc<Cache>(this);
 }
 
 void QPx::TreeModel::clear()
@@ -56,6 +67,26 @@ bool QPx::TreeModel::setUserData(const QModelIndex &index, void *value)
     }
 
     return false;
+}
+
+void QPx::TreeModel::setUserDataDeleter(QPx::AbstractDeleter *deleter)
+{
+    auto &c = cache.get<Cache>();
+    if(c.deleter && c.deleter->parent() == this)
+    {
+        delete c.deleter;
+    }
+
+    c.deleter = deleter;
+}
+
+void QPx::TreeModel::invokeUserDataDeleter(void *data) const
+{
+    auto &d = cache.get<Cache>().deleter;
+    if(d && data)
+    {
+        d->operator()(data);
+    }
 }
 
 QModelIndex QPx::TreeModel::index(int row, int column, const QModelIndex &parent) const
@@ -94,7 +125,7 @@ QModelIndex QPx::TreeModel::insertRow(int row, void *userData, const QModelIndex
 
     beginInsertRows(parent, row, row);
 
-    auto node = new Node(parentNode, row, userData);
+    auto node = new Node(this, parentNode, row, userData);
     parentNode->children.insert(row, node);
 
     endInsertRows();
@@ -115,7 +146,7 @@ bool QPx::TreeModel::insertRows(int row, int count, const QModelIndex &parent)
 
     for(int i = 0; i < count; ++i)
     {
-        auto node = new Node(parentNode, row);
+        auto node = new Node(this, parentNode, row, nullptr);
         parentNode->children.insert(row, node);
     }
 
