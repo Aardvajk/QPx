@@ -311,6 +311,21 @@ QString toBase64(const QVariant &value)
     return QString::fromLocal8Bit(ba.toBase64());
 }
 
+QString toReal(const QVariant &value, const QString &suffix)
+{
+    QString s;
+    QTextStream ts(&s);
+
+    ts << value.toFloat();
+
+    if(!s.contains('.'))
+    {
+        s += ".0";
+    }
+
+    return s + suffix;
+}
+
 void write(int indent, const QPx::Settings &parent, const QPx::Settings &node, int index, QTextStream &ts)
 {
     auto ind = QString(indent * 4, ' ');
@@ -325,8 +340,8 @@ void write(int indent, const QPx::Settings &parent, const QPx::Settings &node, i
         switch(static_cast<QMetaType::Type>(v.type()))
         {
             case QMetaType::Int: ts << v.toInt(); break;
-            case QMetaType::Float: ts << v.toFloat(); break;
-            case QMetaType::Double: ts << v.toDouble(); break;
+            case QMetaType::Float: ts << toReal(v, "f"); break;
+            case QMetaType::Double: ts << toReal(v, ""); break;
             case QMetaType::QString: ts << "\"" << v.toString() << "\""; break;
             case QMetaType::QStringList: ts << toStringList(v.toStringList()); break;
             case QMetaType::Bool: ts << (v.toBool() ? "true" : "false"); break;

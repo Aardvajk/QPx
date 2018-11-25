@@ -51,9 +51,38 @@ public:
 
 }
 
+QPx::Settings::Settings()
+{
+    cache.alloc<SettingsCache>(QString());
+}
+
 void QPx::Settings::setValue(const QVariant &value)
 {
     cache.get<SettingsCache>().value = value;
+}
+
+bool QPx::Settings::load(const QString &path)
+{
+    QFile file(path);
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        return false;
+    }
+
+    qpx_settings_parse(*this, QString::fromUtf8(file.readAll()));
+    return true;
+}
+
+bool QPx::Settings::save(const QString &path) const
+{
+    QFile file(path);
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        return false;
+    }
+
+    file.write(qpx_settings_write(*this).toUtf8());
+    return true;
 }
 
 QPx::Settings &QPx::Settings::append(const QString &key)
@@ -80,6 +109,20 @@ QPx::Settings &QPx::Settings::operator[](const QString &key)
         c.map.insert({ c.nodes.back().cache.get<SettingsCache>().key, c.nodes.size() - 1});
 
         return c.nodes.back();
+    }
+
+    return c.nodes[i->second];
+}
+
+const QPx::Settings &QPx::Settings::operator[](const QString &key) const
+{
+    auto &c = cache.get<SettingsCache>();
+
+    auto i = c.map.find(key);
+    if(i == c.map.end())
+    {
+        static const Settings null;
+        return null;
     }
 
     return c.nodes[i->second];
@@ -117,18 +160,13 @@ QPx::Settings::Settings(const QString &key)
     cache.alloc<SettingsCache>(key);
 }
 
-QPx::SettingsMap::SettingsMap(const QString &path) : QPx::Settings({ })
+QPx::SettingsMap::SettingsMap(const QString &path) : QPx::Settings()
 {
-    cache.alloc<MapCache>(path.isEmpty() ? QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QDir::separator() + QCoreApplication::applicationName() + ".qps" : path);
-
-    QFile file(cache.get<MapCache>().path);
-    if(file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        qpx_settings_parse(*this, QString::fromUtf8(file.readAll()));
-    }
+    auto &c = cache.alloc<MapCache>(path.isEmpty() ? QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QDir::separator() + QCoreApplication::applicationName() + ".qps" : path);
+    load(c.path);
 }
 
-void QPx::SettingsMap::sync()
+void QPx::SettingsMap::sync() const
 {
     QDir dir(QFileInfo(cache.get<MapCache>().path).dir());
     if(!dir.exists())
@@ -136,11 +174,9 @@ void QPx::SettingsMap::sync()
         dir.mkpath(dir.path());
     }
 
-    QFile file(cache.get<MapCache>().path);
-    if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if(!save(cache.get<MapCache>().path))
     {
         throw std::runtime_error("unable to sync settings");
     }
-
-    file.write(qpx_settings_write(*this).toUtf8());
 }
+

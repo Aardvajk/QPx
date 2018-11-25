@@ -23,7 +23,7 @@ Special special(const QString &key)
     return m.value(key, Special::Unknown);
 }
 
-template<typename T> void loadMenus(QPx::Settings &menus, QPx::ActionList *actions, T *parent, QPx::MainWindow *window, void(QPx::MainWindow::*custom)(const QString&,QWidget*))
+template<typename T> void loadMenus(const QPx::Settings &menus, QPx::ActionList *actions, T *parent, QPx::MainWindow *window, void(QPx::MainWindow::*custom)(const QString&,QWidget*))
 {
     for(int i = 0; i < menus.count(); ++i)
     {
@@ -49,7 +49,7 @@ template<typename T> void loadMenus(QPx::Settings &menus, QPx::ActionList *actio
     }
 }
 
-void loadToolBars(QPx::Settings &toolBars, QPx::ActionList *actions, QPx::MainWindow *window, void(QPx::MainWindow::*custom)(const QString&,QWidget*))
+void loadToolBars(const QPx::Settings &toolBars, QPx::ActionList *actions, QPx::MainWindow *window, void(QPx::MainWindow::*custom)(const QString&,QWidget*))
 {
     for(int i = 0; i < toolBars.count(); ++i)
     {
@@ -91,10 +91,13 @@ QPx::MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 void QPx::MainWindow::loadInterface(const QString &path, ActionList *actions)
 {
-    SettingsMap settings(path);
+    Settings settings;
 
-    loadMenus(settings["Menus"], actions, menuBar(), this, &customInterfaceAction);
-    loadToolBars(settings["ToolBars"], actions, this, &customInterfaceAction);
+    if(settings.load(path))
+    {
+        loadMenus(settings["Menus"], actions, menuBar(), this, &customInterfaceAction);
+        loadToolBars(settings["ToolBars"], actions, this, &customInterfaceAction);
+    }
 }
 
 void QPx::MainWindow::customInterfaceAction(const QString &key, QWidget *parent)
