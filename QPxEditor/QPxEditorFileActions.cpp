@@ -126,7 +126,7 @@ bool QPx::EditorFileActions::clear()
 
 bool QPx::EditorFileActions::open()
 {
-    QString path = QFileDialog::getOpenFileName(static_cast<QWidget*>(parent()), QApplication::applicationName());
+    QString path = QFileDialog::getOpenFileName(static_cast<QWidget*>(parent()), QApplication::applicationName(), QString(), cache.get<Cache>().model->filter());
     if(path.isEmpty() || !canClose())
     {
         return false;
@@ -169,7 +169,7 @@ bool QPx::EditorFileActions::save()
 
 bool QPx::EditorFileActions::saveAs()
 {
-    QString path = QFileDialog::getSaveFileName(static_cast<QWidget*>(parent()), QApplication::applicationName());
+    QString path = QFileDialog::getSaveFileName(static_cast<QWidget*>(parent()), QApplication::applicationName(), QString(), cache.get<Cache>().model->filter());
     if(path.isEmpty())
     {
         return false;

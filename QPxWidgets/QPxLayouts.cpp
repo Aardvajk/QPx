@@ -21,9 +21,9 @@ QPx::LayoutWidget::LayoutWidget(Qt::Orientation orientation, QWidget *parent)
     }
 }
 
-void QPx::LayoutWidget::addWidget(QWidget *widget)
+void QPx::LayoutWidget::addWidget(QWidget *widget, int stretch)
 {
-    layout()->addWidget(widget);
+    static_cast<QBoxLayout*>(layout())->addWidget(widget, stretch);
 }
 
 QPx::Splitter::Splitter(Qt::Orientation orientation, const QVector<QWidget*> &widgets, QWidget *parent) : QSplitter(orientation, parent)

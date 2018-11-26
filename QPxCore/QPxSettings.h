@@ -14,6 +14,7 @@ class Settings
 public:
     Settings();
 
+    void clear();
     void setValue(const QVariant &value);
 
     bool load(const QString &path);

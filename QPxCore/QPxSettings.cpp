@@ -56,6 +56,14 @@ QPx::Settings::Settings()
     cache.alloc<SettingsCache>(QString());
 }
 
+void QPx::Settings::clear()
+{
+    auto &c = cache.get<SettingsCache>();
+
+    c.map.clear();
+    c.nodes.clear();
+}
+
 void QPx::Settings::setValue(const QVariant &value)
 {
     cache.get<SettingsCache>().value = value;

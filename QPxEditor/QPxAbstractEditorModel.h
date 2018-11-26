@@ -32,6 +32,8 @@ public:
     virtual bool clear() = 0;
     virtual bool open(const QString &path) = 0;
     virtual bool save(const QString &path) const = 0;
+
+    virtual QString filter() const = 0;
     
 signals:    
     void undoStateChanged();

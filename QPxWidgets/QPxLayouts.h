@@ -16,7 +16,7 @@ class VBoxLayout : public QVBoxLayout
 public:
     VBoxLayout(QWidget *parent = nullptr);
 
-    template<typename T> T *addTypedWidget(T *widget){ addWidget(widget); return widget; }
+    template<typename T> T *addTypedWidget(T *widget, int stretch = 0){ addWidget(widget, stretch); return widget; }
 };
 
 class HBoxLayout : public QHBoxLayout
@@ -26,7 +26,7 @@ class HBoxLayout : public QHBoxLayout
 public:
     HBoxLayout(QWidget *parent = nullptr);
 
-    template<typename T> T *addTypedWidget(T *widget){ addWidget(widget); return widget; }
+    template<typename T> T *addTypedWidget(T *widget, int stretch = 0){ addWidget(widget, stretch); return widget; }
 };
 
 class LayoutWidget : public QWidget
@@ -36,8 +36,8 @@ class LayoutWidget : public QWidget
 public:
     LayoutWidget(Qt::Orientation orientation, QWidget *parent);
 
-    void addWidget(QWidget *widget);
-    template<typename T> T *addTypedWidget(T *widget){ addWidget(widget); return widget; }
+    void addWidget(QWidget *widget, int stretch = 0);
+    template<typename T> T *addTypedWidget(T *widget, int stretch = 0){ addWidget(widget, stretch); return widget; }
 };
 
 class Splitter : public QSplitter
