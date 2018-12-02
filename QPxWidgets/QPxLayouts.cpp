@@ -28,6 +28,7 @@ void QPx::LayoutWidget::addWidget(QWidget *widget, int stretch)
 
 QPx::Splitter::Splitter(Qt::Orientation orientation, const QVector<QWidget*> &widgets, QWidget *parent) : QSplitter(orientation, parent)
 {
+    setHandleWidth(3);
     for(auto w: widgets) addWidget(w);
 }
 

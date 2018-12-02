@@ -168,13 +168,13 @@ QPx::Settings::Settings(const QString &key)
     cache.alloc<SettingsCache>(key);
 }
 
-QPx::SettingsMap::SettingsMap(const QString &path) : QPx::Settings()
+QPx::ApplicationSettings::ApplicationSettings(const QString &path) : QPx::Settings()
 {
     auto &c = cache.alloc<MapCache>(path.isEmpty() ? QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QDir::separator() + QCoreApplication::applicationName() + ".qps" : path);
     load(c.path);
 }
 
-void QPx::SettingsMap::sync() const
+void QPx::ApplicationSettings::sync() const
 {
     QDir dir(QFileInfo(cache.get<MapCache>().path).dir());
     if(!dir.exists())

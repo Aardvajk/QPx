@@ -35,17 +35,17 @@ public:
 
 private:
     friend class SettingsRoot;
-    friend class SettingsMap;
+    friend class ApplicationSettings;
 
     Settings(const QString &key);
 
     pcx::aligned_store<104> cache;
 };
 
-class SettingsMap : public Settings
+class ApplicationSettings : public Settings
 {
 public:
-    explicit SettingsMap(const QString &path = { });
+    explicit ApplicationSettings(const QString &path = { });
 
     void sync() const;
 
