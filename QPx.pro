@@ -53,7 +53,8 @@ SOURCES += \
     internal/qpx_combo_box.cpp \
     QPxWidgets/QPxLayouts.cpp \
     QPxWidgets/QPxRichTextComboBox.cpp \
-    QPxCore/QPxDeleter.cpp
+    QPxCore/QPxDeleter.cpp \
+    QPxWidgets/QPxLineSplitter.cpp
 
 HEADERS += \
     QPxWidgets/QPxAbstractTileWidget.h \
@@ -80,4 +81,5 @@ HEADERS += \
     QPxCore/QPxStdHash.h \
     QPxWidgets/QPxLayouts.h \
     QPxWidgets/QPxRichTextComboBox.h \
-    QPxCore/QPxDeleter.h
+    QPxCore/QPxDeleter.h \
+    QPxWidgets/QPxLineSplitter.h
