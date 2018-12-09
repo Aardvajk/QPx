@@ -15,18 +15,10 @@ class SplitterPanel : public QWidget
 public:
     explicit SplitterPanel(QWidget *parent = nullptr);
 
-public slots:
-    void splitVertical();
-    void splitHorizontal();
+    void split(Qt::Orientation orientation, QWidget *widget);
 
 protected:
     virtual void closeEvent(QCloseEvent *event) override;
-
-    virtual QSplitter *createSplitter(Qt::Orientation orientation);
-    virtual SplitterPanel *clone() const = 0;
-
-private:
-    bool closeFlag;
 };
 
 }

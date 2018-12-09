@@ -2,34 +2,31 @@
 
 #include "QPxWidgets/QPxLineSplitter.h"
 
-#include <QtCore/QTimer>
-
-#include <QtGui/QCloseEvent>
-
 #include <QtWidgets/QLayout>
 
-namespace
+QPx::SplitterPanel::SplitterPanel(QWidget *parent) : QWidget(parent)
 {
+}
 
-void splitPanel(QPx::SplitterPanel *panel, Qt::Orientation orientation, QSplitter*(QPx::SplitterPanel::*cs)(Qt::Orientation), QPx::SplitterPanel*(QPx::SplitterPanel::*cf)() const)
+void QPx::SplitterPanel::split(Qt::Orientation orientation, QWidget *widget)
 {
-    auto splitter = (panel->*cs)(orientation);
+    auto splitter = new QPx::LineSplitter(orientation);
 
-    auto parentSplitter = dynamic_cast<QSplitter*>(panel->parentWidget());
+    auto parentSplitter = dynamic_cast<QSplitter*>(parentWidget());
     QList<int> parentSizes;
 
     if(parentSplitter)
     {
         parentSizes = parentSplitter->sizes();
-        parentSplitter->insertWidget(parentSplitter->indexOf(panel), splitter);
+        parentSplitter->insertWidget(parentSplitter->indexOf(this), splitter);
     }
-    else if(panel->parentWidget()->layout())
+    else if(parentWidget()->layout())
     {
-        panel->parentWidget()->layout()->replaceWidget(panel, splitter);
+        parentWidget()->layout()->replaceWidget(this, splitter);
     }
 
-    splitter->addWidget(panel);
-    splitter->addWidget((panel->*cf)());
+    splitter->addWidget(this);
+    splitter->addWidget(widget);
 
     splitter->setSizes({ splitter->width() / 2, splitter->width() / 2 });
 
@@ -39,66 +36,23 @@ void splitPanel(QPx::SplitterPanel *panel, Qt::Orientation orientation, QSplitte
     }
 }
 
-void setPaletteBackground(QWidget *widget, const QColor &color)
-{
-    auto p = widget->palette();
-    p.setColor(QPalette::Background, color);
-
-    widget->setPalette(p);
-}
-
-}
-
-QPx::SplitterPanel::SplitterPanel(QWidget *parent) : QWidget(parent), closeFlag(false)
-{
-    setPaletteBackground(this, QColor(64, 64, 64));
-}
-
-void QPx::SplitterPanel::splitVertical()
-{
-    splitPanel(this, Qt::Vertical, &createSplitter, &clone);
-}
-
-void QPx::SplitterPanel::splitHorizontal()
-{
-    splitPanel(this, Qt::Horizontal, &createSplitter, &clone);
-}
-
 void QPx::SplitterPanel::closeEvent(QCloseEvent *event)
 {
-    if(!closeFlag)
+    if(auto splitter = dynamic_cast<QSplitter*>(parentWidget()))
     {
-        QTimer::singleShot(0, this, SLOT(close()));
-        closeFlag = true;
+        auto other = splitter->widget(splitter->indexOf(this) == 0 ? 1 : 0);
 
-        event->ignore();
-    }
-    else
-    {
-        if(auto splitter = dynamic_cast<QSplitter*>(parentWidget()))
+        if(auto parentSplitter = dynamic_cast<QSplitter*>(splitter->parentWidget()))
         {
-            auto other = splitter->widget(splitter->indexOf(this) == 0 ? 1 : 0);
-
-            if(auto parentSplitter = dynamic_cast<QSplitter*>(splitter->parentWidget()))
-            {
-                parentSplitter->insertWidget(parentSplitter->indexOf(splitter), other);
-            }
-            else if(splitter->parentWidget()->layout())
-            {
-                splitter->parentWidget()->layout()->replaceWidget(splitter, other);
-            }
-
-            delete splitter;
+            parentSplitter->insertWidget(parentSplitter->indexOf(splitter), other);
+        }
+        else if(splitter->parentWidget()->layout())
+        {
+            splitter->parentWidget()->layout()->replaceWidget(splitter, other);
         }
 
-        QWidget::closeEvent(event);
+        delete splitter;
     }
-}
 
-QSplitter *QPx::SplitterPanel::createSplitter(Qt::Orientation orientation)
-{
-    auto s = new QPx::LineSplitter(orientation);
-    setPaletteBackground(s, palette().color(QPalette::Background));
-
-    return s;
+    QWidget::closeEvent(event);
 }
