@@ -35,7 +35,7 @@ void LineSplitterHandle::resizeEvent(QResizeEvent *event)
 void LineSplitterHandle::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    painter.fillRect(event->rect(), Qt::black);
+    painter.fillRect(event->rect(), parentWidget()->palette().color(QPalette::Background));
 }
 
 }
@@ -44,6 +44,11 @@ QPx::LineSplitter::LineSplitter(Qt::Orientation orientation, QWidget *parent) : 
 {
     setHandleWidth(1);
     setChildrenCollapsible(false);
+
+    auto p = palette();
+    p.setColor(QPalette::Background, QColor(64, 64, 64));
+
+    setPalette(p);
 }
 
 QSplitterHandle *QPx::LineSplitter::createHandle()
