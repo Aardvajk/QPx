@@ -1,5 +1,6 @@
 #include "QPxWidgets/QPxSplitterPanel.h"
 
+#include "QPxWidgets/QPxPalette.h"
 #include "QPxWidgets/QPxLineSplitter.h"
 
 #include <QtWidgets/QLayout>
@@ -11,6 +12,7 @@ QPx::SplitterPanel::SplitterPanel(QWidget *parent) : QWidget(parent)
 void QPx::SplitterPanel::split(Qt::Orientation orientation, QWidget *widget)
 {
     auto splitter = new QPx::LineSplitter(orientation);
+    setPaletteColor(splitter, QPalette::Background, palette().color(QPalette::Background));
 
     auto parentSplitter = dynamic_cast<QSplitter*>(parentWidget());
     QList<int> parentSizes;

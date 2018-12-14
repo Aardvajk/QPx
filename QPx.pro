@@ -55,7 +55,9 @@ SOURCES += \
     QPxWidgets/QPxRichTextComboBox.cpp \
     QPxCore/QPxDeleter.cpp \
     QPxWidgets/QPxSplitterPanel.cpp \
-    QPxWidgets/QPxLineSplitter.cpp
+    QPxWidgets/QPxLineSplitter.cpp \
+    QPxCore/QPxAnimations.cpp \
+    QPxWidgets/QPxPalette.cpp
 
 HEADERS += \
     QPxWidgets/QPxAbstractTileWidget.h \
@@ -84,4 +86,6 @@ HEADERS += \
     QPxWidgets/QPxRichTextComboBox.h \
     QPxCore/QPxDeleter.h \
     QPxWidgets/QPxSplitterPanel.h \
-    QPxWidgets/QPxLineSplitter.h
+    QPxWidgets/QPxLineSplitter.h \
+    QPxCore/QPxAnimations.h \
+    QPxWidgets/QPxPalette.h

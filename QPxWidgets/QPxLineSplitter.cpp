@@ -1,5 +1,7 @@
 #include "QPxWidgets/QPxLineSplitter.h"
 
+#include "QPxWidgets/QPxPalette.h"
+
 #include <QtGui/QPaintEvent>
 #include <QtGui/QPainter>
 
@@ -45,10 +47,7 @@ QPx::LineSplitter::LineSplitter(Qt::Orientation orientation, QWidget *parent) : 
     setHandleWidth(1);
     setChildrenCollapsible(false);
 
-    auto p = palette();
-    p.setColor(QPalette::Background, QColor(64, 64, 64));
-
-    setPalette(p);
+    setPaletteColor(this, QPalette::Background, QColor(64, 64, 64));
 }
 
 QSplitterHandle *QPx::LineSplitter::createHandle()
