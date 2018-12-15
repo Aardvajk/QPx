@@ -57,7 +57,12 @@ SOURCES += \
     QPxWidgets/QPxSplitterPanel.cpp \
     QPxWidgets/QPxLineSplitter.cpp \
     QPxCore/QPxAnimations.cpp \
-    QPxWidgets/QPxPalette.cpp
+    QPxWidgets/QPxPalette.cpp \
+    QPxView/QPxViewBar.cpp \
+    QPxView/QPxViewBarButton.cpp \
+    QPxView/QPxViewPanel.cpp \
+    QPxView/QPxViewSeparator.cpp \
+    QPxView/QPxViewBarButtonGroup.cpp
 
 HEADERS += \
     QPxWidgets/QPxAbstractTileWidget.h \
@@ -88,4 +93,9 @@ HEADERS += \
     QPxWidgets/QPxSplitterPanel.h \
     QPxWidgets/QPxLineSplitter.h \
     QPxCore/QPxAnimations.h \
-    QPxWidgets/QPxPalette.h
+    QPxWidgets/QPxPalette.h \
+    QPxView/QPxViewBar.h \
+    QPxView/QPxViewBarButton.h \
+    QPxView/QPxViewPanel.h \
+    QPxView/QPxViewSeparator.h \
+    QPxView/QPxViewBarButtonGroup.h

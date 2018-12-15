@@ -1,5 +1,5 @@
-#ifndef QPXKEYSEQUENCEEDIT_H
-#define QPXKEYSEQUENCEEDIT_H
+#ifndef QPX_KEYSEQUENCEEDIT_H
+#define QPX_KEYSEQUENCEEDIT_H
 
 #include <QtWidgets/QLineEdit>
 
@@ -35,4 +35,4 @@ private:
 
 }
 
-#endif // QPXKEYSEQUENCEEDIT_H
+#endif // QPX_KEYSEQUENCEEDIT_H

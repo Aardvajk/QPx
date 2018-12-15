@@ -1,5 +1,5 @@
-#ifndef QPXABSTRACTTILEWIDGET_H
-#define QPXABSTRACTTILEWIDGET_H
+#ifndef QPX_ABSTRACTTILEWIDGET_H
+#define QPX_ABSTRACTTILEWIDGET_H
 
 #include <QtWidgets/QAbstractScrollArea>
 
@@ -43,4 +43,4 @@ private:
 
 }
 
-#endif // QPXABSTRACTTILEWIDGET_H
+#endif // QPX_ABSTRACTTILEWIDGET_H
