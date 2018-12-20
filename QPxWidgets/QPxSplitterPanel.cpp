@@ -14,7 +14,7 @@ void QPx::SplitterPanel::split(Qt::Orientation orientation, QWidget *widget)
     auto splitter = new QPx::LineSplitter(orientation);
     setPaletteColor(splitter, QPalette::Background, palette().color(QPalette::Background));
 
-    auto parentSplitter = dynamic_cast<QSplitter*>(parentWidget());
+    auto parentSplitter = qobject_cast<QSplitter*>(parentWidget());
     QList<int> parentSizes;
 
     if(parentSplitter)
@@ -40,11 +40,11 @@ void QPx::SplitterPanel::split(Qt::Orientation orientation, QWidget *widget)
 
 void QPx::SplitterPanel::closeEvent(QCloseEvent *event)
 {
-    if(auto splitter = dynamic_cast<QSplitter*>(parentWidget()))
+    if(auto splitter = qobject_cast<QSplitter*>(parentWidget()))
     {
         auto other = splitter->widget(splitter->indexOf(this) == 0 ? 1 : 0);
 
-        if(auto parentSplitter = dynamic_cast<QSplitter*>(splitter->parentWidget()))
+        if(auto parentSplitter = qobject_cast<QSplitter*>(splitter->parentWidget()))
         {
             parentSplitter->insertWidget(parentSplitter->indexOf(splitter), other);
         }
