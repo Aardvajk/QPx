@@ -2,6 +2,7 @@
 
 #include "QPxWidgets/QPxPalette.h"
 #include "QPxWidgets/QPxLineSplitter.h"
+#include "QPxWidgets/QPxLayouts.h"
 
 #include <QtWidgets/QLayout>
 
