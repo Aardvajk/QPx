@@ -17,6 +17,7 @@ public:
     VBoxLayout(QWidget *parent = nullptr);
 
     template<typename T> T *addTypedWidget(T *widget, int stretch = 0){ addWidget(widget, stretch); return widget; }
+    template<typename T> T *addTypedLayout(T *layout, int stretch = 0){ addLayout(layout, stretch); return layout; }
 };
 
 class HBoxLayout : public QHBoxLayout
@@ -27,6 +28,7 @@ public:
     HBoxLayout(QWidget *parent = nullptr);
 
     template<typename T> T *addTypedWidget(T *widget, int stretch = 0){ addWidget(widget, stretch); return widget; }
+    template<typename T> T *addTypedLayout(T *layout, int stretch = 0){ addLayout(layout, stretch); return layout; }
 };
 
 class LayoutWidget : public QWidget
