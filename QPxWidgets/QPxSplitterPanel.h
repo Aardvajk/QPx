@@ -18,6 +18,8 @@ public:
     void split(Qt::Orientation orientation, QWidget *widget);
 
 protected:
+    virtual QSplitter *createSplitter(Qt::Orientation orientation) const;
+
     virtual void closeEvent(QCloseEvent *event) override;
 };
 
