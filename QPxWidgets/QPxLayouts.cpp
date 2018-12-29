@@ -31,6 +31,16 @@ QPx::Splitter::Splitter(Qt::Orientation orientation, QWidget *parent) : QSplitte
     setHandleWidth(3);
 }
 
+void QPx::Splitter::addWidget(QWidget *widget, int stretch)
+{
+    QSplitter::addWidget(widget);
+
+    if(stretch)
+    {
+        setStretchFactor(count() - 1, stretch);
+    }
+}
+
 QPx::FramedWidget::FramedWidget(QWidget *widget, QWidget *parent) : QFrame(parent)
 {
     setFrameShape(QFrame::StyledPanel);
