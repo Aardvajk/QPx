@@ -26,10 +26,9 @@ void QPx::LayoutWidget::addWidget(QWidget *widget, int stretch)
     static_cast<QBoxLayout*>(layout())->addWidget(widget, stretch);
 }
 
-QPx::Splitter::Splitter(Qt::Orientation orientation, const QVector<QWidget*> &widgets, QWidget *parent) : QSplitter(orientation, parent)
+QPx::Splitter::Splitter(Qt::Orientation orientation, QWidget *parent) : QSplitter(orientation, parent)
 {
     setHandleWidth(3);
-    for(auto w: widgets) addWidget(w);
 }
 
 QPx::FramedWidget::FramedWidget(QWidget *widget, QWidget *parent) : QFrame(parent)

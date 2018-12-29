@@ -1,12 +1,12 @@
 #ifndef QPX_LINESPLITTER_H
 #define QPX_LINESPLITTER_H
 
-#include <QtWidgets/QSplitter>
+#include <QPxWidgets/QPxLayouts.h>
 
 namespace QPx
 {
 
-class LineSplitter : public QSplitter
+class LineSplitter : public QPx::Splitter
 {
     Q_OBJECT
 

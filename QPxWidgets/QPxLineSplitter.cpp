@@ -42,7 +42,7 @@ void LineSplitterHandle::paintEvent(QPaintEvent *event)
 
 }
 
-QPx::LineSplitter::LineSplitter(Qt::Orientation orientation, QWidget *parent) : QSplitter(orientation, parent)
+QPx::LineSplitter::LineSplitter(Qt::Orientation orientation, QWidget *parent) : QPx::Splitter(orientation, parent)
 {
     setHandleWidth(1);
     setChildrenCollapsible(false);

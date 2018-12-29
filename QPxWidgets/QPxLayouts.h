@@ -47,7 +47,9 @@ class Splitter : public QSplitter
     Q_OBJECT
 
 public:
-    Splitter(Qt::Orientation orientation, const QVector<QWidget*> &widgets, QWidget *parent = nullptr);
+    Splitter(Qt::Orientation orientation, QWidget *parent = nullptr);
+
+    template<typename T> T *addTypedWidget(T *widget){ addWidget(widget); return widget; }
 };
 
 class FramedWidget : public QFrame
