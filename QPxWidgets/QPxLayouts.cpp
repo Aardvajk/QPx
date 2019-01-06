@@ -6,10 +6,22 @@ QPx::VBoxLayout::VBoxLayout(QWidget *parent) : QVBoxLayout(parent)
     setSpacing(0);
 }
 
+QPx::VBoxLayout::VBoxLayout(int border, int spacing, QWidget *parent) : QVBoxLayout(parent)
+{
+    setMargin(border);
+    setSpacing(spacing);
+}
+
 QPx::HBoxLayout::HBoxLayout(QWidget *parent) : QHBoxLayout(parent)
 {
     setMargin(0);
     setSpacing(0);
+}
+
+QPx::HBoxLayout::HBoxLayout(int border, int spacing, QWidget *parent) : QHBoxLayout(parent)
+{
+    setMargin(border);
+    setSpacing(spacing);
 }
 
 QPx::LayoutWidget::LayoutWidget(Qt::Orientation orientation, QWidget *parent)

@@ -14,7 +14,8 @@ class VBoxLayout : public QVBoxLayout
     Q_OBJECT
 
 public:
-    VBoxLayout(QWidget *parent = nullptr);
+    explicit VBoxLayout(QWidget *parent = nullptr);
+    VBoxLayout(int border, int spacing, QWidget *parent = nullptr);
 
     template<typename T> T *addTypedWidget(T *widget, int stretch = 0){ addWidget(widget, stretch); return widget; }
     template<typename T> T *addTypedLayout(T *layout, int stretch = 0){ addLayout(layout, stretch); return layout; }
@@ -25,7 +26,8 @@ class HBoxLayout : public QHBoxLayout
     Q_OBJECT
 
 public:
-    HBoxLayout(QWidget *parent = nullptr);
+    explicit HBoxLayout(QWidget *parent = nullptr);
+    HBoxLayout(int border, int spacing, QWidget *parent = nullptr);
 
     template<typename T> T *addTypedWidget(T *widget, int stretch = 0){ addWidget(widget, stretch); return widget; }
     template<typename T> T *addTypedLayout(T *layout, int stretch = 0){ addLayout(layout, stretch); return layout; }
