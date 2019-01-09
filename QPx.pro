@@ -56,8 +56,8 @@ SOURCES += \
     QPxCore/QPxDeleter.cpp \
     QPxWidgets/QPxSplitterPanel.cpp \
     QPxWidgets/QPxLineSplitter.cpp \
-    QPxCore/QPxAnimations.cpp \
-    QPxWidgets/QPxPalette.cpp   
+    QPxWidgets/QPxPalette.cpp \   
+    QPxCore/QPxUnitAnimation.cpp
 
 HEADERS += \
     QPxWidgets/QPxAbstractTileWidget.h \
@@ -87,5 +87,5 @@ HEADERS += \
     QPxCore/QPxDeleter.h \
     QPxWidgets/QPxSplitterPanel.h \
     QPxWidgets/QPxLineSplitter.h \
-    QPxCore/QPxAnimations.h \
-    QPxWidgets/QPxPalette.h   
+    QPxWidgets/QPxPalette.h \   
+    QPxCore/QPxUnitAnimation.h

@@ -17,6 +17,8 @@ public:
 
     void loadInterface(const QString &path, QPx::ActionList *actions);
 
+    template<typename T> T *setTypedCentralWidget(T *widget){ setCentralWidget(widget); return widget; }
+
 protected:
     virtual void customInterfaceAction(const QString &key, QWidget *parent);
 };
