@@ -1,12 +1,12 @@
 #include "QPxValueButtons.h"
 
-QPx::BoolButton::BoolButton(const QString &text, bool value, QWidget *parent) : QPushButton(text, parent)
+QPx::ValueButton::ValueButton(const QString &text, const QVariant &value, QWidget *parent) : QPushButton(text, parent)
 {
-    cache.alloc<bool>(value);
+    cache.alloc<QVariant>(value);
     connect(this, SIGNAL(clicked()), SLOT(buttonClicked()));
 }
 
-void QPx::BoolButton::buttonClicked()
+void QPx::ValueButton::buttonClicked()
 {
-    emit valueClicked(cache.get<bool>());
+    emit clicked(cache.get<QVariant>());
 }

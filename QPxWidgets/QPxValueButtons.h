@@ -1,6 +1,8 @@
 #ifndef QPX_VALUEBUTTONS_H
 #define QPX_VALUEBUTTONS_H
 
+#include <QtCore/QVariant>
+
 #include <QtWidgets/QPushButton>
 
 #include <pcx/aligned_store.h>
@@ -8,21 +10,21 @@
 namespace QPx
 {
 
-class BoolButton : public QPushButton
+class ValueButton : public QPushButton
 {
     Q_OBJECT
 
 public:
-    BoolButton(const QString &text, bool value, QWidget *parent = nullptr);
+    ValueButton(const QString &text, const QVariant &value, QWidget *parent = nullptr);
 
 signals:
-    void valueClicked(bool value);
+    void clicked(const QVariant &value);
 
 private slots:
     void buttonClicked();
 
 private:
-    pcx::aligned_store<8> cache;
+    pcx::aligned_store<16> cache;
 };
 
 }
