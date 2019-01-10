@@ -24,6 +24,18 @@ QPx::HBoxLayout::HBoxLayout(int border, int spacing, QWidget *parent) : QHBoxLay
     setSpacing(spacing);
 }
 
+QPx::FormLayout::FormLayout(QWidget *parent) : QFormLayout(parent)
+{
+    setMargin(0);
+    setSpacing(0);
+}
+
+QPx::FormLayout::FormLayout(int border, int spacing, QWidget *parent) : QFormLayout(parent)
+{
+    setMargin(border);
+    setSpacing(spacing);
+}
+
 QPx::LayoutWidget::LayoutWidget(Qt::Orientation orientation, QWidget *parent)
 {
     switch(orientation)

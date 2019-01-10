@@ -4,6 +4,7 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QFormLayout>
 #include <QtWidgets/QSplitter>
 
 namespace QPx
@@ -31,6 +32,16 @@ public:
 
     template<typename T> T *addTypedWidget(T *widget, int stretch = 0){ addWidget(widget, stretch); return widget; }
     template<typename T> T *addTypedLayout(T *layout, int stretch = 0){ addLayout(layout, stretch); return layout; }
+};
+
+class FormLayout : public QFormLayout
+{
+public:
+    explicit FormLayout(QWidget *parent = nullptr);
+    FormLayout(int border, int spacing, QWidget *parent = nullptr);
+
+    template<typename T> T *addTypedWidget(T *widget){ addWidget(widget); return widget; }
+    template<typename T> T *addTypedRow(const QString &label, T *widget){ addRow(label, widget); return widget; }
 };
 
 class LayoutWidget : public QWidget
