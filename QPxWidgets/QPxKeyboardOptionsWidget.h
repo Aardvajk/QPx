@@ -19,6 +19,9 @@ class KeyboardOptionsWidget : public QWidget
 public:
     explicit KeyboardOptionsWidget(ActionList *actions, QWidget *parent = nullptr);
 
+signals:
+    void changed();
+
 public slots:
     void commit();
 

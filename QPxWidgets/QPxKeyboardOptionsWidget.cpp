@@ -231,6 +231,8 @@ void QPx::KeyboardOptionsWidget::keySequenceChanged(const QKeySequence &value)
         {
             current->setData(2, Qt::DisplayRole, value.toString(QKeySequence::NativeText));
             checkConflicts();
+
+            emit changed();
         }
     }
 }
