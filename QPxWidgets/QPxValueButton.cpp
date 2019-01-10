@@ -1,4 +1,4 @@
-#include "QPxValueButtons.h"
+#include "QPxValueButton.h"
 
 QPx::ValueButton::ValueButton(const QString &text, const QVariant &value, QWidget *parent) : QPushButton(text, parent)
 {

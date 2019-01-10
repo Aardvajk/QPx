@@ -58,7 +58,7 @@ SOURCES += \
     QPxWidgets/QPxLineSplitter.cpp \
     QPxWidgets/QPxPalette.cpp \   
     QPxCore/QPxUnitAnimation.cpp \
-    QPxWidgets/QPxValueButtons.cpp
+    QPxWidgets/QPxValueButton.cpp
 
 HEADERS += \
     QPxWidgets/QPxAbstractTileWidget.h \
@@ -90,4 +90,4 @@ HEADERS += \
     QPxWidgets/QPxLineSplitter.h \
     QPxWidgets/QPxPalette.h \   
     QPxCore/QPxUnitAnimation.h \
-    QPxWidgets/QPxValueButtons.h
+    QPxWidgets/QPxValueButton.h

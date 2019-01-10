@@ -1,5 +1,5 @@
-#ifndef QPX_VALUEBUTTONS_H
-#define QPX_VALUEBUTTONS_H
+#ifndef QPX_VALUEBUTTON_H
+#define QPX_VALUEBUTTON_H
 
 #include <QtCore/QVariant>
 
@@ -29,4 +29,4 @@ private:
 
 }
 
-#endif // QPXVALUEBUTTONS_H
+#endif // QPXVALUEBUTTON_H
