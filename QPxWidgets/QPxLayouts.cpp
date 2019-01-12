@@ -6,10 +6,10 @@ QPx::VBoxLayout::VBoxLayout(QWidget *parent) : QVBoxLayout(parent)
     setSpacing(0);
 }
 
-QPx::VBoxLayout::VBoxLayout(int border, int spacing, QWidget *parent) : QVBoxLayout(parent)
+QPx::VBoxLayout::VBoxLayout(pcx::optional<int> border, pcx::optional<int> spacing, QWidget *parent) : QVBoxLayout(parent)
 {
-    setMargin(border);
-    setSpacing(spacing);
+    if(border) setMargin(*border);
+    if(spacing) setSpacing(*spacing);
 }
 
 QPx::HBoxLayout::HBoxLayout(QWidget *parent) : QHBoxLayout(parent)
@@ -18,10 +18,10 @@ QPx::HBoxLayout::HBoxLayout(QWidget *parent) : QHBoxLayout(parent)
     setSpacing(0);
 }
 
-QPx::HBoxLayout::HBoxLayout(int border, int spacing, QWidget *parent) : QHBoxLayout(parent)
+QPx::HBoxLayout::HBoxLayout(pcx::optional<int> border, pcx::optional<int> spacing, QWidget *parent) : QHBoxLayout(parent)
 {
-    setMargin(border);
-    setSpacing(spacing);
+    if(border) setMargin(*border);
+    if(spacing) setSpacing(*spacing);
 }
 
 QPx::FormLayout::FormLayout(QWidget *parent) : QFormLayout(parent)
@@ -30,10 +30,10 @@ QPx::FormLayout::FormLayout(QWidget *parent) : QFormLayout(parent)
     setSpacing(0);
 }
 
-QPx::FormLayout::FormLayout(int border, int spacing, QWidget *parent) : QFormLayout(parent)
+QPx::FormLayout::FormLayout(pcx::optional<int> border, pcx::optional<int> spacing, QWidget *parent) : QFormLayout(parent)
 {
-    setMargin(border);
-    setSpacing(spacing);
+    if(border) setMargin(*border);
+    if(spacing) setSpacing(*spacing);
 }
 
 QPx::LayoutWidget::LayoutWidget(Qt::Orientation orientation, QWidget *parent)
@@ -63,6 +63,11 @@ void QPx::Splitter::addWidget(QWidget *widget, int stretch)
     {
         setStretchFactor(count() - 1, stretch);
     }
+}
+
+QPx::DialogButtonBox::DialogButtonBox(QWidget *parent) : QDialogButtonBox(parent)
+{
+
 }
 
 QPx::FramedWidget::FramedWidget(QWidget *widget, QWidget *parent) : QFrame(parent)
