@@ -54,7 +54,7 @@ public:
 
     StableList() : last(0) { }
 
-    void add(const T &t);
+    int add(const T &t);
     void remove(int index);
 
     T &operator[](int index){ return vv[index]; }
@@ -76,12 +76,14 @@ private:
     int last;
 };
 
-template<typename T> void StableList<T>::add(const T &t)
+template<typename T> int StableList<T>::add(const T &t)
 {
     if(fs.empty())
     {
         vv.push_back(t);
         last = vv.count();
+
+        return vv.count() - 1;
     }
     else
     {
@@ -91,6 +93,8 @@ template<typename T> void StableList<T>::add(const T &t)
         vv[index] = t;
 
         if(index + 1 > last) last = index + 1;
+
+        return index;
     }
 }
 
