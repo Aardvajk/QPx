@@ -9,7 +9,7 @@ QPx::SplitterPanel::SplitterPanel(QWidget *parent) : QWidget(parent)
 {
 }
 
-void QPx::SplitterPanel::split(Qt::Orientation orientation, QWidget *widget)
+QPx::SplitterPanel *QPx::SplitterPanel::split(Qt::Orientation orientation, SplitterPanel *panel)
 {
     auto splitter = createSplitter(orientation);
 
@@ -27,7 +27,7 @@ void QPx::SplitterPanel::split(Qt::Orientation orientation, QWidget *widget)
     }
 
     splitter->addWidget(this);
-    splitter->addWidget(widget);
+    splitter->addWidget(panel);
 
     splitter->setSizes({ splitter->width() / 2, splitter->width() / 2 });
 
@@ -35,6 +35,8 @@ void QPx::SplitterPanel::split(Qt::Orientation orientation, QWidget *widget)
     {
         parentSplitter->setSizes(parentSizes);
     }
+
+    return panel;
 }
 
 QSplitter *QPx::SplitterPanel::createSplitter(Qt::Orientation orientation) const

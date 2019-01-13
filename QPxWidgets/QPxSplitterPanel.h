@@ -15,7 +15,7 @@ class SplitterPanel : public QWidget
 public:
     explicit SplitterPanel(QWidget *parent = nullptr);
 
-    void split(Qt::Orientation orientation, QWidget *widget);
+    SplitterPanel *split(Qt::Orientation orientation, SplitterPanel *panel);
 
 protected:
     virtual QSplitter *createSplitter(Qt::Orientation orientation) const;
