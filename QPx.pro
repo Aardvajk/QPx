@@ -90,4 +90,5 @@ HEADERS += \
     QPxWidgets/QPxLineSplitter.h \
     QPxWidgets/QPxPalette.h \   
     QPxCore/QPxUnitAnimation.h \
-    QPxWidgets/QPxValueButton.h
+    QPxWidgets/QPxValueButton.h \
+    QPxCore/QPxStableList.h
