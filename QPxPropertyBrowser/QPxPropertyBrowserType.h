@@ -166,7 +166,7 @@ public:
     FlagPropertyBrowserType(const QStringList &values, QObject *parent = nullptr) : AbstractFlagPropertyBrowserType(values, parent) { }
 
     virtual QVariant toFlagValue(unsigned value) const { return QVariant::fromValue(T(static_cast<F>(value))); }
-    virtual unsigned toUnsigned(const QVariant &value) const { return static_cast<unsigned>(static_cast<F>(qvariant_cast<T>(value))); }
+    virtual unsigned toUnsigned(const QVariant &value) const { return static_cast<unsigned>(static_cast<F>(value.value<T>())); }
 };
 
 class ColorPropertyBrowserType : public PropertyBrowserType

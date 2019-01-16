@@ -62,7 +62,7 @@ void ComboDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     opt.text = QString();
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
 
-    drawRichText(*painter, index.data(Qt::DisplayRole).toString(), makeTextRect(opt.rect.adjusted(2, 0, -2, 0), opt.fontMetrics), qvariant_cast<QColor>(index.data(Qt::TextColorRole)));
+    drawRichText(*painter, index.data(Qt::DisplayRole).toString(), makeTextRect(opt.rect.adjusted(2, 0, -2, 0), opt.fontMetrics), index.data(Qt::TextColorRole).value<QColor>());
 }
 
 }

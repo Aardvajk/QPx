@@ -36,6 +36,10 @@ QPx::FormLayout::FormLayout(pcx::optional<int> border, pcx::optional<int> spacin
     if(spacing) setSpacing(*spacing);
 }
 
+QPx::StackedLayout::StackedLayout(QWidget *parent) : QStackedLayout(parent)
+{
+}
+
 QPx::LayoutWidget::LayoutWidget(Qt::Orientation orientation, QWidget *parent)
 {
     switch(orientation)

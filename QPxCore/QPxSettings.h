@@ -1,6 +1,7 @@
 #ifndef QPX_SETTINGS_H
 #define QPX_SETTINGS_H
 
+#include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QVariant>
 
@@ -9,13 +10,12 @@
 namespace QPx
 {
 
-class Settings
+class Settings : public QObject
 {
+    Q_OBJECT
+
 public:
     Settings();
-
-    void clear();
-    void setValue(const QVariant &value);
 
     bool load(const QString &path);
     bool save(const QString &path) const;
@@ -32,6 +32,13 @@ public:
     QVariant value(const QVariant &defaultValue = { }) const;
 
     int count() const;
+
+signals:
+    void valueChanged(const QVariant &value);
+
+public slots:
+    void clear();
+    void setValue(const QVariant &value);
 
 private:
     friend class SettingsRoot;

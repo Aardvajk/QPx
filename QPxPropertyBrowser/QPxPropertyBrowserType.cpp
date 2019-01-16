@@ -28,8 +28,8 @@ template<typename T> bool NumericCache::validate(const QVariant &value) const
 {
     if(value.toString().isEmpty()) return false;
 
-    if(min.isValid() && qvariant_cast<T>(value) < qvariant_cast<T>(min)) return false;
-    if(max.isValid() && qvariant_cast<T>(value) > qvariant_cast<T>(max)) return false;
+    if(min.isValid() && value.value<T>() < min.value<T>()) return false;
+    if(max.isValid() && value.value<T>() > max.value<T>()) return false;
 
     return true;
 }

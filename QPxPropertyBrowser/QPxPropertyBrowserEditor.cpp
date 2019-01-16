@@ -27,8 +27,8 @@ public:
 
 template<typename T, typename V> V *setupValidator(const QVariant &min, const QVariant &max, V *validator)
 {
-    if(min.isValid()) validator->setBottom(qvariant_cast<T>(min));
-    if(max.isValid()) validator->setTop(qvariant_cast<T>(max));
+    if(min.isValid()) validator->setBottom(min.value<T>());
+    if(max.isValid()) validator->setTop(max.value<T>());
 
     return validator;
 }

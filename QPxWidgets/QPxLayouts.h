@@ -7,6 +7,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QFormLayout>
+#include <QtWidgets/QStackedLayout>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QDialogButtonBox>
 
@@ -39,12 +40,24 @@ public:
 
 class FormLayout : public QFormLayout
 {
+    Q_OBJECT
+
 public:
     explicit FormLayout(QWidget *parent = nullptr);
     FormLayout(pcx::optional<int> border, pcx::optional<int> spacing, QWidget *parent = nullptr);
 
     template<typename T> T *addTypedWidget(T *widget){ addWidget(widget); return widget; }
     template<typename T> T *addTypedRow(const QString &label, T *widget){ addRow(label, widget); return widget; }
+};
+
+class StackedLayout : public QStackedLayout
+{
+    Q_OBJECT
+
+public:
+    explicit StackedLayout(QWidget *parent = nullptr);
+
+    template<typename T> T *addTypedWidget(T *widget){ addWidget(widget); return widget; }
 };
 
 class LayoutWidget : public QWidget

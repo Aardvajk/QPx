@@ -66,7 +66,12 @@ void QPx::Settings::clear()
 
 void QPx::Settings::setValue(const QVariant &value)
 {
-    cache.get<SettingsCache>().value = value;
+    auto &v = cache.get<SettingsCache>().value;
+    if(v != value)
+    {
+        v = value;
+        emit valueChanged(v);
+    }
 }
 
 bool QPx::Settings::load(const QString &path)

@@ -91,4 +91,5 @@ HEADERS += \
     QPxWidgets/QPxPalette.h \   
     QPxCore/QPxUnitAnimation.h \
     QPxWidgets/QPxValueButton.h \
-    QPxCore/QPxStableList.h
+    QPxCore/QPxStableList.h \
+    QPxCore/QPxMetaType.h

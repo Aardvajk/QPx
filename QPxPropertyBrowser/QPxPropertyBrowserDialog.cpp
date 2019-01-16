@@ -31,7 +31,7 @@ int QPx::ColorPropertyBrowserDialog::exec()
     QColorDialog d(this);
 
     d.setOption(QColorDialog::ShowAlphaChannel);
-    d.setCurrentColor(value.isValid() ? qvariant_cast<QColor>(value) : Qt::white);
+    d.setCurrentColor(value.isValid() ? value.value<QColor>() : Qt::white);
 
     int r = d.exec();
     if(r == QDialog::Accepted)
