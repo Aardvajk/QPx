@@ -29,6 +29,8 @@ public:
     const Settings &operator[](int index) const;
 
     QString key() const;
+    template<typename T> T value(const QVariant &defaultValue = { }) const { return variant(defaultValue).value<T>(); }
+
     QVariant value(const QVariant &defaultValue = { }) const;
 
     int count() const;
@@ -46,8 +48,12 @@ private:
 
     Settings(const QString &key);
 
+    QVariant variant(const QVariant &defaultValue) const;
+
     pcx::aligned_store<104> cache;
 };
+
+template<> QVariant Settings::value<QVariant>(const QVariant &defaultValue) const { return variant(defaultValue); }
 
 class ApplicationSettings : public Settings
 {

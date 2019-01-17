@@ -31,7 +31,7 @@ template<typename T> void loadMenus(const QPx::Settings &menus, QPx::ActionList 
 
         switch(special(key))
         {
-            case Special::Menu: loadMenus(menus[i], actions, parent->addMenu(menus[i].value().toString()), window, custom); break;
+            case Special::Menu: loadMenus(menus[i], actions, parent->addMenu(menus[i].value<QString>()), window, custom); break;
             case Special::Separator: parent->addSeparator(); break;
 
             case Special::Unknown:
@@ -53,7 +53,7 @@ void loadToolBars(const QPx::Settings &toolBars, QPx::ActionList *actions, QPx::
 {
     for(int i = 0; i < toolBars.count(); ++i)
     {
-        auto toolbar = window->addToolBar(toolBars[i].value().toString());
+        auto toolbar = window->addToolBar(toolBars[i].value<QString>());
 
         toolbar->setIconSize(QSize(16, 16));
         toolbar->setMovable(false);

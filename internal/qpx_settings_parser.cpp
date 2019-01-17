@@ -332,11 +332,11 @@ void write(int indent, const QPx::Settings &parent, const QPx::Settings &node, i
 
     ts << ind << node.key();
 
-    if(node.value().isValid())
+    if(node.value<QVariant>().isValid())
     {
         ts << " = ";
 
-        auto v = node.value();
+        auto v = node.value<QVariant>();
         switch(static_cast<QMetaType::Type>(v.type()))
         {
             case QMetaType::Int: ts << v.toInt(); break;

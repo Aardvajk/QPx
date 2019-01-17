@@ -156,13 +156,6 @@ QString QPx::Settings::key() const
     return cache.get<SettingsCache>().key;
 }
 
-QVariant QPx::Settings::value(const QVariant &defaultValue) const
-{
-    auto &value = cache.get<SettingsCache>().value;
-
-    return value.isValid() ? value : defaultValue;
-}
-
 int QPx::Settings::count() const
 {
     return static_cast<int>(cache.get<SettingsCache>().nodes.size());
@@ -171,6 +164,12 @@ int QPx::Settings::count() const
 QPx::Settings::Settings(const QString &key)
 {
     cache.alloc<SettingsCache>(key);
+}
+
+QVariant QPx::Settings::variant(const QVariant &defaultValue) const
+{
+    auto &value = cache.get<SettingsCache>().value;
+    return value.isValid() ? value : defaultValue;
 }
 
 QPx::ApplicationSettings::ApplicationSettings(const QString &path) : QPx::Settings()
