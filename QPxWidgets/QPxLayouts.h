@@ -22,6 +22,8 @@ public:
     explicit VBoxLayout(QWidget *parent = nullptr);
     VBoxLayout(pcx::optional<int> border, pcx::optional<int> spacing, QWidget *parent = nullptr);
 
+    void clear();
+
     template<typename T> T *addTypedWidget(T *widget, int stretch = 0){ addWidget(widget, stretch); return widget; }
     template<typename T> T *addTypedLayout(T *layout, int stretch = 0){ addLayout(layout, stretch); return layout; }
 };
@@ -33,6 +35,8 @@ class HBoxLayout : public QHBoxLayout
 public:
     explicit HBoxLayout(QWidget *parent = nullptr);
     HBoxLayout(pcx::optional<int> border, pcx::optional<int> spacing, QWidget *parent = nullptr);
+
+    void clear();
 
     template<typename T> T *addTypedWidget(T *widget, int stretch = 0){ addWidget(widget, stretch); return widget; }
     template<typename T> T *addTypedLayout(T *layout, int stretch = 0){ addLayout(layout, stretch); return layout; }

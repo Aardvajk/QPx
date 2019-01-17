@@ -1,5 +1,23 @@
 #include "QPxWidgets/QPxLayouts.h"
 
+namespace
+{
+
+void clearLayout(QLayout *layout)
+{
+    while(layout->count())
+    {
+        auto item = layout->takeAt(0);
+
+        delete item->layout();
+        delete item->widget();
+
+        delete item;
+    }
+}
+
+}
+
 QPx::VBoxLayout::VBoxLayout(QWidget *parent) : QVBoxLayout(parent)
 {
     setMargin(0);
@@ -12,6 +30,11 @@ QPx::VBoxLayout::VBoxLayout(pcx::optional<int> border, pcx::optional<int> spacin
     if(spacing) setSpacing(*spacing);
 }
 
+void QPx::VBoxLayout::clear()
+{
+    clearLayout(this);
+}
+
 QPx::HBoxLayout::HBoxLayout(QWidget *parent) : QHBoxLayout(parent)
 {
     setMargin(0);
@@ -22,6 +45,11 @@ QPx::HBoxLayout::HBoxLayout(pcx::optional<int> border, pcx::optional<int> spacin
 {
     if(border) setMargin(*border);
     if(spacing) setSpacing(*spacing);
+}
+
+void QPx::HBoxLayout::clear()
+{
+    clearLayout(this);
 }
 
 QPx::FormLayout::FormLayout(QWidget *parent) : QFormLayout(parent)
