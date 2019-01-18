@@ -36,7 +36,7 @@ public:
     QVariant value() const;
 
     PropertyBrowserItem *addItem(PropertyBrowserItem *item);
-    QList<PropertyBrowserItem*> items() const;
+    QVector<PropertyBrowserItem*> items() const;
 
 signals:
     void valueChanged(const QVariant &value);

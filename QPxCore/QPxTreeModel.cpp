@@ -13,7 +13,7 @@ public:
     TreeModel *model;
 
     Node *parent;
-    QList<Node*> children;
+    QVector<Node*> children;
     int row;
 
     void *userData;

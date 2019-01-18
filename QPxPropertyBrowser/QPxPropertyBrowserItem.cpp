@@ -20,7 +20,7 @@ public:
     QString name;
     QPx::PropertyBrowserItem::Flags flags;
     QVariant value;
-    QList<QPx::PropertyBrowserItem*> props;
+    QVector<QPx::PropertyBrowserItem*> props;
     bool lock;
 };
 
@@ -60,7 +60,7 @@ QPx::PropertyBrowserItem *QPx::PropertyBrowserItem::addItem(PropertyBrowserItem 
     return item;
 }
 
-QList<QPx::PropertyBrowserItem*> QPx::PropertyBrowserItem::items() const
+QVector<QPx::PropertyBrowserItem*> QPx::PropertyBrowserItem::items() const
 {
     return cache.get<Cache>().props;
 }

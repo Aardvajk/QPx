@@ -246,7 +246,7 @@ void QPx::KeyboardOptionsWidget::populateTree()
 {
     auto &c = cache.get<Cache>();
 
-    QMap<QString, QList<QPair<QString, Action*> > > map;
+    QMap<QString, QVector<QPair<QString, Action*> > > map;
 
     for(auto action: c.actions->toList())
     {
@@ -294,7 +294,7 @@ void QPx::KeyboardOptionsWidget::checkConflicts()
 {
     auto &c = cache.get<Cache>();
 
-    QMap<QKeySequence, QList<QTreeWidgetItem*> > map;
+    QMap<QKeySequence, QVector<QTreeWidgetItem*> > map;
 
     for(int i = 0; i < c.tree->topLevelItemCount(); ++i)
     {

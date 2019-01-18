@@ -38,7 +38,7 @@ class EnumCache
 {
 public:
     explicit EnumCache(const QStringList &values){ for(int i = 0; i < values.count(); ++i) map[i] = values[i]; }
-    explicit EnumCache(const QList<QPair<int, QString> > &values){ for(int i = 0; i < values.count(); ++i) map[values[i].first] = values[i].second; }
+    explicit EnumCache(const QVector<QPair<int, QString> > &values){ for(int i = 0; i < values.count(); ++i) map[values[i].first] = values[i].second; }
 
     QMap<int, QString> map;
 };
@@ -188,7 +188,7 @@ QPx::AbstractEnumPropertyBrowserType::AbstractEnumPropertyBrowserType(const QStr
     cache.alloc<EnumCache>(values);
 }
 
-QPx::AbstractEnumPropertyBrowserType::AbstractEnumPropertyBrowserType(const QList<QPair<int, QString> > &values, QObject *parent)
+QPx::AbstractEnumPropertyBrowserType::AbstractEnumPropertyBrowserType(const QVector<QPair<int, QString> > &values, QObject *parent)
 {
     cache.alloc<EnumCache>(values);
 }

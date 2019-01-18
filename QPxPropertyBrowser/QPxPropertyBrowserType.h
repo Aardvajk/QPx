@@ -114,7 +114,7 @@ class AbstractEnumPropertyBrowserType : public PropertyBrowserType
 
 public:
     AbstractEnumPropertyBrowserType(const QStringList &values, QObject *parent = nullptr);
-    AbstractEnumPropertyBrowserType(const QList<QPair<int, QString> > &values, QObject *parent = nullptr);
+    AbstractEnumPropertyBrowserType(const QVector<QPair<int, QString> > &values, QObject *parent = nullptr);
 
     virtual QString valueText(const PropertyBrowserItem *item) const override;
 
@@ -129,12 +129,12 @@ template<typename T> class EnumPropertyBrowserType : public AbstractEnumProperty
 {
 public:
     EnumPropertyBrowserType(const QStringList &values, QObject *parent = nullptr) : AbstractEnumPropertyBrowserType(values, parent) { }
-    EnumPropertyBrowserType(const QList<QPair<T, QString> > &values, QObject *parent = nullptr) : AbstractEnumPropertyBrowserType(convert(values), parent) { }
+    EnumPropertyBrowserType(const QVector<QPair<T, QString> > &values, QObject *parent = nullptr) : AbstractEnumPropertyBrowserType(convert(values), parent) { }
 
     virtual QVariant toEnumValue(const QVariant &value) const override { return QVariant::fromValue(static_cast<T>(value.toInt())); }
 
 private:
-    static QList<QPair<int, QString> > convert(const QList<QPair<T, QString> > &values){ QList<QPair<int, QString> > r; for(auto i: values) r.append(qMakePair(static_cast<int>(i.first), i.second)); return r; }
+    static QVector<QPair<int, QString> > convert(const QVector<QPair<T, QString> > &values){ QVector<QPair<int, QString> > r; for(auto i: values) r.append(qMakePair(static_cast<int>(i.first), i.second)); return r; }
 };
 
 class AbstractFlagPropertyBrowserType : public PropertyBrowserType
