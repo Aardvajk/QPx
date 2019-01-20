@@ -128,8 +128,18 @@ bool QPx::GroupPropertyBrowserType::readOnly() const
     return true;
 }
 
+int QPx::GroupPropertyBrowserType::userType() const
+{
+    return -1;
+}
+
 QPx::StringPropertyBrowserType::StringPropertyBrowserType(QObject *parent) : PropertyBrowserType(parent)
 {
+}
+
+int QPx::StringPropertyBrowserType::userType() const
+{
+    return QMetaType::QString;
 }
 
 QPx::PropertyBrowserEditor *QPx::StringPropertyBrowserType::createEditor(const PropertyBrowserItem *item, QWidget *parent) const
@@ -147,6 +157,11 @@ QPx::NumericPropertyBrowserType::NumericPropertyBrowserType(const QVariant &min,
     cache.alloc<NumericCache>(min, max);
 }
 
+int QPx::IntPropertyBrowserType::userType() const
+{
+    return QMetaType::Int;
+}
+
 bool QPx::IntPropertyBrowserType::validate(const QPx::PropertyBrowserItem *item, const QVariant &value) const
 {
     return cache.get<NumericCache>().validate<int>(value);
@@ -161,6 +176,11 @@ QPx::PropertyBrowserEditor *QPx::IntPropertyBrowserType::createEditor(const Prop
 QString QPx::FloatPropertyBrowserType::valueText(const PropertyBrowserItem *item) const
 {
     return item->value().isValid() ? QString::number(item->value().toFloat()) : QString();
+}
+
+int QPx::FloatPropertyBrowserType::userType() const
+{
+    return QMetaType::Float;
 }
 
 bool QPx::FloatPropertyBrowserType::validate(const QPx::PropertyBrowserItem *item, const QVariant &value) const
@@ -181,6 +201,11 @@ QPx::BoolPropertyBrowserType::BoolPropertyBrowserType(QObject *parent) : Propert
 QString QPx::BoolPropertyBrowserType::valueText(const PropertyBrowserItem *item) const
 {
     return QString();
+}
+
+int QPx::BoolPropertyBrowserType::userType() const
+{
+    return QMetaType::Bool;
 }
 
 QPx::AbstractEnumPropertyBrowserType::AbstractEnumPropertyBrowserType(const QStringList &values, QObject *parent) : PropertyBrowserType(parent)
@@ -214,7 +239,7 @@ void QPx::AbstractFlagPropertyBrowserType::addProperties(QPx::PropertyBrowserIte
 
     foreach(auto v, c.map.keys())
     {
-        auto i = item->addItem(new QPx::PropertyBrowserItem(c.type, model, parent, c.map[v], item->flags(), toUnsigned(item->value()) & v, item));
+        auto i = item->addItem(new QPx::PropertyBrowserItem(c.type, model, parent, { }, c.map[v], item->flags(), toUnsigned(item->value()) & v, item));
         connect(i, SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
     }
 }
@@ -275,6 +300,11 @@ QPx::ColorPropertyBrowserType::ColorPropertyBrowserType(QObject *parent) : Prope
 {
 }
 
+int QPx::ColorPropertyBrowserType::userType() const
+{
+    return QMetaType::QColor;
+}
+
 void QPx::ColorPropertyBrowserType::paint(const PropertyBrowserItem *item, QPainter *painter, const QStyleOptionViewItem &option) const
 {
     auto r = option.rect.adjusted(2, 2, -2, -2);
@@ -307,10 +337,10 @@ void QPx::PointPropertyBrowserType::addProperties(QPx::PropertyBrowserItem *item
 
     auto values = pointValues(item->value());
 
-    item->addItem(new PropertyBrowserItem(type, model, parent, "X", item->flags(), values.first, item));
+    item->addItem(new PropertyBrowserItem(type, model, parent, { }, "X", item->flags(), values.first, item));
     connect(item->items()[0], SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
 
-    item->addItem(new PropertyBrowserItem(type, model, parent, "Y", item->flags(), values.second, item));
+    item->addItem(new PropertyBrowserItem(type, model, parent, { }, "Y", item->flags(), values.second, item));
     connect(item->items()[1], SIGNAL(valueChanged(QVariant)), SLOT(changed(QVariant)));
 }
 
@@ -336,6 +366,11 @@ QString QPx::PointPropertyBrowserType::valueText(const PropertyBrowserItem *item
 bool QPx::PointPropertyBrowserType::readOnly() const
 {
     return true;
+}
+
+int QPx::PointPropertyBrowserType::userType() const
+{
+    return QMetaType::QPoint;
 }
 
 void QPx::PointPropertyBrowserType::changed(const QVariant &value)

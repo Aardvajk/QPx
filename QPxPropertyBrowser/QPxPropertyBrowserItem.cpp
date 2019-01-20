@@ -24,14 +24,25 @@ public:
     bool lock;
 };
 
+static int count = 0;
+
 }
 
-QPx::PropertyBrowserItem::PropertyBrowserItem(const QPx::PropertyBrowserType *type, QPx::PropertyBrowserModel *model, const QModelIndex &index, const QString &name, Flags flags, const QVariant &value, QObject *parent) : QObject(parent)
+QPx::PropertyBrowserItem::PropertyBrowserItem(const QPx::PropertyBrowserType *type, QPx::PropertyBrowserModel *model, const QModelIndex &index, const pcx::optional<int> &row, const QString &name, Flags flags, const QVariant &value, QObject *parent) : QObject(parent)
 {
-    cache.alloc<Cache>(type, name, flags, value);
-    auto m = model->appendRow(this, index);
+    auto &c = cache.alloc<Cache>(type, name, flags, value);
+    auto m = row ? model->insertRow(*row, this, index) : model->appendRow(this, index);
 
     type->addProperties(this, model, m);
+
+    ++count;
+    qDebug() << count << "items exist";
+}
+
+QPx::PropertyBrowserItem::~PropertyBrowserItem()
+{
+    --count;
+    qDebug() << count << "items exist";
 }
 
 const QPx::PropertyBrowserType *QPx::PropertyBrowserItem::type() const
@@ -80,4 +91,14 @@ void QPx::PropertyBrowserItem::setValue(const QVariant &value)
             emit valueChanged(value);
         }
     }
+}
+
+bool operator==(QPx::PropertyBrowserItem::Flags a, QPx::PropertyBrowserItem::Flags b)
+{
+    return int(a) == int(b);
+}
+
+bool operator!=(QPx::PropertyBrowserItem::Flags a, QPx::PropertyBrowserItem::Flags b)
+{
+    return int(a) != int(b);
 }

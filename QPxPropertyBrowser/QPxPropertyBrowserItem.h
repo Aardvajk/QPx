@@ -5,6 +5,7 @@
 
 #include <pcx/flags.h>
 #include <pcx/aligned_store.h>
+#include <pcx/optional.h>
 
 class QModelIndex;
 
@@ -27,7 +28,8 @@ public:
 
     using Flags = pcx::flags<Flag>;
 
-    PropertyBrowserItem(const PropertyBrowserType *type, PropertyBrowserModel *model, const QModelIndex &index, const QString &name, Flags flags, const QVariant &value, QObject *parent = nullptr);
+    PropertyBrowserItem(const PropertyBrowserType *type, PropertyBrowserModel *model, const QModelIndex &index, const pcx::optional<int> &row, const QString &name, Flags flags, const QVariant &value, QObject *parent = nullptr);
+    ~PropertyBrowserItem();
 
     const PropertyBrowserType *type() const;
 
@@ -49,6 +51,9 @@ private:
 };
 
 }
+
+bool operator==(QPx::PropertyBrowserItem::Flags a, QPx::PropertyBrowserItem::Flags b);
+bool operator!=(QPx::PropertyBrowserItem::Flags a, QPx::PropertyBrowserItem::Flags b);
 
 template<> struct pcx_is_flag_enum<QPx::PropertyBrowserItem::Flag> : std::true_type { };
 

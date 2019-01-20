@@ -29,8 +29,8 @@ public:
     virtual void updateProperties(PropertyBrowserItem *item, const QVariant &value) const;
 
     virtual QString valueText(const PropertyBrowserItem *item) const;
-
     virtual bool readOnly() const;
+    virtual int userType() const = 0;
 
     virtual bool validate(const PropertyBrowserItem *item, const QVariant &value) const;
 
@@ -48,6 +48,7 @@ public:
     explicit GroupPropertyBrowserType(QObject *parent = nullptr);
 
     virtual bool readOnly() const override;
+    virtual int userType() const;
 };
 
 class StringPropertyBrowserType : public PropertyBrowserType
@@ -56,6 +57,8 @@ class StringPropertyBrowserType : public PropertyBrowserType
 
 public:
     explicit StringPropertyBrowserType(QObject *parent = nullptr);
+
+    virtual int userType() const;
 
     virtual PropertyBrowserEditor *createEditor(const PropertyBrowserItem *item, QWidget *parent) const override;
 };
@@ -79,6 +82,8 @@ class IntPropertyBrowserType : public NumericPropertyBrowserType
 public:
     using NumericPropertyBrowserType::NumericPropertyBrowserType;
 
+    virtual int userType() const;
+
     virtual bool validate(const PropertyBrowserItem *item, const QVariant &value) const override;
 
     virtual PropertyBrowserEditor *createEditor(const PropertyBrowserItem *item, QWidget *parent) const override;
@@ -92,6 +97,7 @@ public:
     using NumericPropertyBrowserType::NumericPropertyBrowserType;
 
     virtual QString valueText(const PropertyBrowserItem *item) const override;
+    virtual int userType() const;
 
     virtual bool validate(const PropertyBrowserItem *item, const QVariant &value) const override;
 
@@ -106,6 +112,7 @@ public:
     explicit BoolPropertyBrowserType(QObject *parent = nullptr);
 
     virtual QString valueText(const PropertyBrowserItem *item) const override;
+    virtual int userType() const;
 };
 
 class AbstractEnumPropertyBrowserType : public PropertyBrowserType
@@ -130,6 +137,8 @@ template<typename T> class EnumPropertyBrowserType : public AbstractEnumProperty
 public:
     EnumPropertyBrowserType(const QStringList &values, QObject *parent = nullptr) : AbstractEnumPropertyBrowserType(values, parent) { }
     EnumPropertyBrowserType(const QVector<QPair<T, QString> > &values, QObject *parent = nullptr) : AbstractEnumPropertyBrowserType(convert(values), parent) { }
+
+    virtual int userType() const { return qMetaTypeId<T>(); }
 
     virtual QVariant toEnumValue(const QVariant &value) const override { return QVariant::fromValue(static_cast<T>(value.toInt())); }
 
@@ -165,6 +174,8 @@ template<typename F, typename T> class FlagPropertyBrowserType : public Abstract
 public:
     FlagPropertyBrowserType(const QStringList &values, QObject *parent = nullptr) : AbstractFlagPropertyBrowserType(values, parent) { }
 
+    virtual int userType() const { return qMetaTypeId<T>(); }
+
     virtual QVariant toFlagValue(unsigned value) const { return QVariant::fromValue(T(static_cast<F>(value))); }
     virtual unsigned toUnsigned(const QVariant &value) const { return static_cast<unsigned>(static_cast<F>(value.value<T>())); }
 };
@@ -175,6 +186,8 @@ class ColorPropertyBrowserType : public PropertyBrowserType
 
 public:
     explicit ColorPropertyBrowserType(QObject *parent = nullptr);
+
+    virtual int userType() const;
 
     virtual void paint(const PropertyBrowserItem *item, QPainter *painter, const QStyleOptionViewItem &option) const override;
 
@@ -193,6 +206,7 @@ public:
 
     virtual QString valueText(const PropertyBrowserItem *item) const override;
     virtual bool readOnly() const override;
+    virtual int userType() const;
 
 private slots:
     void changed(const QVariant &value);
