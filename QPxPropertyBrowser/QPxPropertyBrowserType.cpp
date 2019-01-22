@@ -375,16 +375,20 @@ int QPx::PointPropertyBrowserType::userType() const
 
 void QPx::PointPropertyBrowserType::changed(const QVariant &value)
 {
-    auto item = static_cast<PropertyBrowserItem*>(sender());
-    auto parent = static_cast<PropertyBrowserItem*>(item->parent());
-
-    auto p = parent->value().toPoint();
-
-    switch(parent->items().indexOf(item))
+    if(value.isValid())
     {
-        case 0: p.setX(value.toInt()); break;
-        case 1: p.setY(value.toInt()); break;
-    }
+        auto item = static_cast<PropertyBrowserItem*>(sender());
+        auto parent = static_cast<PropertyBrowserItem*>(item->parent());
 
-    parent->setValue(p);
+        auto p = parent->value().toPoint();
+
+        switch(parent->items().indexOf(item))
+        {
+            case 0: p.setX(value.toInt()); break;
+            case 1: p.setY(value.toInt()); break;
+        }
+
+        parent->setValue(p);
+        updateProperties(parent, p);
+    }
 }

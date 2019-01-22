@@ -24,8 +24,6 @@ public:
     bool lock;
 };
 
-static int count = 0;
-
 }
 
 QPx::PropertyBrowserItem::PropertyBrowserItem(const QPx::PropertyBrowserType *type, QPx::PropertyBrowserModel *model, const QModelIndex &index, const pcx::optional<int> &row, const QString &name, Flags flags, const QVariant &value, QObject *parent) : QObject(parent)
@@ -34,15 +32,6 @@ QPx::PropertyBrowserItem::PropertyBrowserItem(const QPx::PropertyBrowserType *ty
     auto m = row ? model->insertRow(*row, this, index) : model->appendRow(this, index);
 
     type->addProperties(this, model, m);
-
-    ++count;
-    qDebug() << count << "items exist";
-}
-
-QPx::PropertyBrowserItem::~PropertyBrowserItem()
-{
-    --count;
-    qDebug() << count << "items exist";
 }
 
 const QPx::PropertyBrowserType *QPx::PropertyBrowserItem::type() const

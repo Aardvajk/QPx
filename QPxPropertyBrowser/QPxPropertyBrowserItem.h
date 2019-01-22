@@ -29,7 +29,6 @@ public:
     using Flags = pcx::flags<Flag>;
 
     PropertyBrowserItem(const PropertyBrowserType *type, PropertyBrowserModel *model, const QModelIndex &index, const pcx::optional<int> &row, const QString &name, Flags flags, const QVariant &value, QObject *parent = nullptr);
-    ~PropertyBrowserItem();
 
     const PropertyBrowserType *type() const;
 
