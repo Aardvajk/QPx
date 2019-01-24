@@ -37,11 +37,6 @@ void QPx::AbstractEditorModel::endCommand(QPx::AbstractEditorCommand *command)
     }
 }
 
-void QPx::AbstractEditorModel::setSavePoint()
-{
-    cache.get<Cache>().undo.setSavePoint();
-}
-
 bool QPx::AbstractEditorModel::isModified() const
 {
     return cache.get<Cache>().undo.isModified();
@@ -80,6 +75,16 @@ void QPx::AbstractEditorModel::setPath(const QString &path)
         c.path = path;
         emit pathChanged(path);
     }
+}
+
+void QPx::AbstractEditorModel::setSavePoint()
+{
+    cache.get<Cache>().undo.setSavePoint();
+}
+
+void QPx::AbstractEditorModel::setUndoLimit(int value)
+{
+    cache.get<Cache>().undo.setLimit(value);
 }
 
 void QPx::AbstractEditorModel::undo()

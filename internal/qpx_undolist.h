@@ -17,7 +17,7 @@ class qpx_undolist : public QObject
     Q_OBJECT
 
 public:
-    qpx_undolist(QObject *parent = nullptr);
+    explicit qpx_undolist(QObject *parent = nullptr);
 
     void addCommand(QPx::AbstractEditorCommand *command);
     void clear();
@@ -26,9 +26,11 @@ public:
     bool canRedo() const;
     
     bool isModified() const;
-    
+
     QString lastCommandName() const;
     QString nextCommandName() const;
+
+    int limit() const;
 
 signals:
     void undoStateChanged();
@@ -39,9 +41,10 @@ public slots:
     void redo();
 
     void setSavePoint();
+    void setLimit(int value);
 
 private:
-    pcx::aligned_store<16> cache;
+    pcx::aligned_store<24> cache;
 };
 
 #endif // QPX_UNDOLIST_H

@@ -43,6 +43,7 @@ signals:
 public slots:
     void setPath(const QString &path);
     void setSavePoint();
+    void setUndoLimit(int value);
 
     void undo();
     void redo();
@@ -51,7 +52,7 @@ protected:
     void clearUndoList();
     
 private:
-    pcx::aligned_store<64> cache;
+    pcx::aligned_store<80> cache;
 };
 
 }
