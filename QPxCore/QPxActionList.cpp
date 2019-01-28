@@ -1,6 +1,6 @@
-#include "QPxActions/QPxActionList.h"
+#include "QPxCore/QPxActionList.h"
 
-#include "QPxActions/QPxAction.h"
+#include "QPxCore/QPxAction.h"
 
 #include <QtWidgets/QWidget>
 

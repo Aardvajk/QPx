@@ -1,4 +1,4 @@
-#include "QPxActions/QPxAction.h"
+#include "QPxCore/QPxAction.h"
 
 namespace
 {

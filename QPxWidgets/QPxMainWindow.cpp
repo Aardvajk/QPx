@@ -1,9 +1,8 @@
 #include "QPxWidgets/QPxMainWindow.h"
 
 #include "QPxCore/QPxSettings.h"
-
-#include "QPxActions/QPxAction.h"
-#include "QPxActions/QPxActionList.h"
+#include "QPxCore/QPxAction.h"
+#include "QPxCore/QPxActionList.h"
 
 #include <QtCore/QHash>
 
