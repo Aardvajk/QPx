@@ -1,7 +1,7 @@
 #include "QPxWidgets/QPxKeyboardOptionsWidget.h"
 
-#include <QPxActions/QPxAction.h>
-#include <QPxActions/QPxActionList.h>
+#include "QPxCore/QPxAction.h"
+#include "QPxCore/QPxActionList.h"
 
 #include "QPxWidgets/QPxKeySequenceEdit.h"
 #include "QPxWidgets/QPxIconLabel.h"

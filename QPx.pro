@@ -34,8 +34,8 @@ SOURCES += \
     QPxEditor/QPxAbstractEditorModel.cpp \
     internal/qpx_undolist.cpp \
     QPxWidgets/QPxKeySequenceEdit.cpp \
-    QPxActions/QPxAction.cpp \
-    QPxActions/QPxActionList.cpp \
+    QPxCore/QPxAction.cpp \
+    QPxCore/QPxActionList.cpp \
     QPxEditor/QPxEditorFileActions.cpp \
     QPxWidgets/QPxIconLabel.cpp \
     internal/qpx_settings_parser.cpp \
@@ -64,8 +64,8 @@ HEADERS += \
     QPxEditor/QPxAbstractEditorModel.h \
     internal/qpx_undolist.h \
     QPxWidgets/QPxKeySequenceEdit.h \
-    QPxActions/QPxAction.h \
-    QPxActions/QPxActionList.h \
+    QPxCore/QPxAction.h \
+    QPxCore/QPxActionList.h \
     QPxEditor/QPxEditorFileActions.h \
     QPxWidgets/QPxIconLabel.h \
     QPxCore/QPxSettings.h \
