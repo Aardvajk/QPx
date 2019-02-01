@@ -64,6 +64,14 @@ QPx::FormLayout::FormLayout(pcx::optional<int> border, pcx::optional<int> spacin
     if(spacing) setSpacing(*spacing);
 }
 
+void QPx::FormLayout::addRightAlignedWidgetImp(QWidget *widget)
+{
+    auto layout = addTypedRow(new LayoutWidget(Qt::Horizontal));
+
+    layout->addStretch();
+    layout->addWidget(widget);
+}
+
 QPx::StackedLayout::StackedLayout(QWidget *parent) : QStackedLayout(parent)
 {
 }
@@ -72,9 +80,14 @@ QPx::LayoutWidget::LayoutWidget(Qt::Orientation orientation, QWidget *parent)
 {
     switch(orientation)
     {
-        case Qt::Horizontal: setLayout(new HBoxLayout());
-        case Qt::Vertical: setLayout(new VBoxLayout());
+        case Qt::Horizontal: setLayout(new HBoxLayout()); break;
+        case Qt::Vertical: setLayout(new VBoxLayout()); break;
     }
+}
+
+void QPx::LayoutWidget::addStretch()
+{
+    static_cast<QBoxLayout*>(layout())->addStretch();
 }
 
 void QPx::LayoutWidget::addWidget(QWidget *widget, int stretch)

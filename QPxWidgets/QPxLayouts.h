@@ -51,7 +51,14 @@ public:
     FormLayout(pcx::optional<int> border, pcx::optional<int> spacing, QWidget *parent = nullptr);
 
     template<typename T> T *addTypedWidget(T *widget){ addWidget(widget); return widget; }
+
     template<typename T> T *addTypedRow(const QString &label, T *widget){ addRow(label, widget); return widget; }
+    template<typename T> T *addTypedRow(T *widget){ addRow(widget); return widget; }
+
+    template<typename T> T *addRightAlignedWidget(T *widget){ addRightAlignedWidgetImp(widget); return widget; }
+
+private:
+    void addRightAlignedWidgetImp(QWidget *widget);
 };
 
 class StackedLayout : public QStackedLayout
@@ -69,7 +76,9 @@ class LayoutWidget : public QWidget
     Q_OBJECT
 
 public:
-    LayoutWidget(Qt::Orientation orientation, QWidget *parent);
+    LayoutWidget(Qt::Orientation orientation, QWidget *parent = nullptr);
+
+    void addStretch();
 
     void addWidget(QWidget *widget, int stretch = 0);
     template<typename T> T *addTypedWidget(T *widget, int stretch = 0){ addWidget(widget, stretch); return widget; }
