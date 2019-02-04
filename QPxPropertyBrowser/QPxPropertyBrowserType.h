@@ -112,7 +112,7 @@ public:
     explicit BoolPropertyBrowserType(QObject *parent = nullptr);
 
     virtual QString valueText(const PropertyBrowserItem *item) const override;
-    virtual int userType() const;
+    virtual int userType() const override;
 };
 
 class AbstractEnumPropertyBrowserType : public PropertyBrowserType
