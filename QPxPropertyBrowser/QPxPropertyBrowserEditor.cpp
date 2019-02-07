@@ -1,8 +1,10 @@
 #include "QPxPropertyBrowser/QPxPropertyBrowserEditor.h"
 
-#include "QPxPropertyBrowserType.h"
+#include "QPxPropertyBrowser/QPxPropertyBrowserType.h"
 
 #include "internal/qpx_combo_box.h"
+
+#include "QPxWidgets/QPxLayouts.h"
 
 #include <QtCore/QTimer>
 
@@ -12,9 +14,18 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QComboBox>
+#include <QtWidgets/QCheckBox>
 
 namespace
 {
+
+class EditCache
+{
+public:
+    EditCache(QWidget *parent) : edit(new QLineEdit(parent)) { }
+
+    QLineEdit *edit;
+};
 
 class EnumCache
 {
@@ -54,57 +65,54 @@ QPx::PropertyBrowserEditor::PropertyBrowserEditor(QWidget *parent) : QWidget(par
 
 QPx::StringPropertyBrowserEditor::StringPropertyBrowserEditor(QWidget *parent) : PropertyBrowserEditor(parent)
 {
-    auto &edit = cache.alloc<QLineEdit*>();
-    edit = new QLineEdit(this);
+    auto c = cache.alloc<EditCache>(this);
 
-    auto layout = new QVBoxLayout(this);
-    layout->setMargin(0);
+    auto layout = new QPx::HBoxLayout(0, 2, this);
 
-    layout->addWidget(edit);
-    setFocusProxy(edit);
+    layout->addWidget(c.edit);
+    setFocusProxy(c.edit);
 }
 
 QVariant QPx::StringPropertyBrowserEditor::value() const
 {
-    return cache.get<QLineEdit*>()->text();
+    return cache.get<EditCache>().edit->text();
 }
 
 void QPx::StringPropertyBrowserEditor::setValue(const QVariant &value)
 {
-    cache.get<QLineEdit*>()->setText(value.isValid() ? value.toString() : QString());
+    cache.get<EditCache>().edit->setText(value.isValid() ? value.toString() : QString());
 }
 
 QPx::IntPropertyBrowserEditor::IntPropertyBrowserEditor(const QVariant &min, const QVariant &max, QWidget *parent) : StringPropertyBrowserEditor(parent)
 {
-    cache.get<QLineEdit*>()->setValidator(setupValidator<int>(min, max, new QIntValidator(this)));
+    cache.get<EditCache>().edit->setValidator(setupValidator<int>(min, max, new QIntValidator(this)));
 }
 
 QVariant QPx::IntPropertyBrowserEditor::value() const
 {
-    return lineEditValue<int>(cache.get<QLineEdit*>()->text());
+    return lineEditValue<int>(cache.get<EditCache>().edit->text());
 }
 
 QPx::FloatPropertyBrowserEditor::FloatPropertyBrowserEditor(const QVariant &min, const QVariant &max, QWidget *parent) : StringPropertyBrowserEditor(parent)
 {
-    cache.get<QLineEdit*>()->setValidator(setupValidator<float>(min, max, new QDoubleValidator(this)));
+    cache.get<EditCache>().edit->setValidator(setupValidator<float>(min, max, new QDoubleValidator(this)));
 }
 
 QVariant QPx::FloatPropertyBrowserEditor::value() const
 {
-    return lineEditValue<float>(cache.get<QLineEdit*>()->text());
+    return lineEditValue<float>(cache.get<EditCache>().edit->text());
 }
 
 void QPx::FloatPropertyBrowserEditor::setValue(const QVariant &value)
 {
-    cache.get<QLineEdit*>()->setText(QString::number(value.toFloat()));
+    cache.get<EditCache>().edit->setText(QString::number(value.toFloat()));
 }
 
 QPx::EnumPropertyBrowserEditor::EnumPropertyBrowserEditor(const AbstractEnumPropertyBrowserType *type, const QMap<int, QString> &values, QWidget *parent) : PropertyBrowserEditor(parent)
 {
     auto &c = cache.alloc<EnumCache>(type, this);
 
-    auto layout = new QVBoxLayout(this);
-    layout->setMargin(0);
+    auto layout = new QPx::VBoxLayout(this);
 
     foreach(int i, values.keys())
     {
