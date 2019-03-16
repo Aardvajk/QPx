@@ -73,10 +73,10 @@ void QPx::PropertyBrowserItem::setValue(const QVariant &value)
         if(!c.lock)
         {
             auto g = pcx::scoped_lock(c.lock);
+            c.value = value;
 
             type()->updateProperties(this, value);
 
-            c.value = value;
             emit valueChanged(value);
         }
     }
