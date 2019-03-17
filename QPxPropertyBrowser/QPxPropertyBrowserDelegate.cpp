@@ -108,4 +108,5 @@ bool QPx::PropertyBrowserDelegate::editorEvent(QEvent *event, QAbstractItemModel
 void QPx::PropertyBrowserDelegate::commit()
 {
     emit commitData(static_cast<QWidget*>(sender()));
+    emit closeEditor(static_cast<QWidget*>(sender()));
 }
